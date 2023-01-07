@@ -134,7 +134,10 @@ def addArtist(request):
         artist.agreement = request.POST['agreement']
         artist.budgetRange = request.POST['budgetRange']
 
-        artist.hasManager = True if request.POST['manager'] == 'on' else False
+        try:
+            artist.hasManager = True if request.POST['manager'] == 'on' else False
+        except:
+            artist.hasManager = False
         print("here")
         if artist.hasManager:
             artist.manager = Manager.objects.create(
