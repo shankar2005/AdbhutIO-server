@@ -1,0 +1,195 @@
+
+@media only screen and (max-width: 1029px) {
+  
+  .navbar {
+    width: 100%;
+    height: 70px;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: space-between;
+  }
+  .nav-changeColor {
+    background-color: black;
+  }
+
+  .logo {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: -500%;
+    width: 100%;
+    right: 0;
+    background-color: black;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+  .nav-menu li {
+    margin: 20px 0px;
+  }
+  .nav-social {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+  }
+
+  .menu-open {
+    top: 70px;
+    right: 0px;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  .bar1-open {
+    transform: rotate(45deg);
+    margin: 0px;
+    position: absolute;
+  }
+  .bar2-open {
+    display: none;
+    margin: 0px;
+  }
+  .bar3-open {
+    transform: rotate(-45deg);
+    margin: 0px;
+  }
+
+  /*=============================
+             HERO SECTION 
+    =============================*/
+
+  .hero {
+    /* background-color: transparent; */
+    /* background-image: url("https://media.giphy.com/media/qGGW97Hl1alwBpiafM/giphy-downsized.gif?cid=ecf05e4738hwkpfui8pomcatomn4mq1tvc1hvxhnc9xrhgn7&rid=giphy-downsized.gif&ct=g"); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-text {
+    color: white;
+    font-family: "Baloo Bhai 2", cursive;
+    text-align: center;
+  }
+
+  .hero-text h1 {
+    font-size: 80px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .hero-text h2 {
+    font-size: 70px;
+    line-height: 1;
+  }
+
+  /* =======================
+        OUR GAMES
+  ======================= */
+
+  .our-game {
+    background-image: url("/assets/bg.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    /* height: 700px; */
+    display: flex;
+    padding: 200px 0px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .our-game-slider-kid {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    /* margin: 0px 50px; */
+    align-items: center;
+    justify-content: center;
+    background-color: #222;
+  }
+
+  .ourgame-img {
+    width: 50%;
+    height: 100%;
+    padding: 0%;
+  }
+  .our-game-slider-kid img {
+    width: 100%;
+    padding: 0;
+  }
+
+  .our-game-text {
+    height: 100%;
+    padding: 10px;
+    padding-right: 0px;
+    color: white;
+    width: 90%;
+  }
+
+  .our-game-text h2 {
+    font-size: 50px;
+  }
+
+  .our-game-text p {
+    font-size: 30px;
+    margin-top: 20px;
+  }
+
+  .our-game-text button {
+    padding: 10px 30px;
+    margin: 30px 0px;
+    background-color: var(--highlight-color);
+    border: none;
+    color: var(--primary-color);
+  }
+
+  /* ================= */
+    /* blog post  */
+/* ================= */
+
+.blog-header{
+  width: 100vw;
+  height: auto;
+
+}
+.blog-header img{
+  width: 100%;
+  height: 560px;
+  object-fit: cover;
+}
+.blog-header h2{
+  font-size: 50px;
+  font-weight: bold;
+  padding-left: 30px;
+  margin:50px auto;
+  max-width: 1500px;
+}
+
+.blog-content{
+  max-width: 1500px;
+  font-size: 18px;
+  padding-left: 20px;
+}
+
+.blog-content p{
+  width: 90%;
+  text-align: justify;
+}
+
+
+
+
+}

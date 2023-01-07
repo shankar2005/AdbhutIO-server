@@ -1,0 +1,546 @@
+* {
+  margin: 0;
+  padding: 0;
+  transition: 0.5s;
+}
+body {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  overflow-x: hidden;
+  background-color: rgb(240, 240, 240);
+
+}
+nav {
+  width: 100%;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.nav-item{
+  color:wheat;
+  text-decoration: none;
+}
+
+
+.nav-item:hover{
+  color: black !important;
+  text-decoration: underline;
+}
+
+
+
+.nav-parent {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar {
+  max-width: 1500px;
+  width: 100%;
+  height: 70px;
+  background-color: rgba(255, 255, 255, 0);
+  position: sticky;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-changeColor {
+  background-color: #050505;
+}
+
+.logo {
+  display: flex;
+  margin-left: 30px;
+}
+
+.nav-menu {
+  display: flex;
+  justify-content: space-evenly;
+  text-decoration: none;
+  list-style: none;
+  /* width: 60%; */
+}
+.nav-menu li a {
+  text-decoration: none;
+  margin: 10px;
+  padding: 10px;
+  color: rgb(0, 0, 0);
+}
+/* .nav-social{
+    display: flex;
+    justify-content: space-evenly;
+    list-style: none;
+    
+} */
+
+.hamburger {
+  display: none;
+  margin-right: 20px;
+}
+
+.bar1,
+.bar2,
+.bar3 {
+  width: 20px;
+  height: 3px;
+  margin: 2px;
+  z-index: 55;
+  background: rgb(255, 255, 255);
+}
+
+/*=============================
+        HERO SECTION 
+=============================*/
+
+.hero-parent{
+  
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.hero {
+  height: 700px;
+  
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.548);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+
+}
+
+.hero-text {
+  margin-left:20px;
+  color: white;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  
+
+}
+.hero-text h2{
+  color: #c4c4c4;
+  font-size: 40px;
+  text-align: left;
+  line-height: 0.9;
+}
+
+.animatedLove{
+  color: #f9403d;
+  animation-name: animatedLoveAnim;
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes animatedLoveAnim{
+  0% {color:#f9403d;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+  25% {color: #3d7ff9;font-family: 'Times New Roman', Times, serif;}
+  50% {color:#853df9;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
+  75% {color:#3df943;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;}
+  100% {color: #f9403d;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+}
+
+.hero-text h1 {
+  font-weight: bolder;
+  color: white;
+  font-size: 100px;
+  text-align: left;
+  line-height: 0.9;
+}
+
+
+
+
+/* ======================== */
+          /* BLOG */
+/* ======================== */
+
+.blog-parent{
+  text-align: center;
+  background-image: url(/assets/game1.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position:center;
+  color: #fff;
+  background-attachment: fixed;
+}
+
+.blog-parent-title{
+  color: #fff;
+  font-size: 50px;
+  font-weight:bold ;
+  padding-top: 60px;
+}
+
+
+.artical-kid{
+  background-color: #222;
+  
+}
+
+
+
+/* ================= */
+    /* blog post  */
+/* ================= */
+
+.hr-stylish{
+  margin: 20px;
+  padding: 20px;
+  color:rgb(0, 0, 0); width: 40px;border-color:rgb(0, 0, 0); margin:auto;
+  animation-name: example;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  
+}
+
+.img-holder{
+  height:300px;background-size: cover;
+  transition: transform ease-in 0.2s;
+}
+.img-holder:hover{
+  transform: scale(1.01);
+}
+.hr-stylish-subdivider{
+  color:rebeccapurple; width: 40px;border-color:rebeccapurple; margin:auto;
+  animation-name: example;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  
+}
+@keyframes example {
+  0% {width: 40px;}
+  50% {width: 80px}
+  100% {width: 40px}
+  
+}
+.hr-stylish:hover{
+  width:80px;
+}
+
+.blog-header{
+  color:white;
+  width: 100vw;
+  height: auto;
+
+}
+.blog-header img{
+  width: 100%;
+  height: 560px;
+  object-fit: cover;
+}
+
+
+
+
+.blog-header h2{
+  font-size: 50px;
+  font-weight: bold;
+  padding-left: 30px;
+  margin:50px auto;
+  max-width: 1500px;
+}
+
+.blog-content{
+  text-align: justify;
+  color:white;
+  max-width: 1500px;
+  font-size: 18px;
+  padding: 70px;
+  margin: 70px auto;
+}
+
+.blog-content p{
+  
+  text-align: justify;
+}
+
+
+/* ===================== */
+    /* GAME PAGE  */
+/* ===================== */
+
+
+
+
+
+/*  */
+.heading-type-1{
+  color:rgb(0, 0, 0);
+  text-align: center;
+  font-size: 64px;
+}
+.card-game{
+  background-color: #1a1422;
+}
+.card-image{
+  position: relative;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.card-heading{
+  font-size: xx-large;
+  
+}
+.card{
+  margin:20px;
+  width: 22rem;
+  height:auto;
+  background-color: #130d1a;
+  
+  color:white; /*  color: #f93e3a;*/
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color:white;
+  justify-content: center;
+  box-shadow: 0 0 8px black;
+
+  transition: all ease-in 0.2s;
+}
+.card:hover{
+  transform: scale(1.1);
+}
+.card-content{
+  padding: 20px;
+}
+.aboutContainer{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+}
+.aboutText{
+  font-size: xx-large;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color:white;
+  text-align: justify;
+
+}
+.ourgamesContainer{  
+  
+}
+
+.price{
+  font-size: xx-large;
+  color:#9e9e9e;
+}
+
+
+.text-fancy{
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: transparent;
+  color:white;
+  padding: 5px;
+  margin: 5px;
+  padding-left: 18px;
+  padding-right: 18px;
+  border-radius: 12px;
+  font-size: large;
+  text-decoration: none;
+  color:#f9403d;
+
+}
+
+
+.button-fancy{
+  padding: 20px;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  background: #f5f5f5;
+  color: #000;
+  font-family: 'Alice';
+  transition:all ease-in 0.1s;
+  border-radius: 40px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgb(0 0 0 / 16%);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.button-fancy:hover{
+  box-shadow: none;
+}
+.scrolldownButton{
+  background-color: transparent;
+  color:white;
+  padding: 5px;
+  margin: 5px;
+  padding-left: 18px;
+  padding-right: 18px;
+
+  font-size: large;
+  color:#ffffff;
+  animation-name: scrollButton;
+
+
+
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+}
+@keyframes scrollButton {
+  0% {font-size: large;}
+  50% {font-size: x-large;}
+  100% {font-size: large;}
+  
+}
+.button-fancy:hover{
+
+  border-color: #f9403d;
+  border-width: 2px;
+}
+
+.card-blog{
+  background-position: center;
+  background-color: #130d1a;
+  background-size:cover;
+  width: 100%;
+}
+.card-blog-image{
+  width:100%
+}
+.card-blog-title{
+  margin: 20px;
+  font-size: x-large;
+  text-align: start;
+
+}
+
+ul li {
+  text-align: center;
+  color:rgb(95, 15, 42)
+}
+
+
+
+
+
+
+.lcont{
+  width: 100%;
+  background-color: #ffffff00;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.necont {
+  margin: 10px;
+  background-color: rgb(248, 248, 248);
+  
+  width: 21rem;
+  border-radius: 10px;
+}
+.necont:hover {
+  box-shadow: 0 0 20px #e0e0e0;
+
+}
+.form-field{
+  margin: 10px;
+  
+}
+
+.submit {
+  width: 270px;
+  height: 80px;
+  border: none;
+  outline: none;
+  background: #2f2f2f;
+  color: #fff;
+  font-size: 22px;
+  border-radius: 40px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.w40{
+  width: 80px;
+  height:40px;
+}
+
+.button-type-2 {
+  padding: 20px;
+  border: none;
+  outline: none;
+  background: #f5f5f5;
+  color: #000;
+  font-family: 'Alice';
+  transition:all ease-in 0.1s;
+  border-radius: 40px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgb(0 0 0 / 16%);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.button-type-2:hover{
+  box-shadow: none;
+}
+.cardify{
+  
+}
+.cardify:hover{
+  box-shadow: 0 6px 20px -5px rgb(0 0 0 / 16%);
+}
+
+
+.form-field input{
+  border:1px solid rgb(185, 185, 185);
+  padding: 10px;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: 900;
+  color: black;
+}
+
+.form-label{
+  color:black;
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+
+
+
+.holder{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+}
+
+
+
+
+  .delete-button {
+    width: 40px;
+    height: 40px;
+    border-radius:20px;
+    border:none;
+    background:#ffc7c7;
+    box-shadow: 0 0 20px #cac7c7;
+    align-self: center;
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+    transition: all 2s ease;
+  }
+  .delete-button:hover {
+      cursor: pointer;
+      width: 60px;
+      height: 60px;
+      background:#ffc7c7;
+      box-shadow: 0 0 20px #5e5e5e;
+
+  }
+  
+
