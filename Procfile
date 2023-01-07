@@ -1,1 +1,1 @@
-web: gunicorn smartbot.wsgi 
+web: gunicorn nsn.wsgi 
