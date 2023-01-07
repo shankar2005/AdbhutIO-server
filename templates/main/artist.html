@@ -37,7 +37,10 @@
             range: true,
             min: 0,
             max: 500,
-            values: [$("#amountVal").val().split(',')[0], $("#amountVal").val().split(',')[1]],
+            values: [
+                $("#amountVal").val().split(',')[0] ? $("#amountVal").val().split(',')[0] : 0,
+                $("#amountVal").val().split(',')[1] ? $("#amountVal").val().split(',')[1] : 500
+            ],
             slide: function (event, ui) {
                 $("#amount").val(" Rs. " + ui.values[0] + " -  Rs " + ui.values[1]);
                 $("#amountVal").val(ui.values[0] + "," + ui.values[1]);
@@ -165,7 +168,7 @@
                 <label for="budgetRange"> Budget Range (Rs)</label>
                 <p>
                     <input type="text" id="amount" readonly style="border:0; color:#1f58f6; font-weight:bold;">
-                    <input type="hidden" id="amountVal" value="{{   Artist.budgetRange}}" readonly
+                    <input type="hidden" id="amountVal" value="{{   Artist.budgetRange }}" readonly
                         style="border:0; color:#1f58f6; font-weight:bold;" name="budgetRange">
                 </p>
                 <div id="slider-range"></div>
