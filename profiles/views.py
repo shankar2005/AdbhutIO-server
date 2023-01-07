@@ -140,12 +140,15 @@ def addArtist(request):
             artist.hasManager = False
         print("here")
         if artist.hasManager:
-            artist.manager = Manager.objects.create(
-                name=request.POST['managerName'],
-                email=request.POST['managerEmail'],
-                phone=request.POST['managerPhone'],
-            )
-            artist.manager.save()
+            try:
+                artist.manager = Manager.objects.create(
+                    name=request.POST['managerName'],
+                    email=request.POST['managerEmail'],
+                    phone=request.POST['managerPhone'],
+                )
+                artist.manager.save()
+            except:
+                artist.hasManager = False
 
         try:
             artist.languages = request.POST['languages']
