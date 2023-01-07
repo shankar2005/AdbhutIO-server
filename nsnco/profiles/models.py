@@ -28,7 +28,7 @@ class Artist(models.Model):
     skill = models.CharField(
         choices=SKILLS, max_length=100, default='', blank=True)
     profilePic = models.ImageField(
-        upload_to='artist_pics', default='', blank=True)
+        upload_to='artist_pics', default='avatar.png', blank=True)
     location = models.CharField(
         max_length=100, default='', choices=LOCATION, blank=True)
     languages = models.TextField(default='', blank=True)
@@ -37,14 +37,14 @@ class Artist(models.Model):
     age = models.IntegerField(default=0)
     genre = models.CharField(max_length=100, default='', blank=True)
     email = models.EmailField(max_length=100, default='', blank=True)
-    other_arts = models.CharField(max_length=100, default='', blank=True)
+    otherArts = models.CharField(max_length=100, default='', blank=True)
     worksLink = models.ManyToManyField(Work, default='', blank=True)
     socialLinks = models.TextField(default='', blank=True)
     phone = models.IntegerField(default=0, blank=True)
 
     hasManager = models.BooleanField(default=False, blank=True)
     manager = models.ForeignKey(
-        Manager, on_delete=models.CASCADE, default='', blank=True)
+        Manager, on_delete=models.CASCADE, default='', blank=True, null=True)
     budgetRange = models.CharField(max_length=100, default='', blank=True)
     budgetIdea = models.CharField(max_length=100, default='', blank=True)
     amNotes = models.TextField(default='', blank=True)

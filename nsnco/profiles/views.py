@@ -4,6 +4,10 @@ from django.shortcuts import render
 from .models import *
 from .choices import *
 from django.shortcuts import redirect
+import requests
+
+from django.core.files import File
+
 
 # Create your views here.
 
@@ -19,33 +23,54 @@ def index(request):
 
 
 def artist(request, artist_id):
+    artist = Artist.objects.get(id=artist_id)
     context = {
         'User': request.user,
-        'Artist': Artist.objects.get(id=artist_id),
+        'Artist':  artist,
         'skills': SKILLS,
         'locations': LOCATION,
         'languages': LANGUAGE,
+        'genres': GENRES,
+        'Manager': artist.manager,
     }
+
     if request.method == "POST":
-        print(request.POST)
-        print(request.FILES)
-        artist = Artist.objects.get(id=artist_id)
+
         artist.name = request.POST['name']
         artist.email = request.POST['email']
+        print(request.POST)
 
         if request.FILES:
             artist.profilePic = request.FILES['profilePic']
+        if request.POST['profilePicUrl']:
+            # get profile pic from url
+            url = request.POST['profilePicUrl']
+            r = requests.get(url, allow_redirects=True)
+            q = open('test.png', 'wb').write(r.content)
 
-        #artist.profilePic = request.POST['profilePic']
+            artist.profilePic = File(open('test.png', 'rb'))
+
+            #artist.profilePic = request.POST['profilePic']
         artist.skill = request.POST['skill']
         artist.location = request.POST['location']
         artist.profesionalRating = request.POST['profesionalRating']
         artist.attitudeRating = request.POST['attitudeRating']
+        artist.otherArts = request.POST['otherPerformingArts']
+
+        artist.languages = request.POST.getlist('languages')
+        artist.genre = request.POST.getlist('genre')
+        artist.budgetIdea = request.POST['budgetIdea']
+
+        artist.pmNotes = request.POST['PMNotes']
+        artist.amNotes = request.POST['AMNotes']
+
+        artist.agreement = request.POST['agreement']
+        artist.budgetRange = request.POST['budgetRange']
 
         try:
-            artist.languages = request.POST['languages']
+            artist.hasManager = True if request.POST['manager'] == 'on' else False
         except:
-            pass
+            artist.hasManager = False
 
         try:
             artist.age = request.POST['age']
@@ -59,7 +84,10 @@ def artist(request, artist_id):
             'skills': SKILLS,
             'locations': LOCATION,
             'languages': LANGUAGE,
+            'genres': GENRES,
+            'Manager': artist.manager,
         }
+        print(artist.manager)
 
         return render(request, 'main/artist.html',
                       context=context)
@@ -67,34 +95,35 @@ def artist(request, artist_id):
         return render(request, 'main/artist.html', context=context)
 
 
-def artistUpdate(request, artist_id):
-
-    context = {
-        'User': request.user,
-        'Artist': Artist.objects.get(id=artist_id),
-        'skills': SKILLS,
-        'locations': LOCATION,
-        'languages': LANGUAGE,
-    }
-
-    return render(request, 'main/artistUpdate.html', context=context)
-
-
 def addArtist(request):
     if request.method == "POST":
         print(request.POST)
-        print(request.FILES)
+
         artist = Artist.objects.create()
         artist.name = request.POST['name']
         artist.email = request.POST['email']
-        artist.profilePic = request.FILES['profilePic']
+
         artist.skill = request.POST['skill']
         artist.location = request.POST['location']
         artist.profesionalRating = request.POST['profesionalRating']
         artist.attitudeRating = request.POST['attitudeRating']
+        artist.otherArts = request.POST['otherPerformingArts']
 
         try:
             artist.languages = request.POST['languages']
+        except:
+            pass
+
+        try:
+            if request.FILES:
+                artist.profilePic = request.FILES['profilePic']
+            if request.POST['profilePicUrl'] != "" or request.POST['profilePicUrl'] != None:
+                # get profile pic from url
+                url = request.POST['profilePicUrl']
+                r = requests.get(url, allow_redirects=True)
+                q = open('test.png', 'wb').write(r.content)
+
+                artist.profilePic = File(open('test.png', 'rb'))
         except:
             pass
 
@@ -109,7 +138,9 @@ def addArtist(request):
             'Artist': artist,
             'skills': SKILLS,
             'locations': LOCATION,
+            'genres': GENRES,
             'languages': LANGUAGE,
+
         }
 
         return render(request, 'main/artist.html',
@@ -120,8 +151,16 @@ def addArtist(request):
         'skills': SKILLS,
         'locations': LOCATION,
         'languages': LANGUAGE,
+        'genres': GENRES,
     }
     return render(request, 'main/artist.html', context=context)
+
+
+def deleteArtist(request, artist_id):
+    if request.method == "POST":
+        artist = Artist.objects.get(id=artist_id)
+        artist.delete()
+    return redirect('profiles:index')
 
 
 def logout(request):

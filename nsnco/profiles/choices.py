@@ -1,7 +1,7 @@
 # Description: This file contains the choices for the models in the nsn app
 
 
-# Base 
+# Base
 SKILLS = (
     ('Singer', 'Singer'),
     ('Dancer', 'Dancer'),
@@ -33,7 +33,7 @@ LANGUAGE = (
     ('English', 'English'),
     ('Hindi', 'Hindi'),
     ('Marathi', 'Marathi'),
-    ('Tamil' , 'Tamil'),
+    ('Tamil', 'Tamil'),
     ('Telugu', 'Telugu'),
     ('Kannada', 'Kannada'),
     ('Malayalam', 'Malayalam'),
@@ -42,8 +42,19 @@ LANGUAGE = (
     ('Punjabi', 'Punjabi'),
     ('Other', 'Other')
 )
- 
 
 
 # Singer
-    
+
+GENRES = (
+    ('Pop', 'Pop'),
+    ('Rock', 'Rock'),
+    ('Rap', 'Rap'),
+    ('Hip Hop', 'Hip Hop'),
+    ('Country', 'Country'),
+    ('EDM', 'EDM'),
+    ('Jazz', 'Jazz'),
+    ('Classical', 'Classical'),
+    ('Folk', 'Folk'),
+    ('Other', 'Other'),
+)
