@@ -91,7 +91,7 @@ def artist(request, artist_id):
         try:
             artist.age = request.POST['age']
         except:
-            pass
+            pass  # pass
 
         artist.save()
         context = {
