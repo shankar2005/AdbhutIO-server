@@ -81,7 +81,7 @@ MIDDLEWARE = [
 CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
                       'content-type', 'accept', 'origin', 'authorization', 'authentication', 'Access-Control-Allow-Origin', 'enctype')
 
-ROOT_URLCONF = 'smartbot.urls'
+ROOT_URLCONF = 'nsn.urls'
 
 TEMPLATES = [
     {
@@ -100,7 +100,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'smartbot.wsgi.application'
+WSGI_APPLICATION = 'nsn.wsgi.application'
 
 
 # Database
@@ -230,7 +230,7 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 LOGIN_REDIRECT_URL = '/login/confirmed/google/'
-GEOIP_PATH = os.path.join(BASE_DIR, 'smartbot', 'geoip')
+GEOIP_PATH = os.path.join(BASE_DIR, 'nsn', 'geoip')
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
