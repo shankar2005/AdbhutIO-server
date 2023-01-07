@@ -50,19 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # 'memeberships',
-    'django.contrib.staticfiles',
-    # All Auth
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    # 'allauth.socialaccount.providers.github',
 
-    'rest_auth',
-    'rest_auth.registration',
-    'storages',
+    'django.contrib.staticfiles',
 
 ]
 
@@ -169,26 +158,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "static_cdn", "media_root")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
-
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-
-    ],
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),
-    'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
-}
-
-
 AUTHENTICATION_BACKENDS = [
 
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -199,52 +168,7 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
-
-SITE_ID = 1
-
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    },
-
-    'github': {
-        'SCOPE': [
-            'user:email',
-        ],
-    }
-}
-TINYMCE_DEFAULT_CONFIG = {
-
-
-
-
-    'theme_advanced_resizing': True,
-
-}
-
-LOGIN_REDIRECT_URL = '/login/confirmed/google/'
-GEOIP_PATH = os.path.join(BASE_DIR, 'nsn', 'geoip')
-
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_HOST_USER = "postmaster@orangewaves.tech"
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = "f01802805880a9a55ddccaae6b88996d-c2efc90c-08b9e791"
-EMAIL_PORT = 587
-EMAIL_USE_SSL = False
-EMAIL_USE_TLS = True
-
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 AWS_ACCESS_KEY_ID = "AKIARY2G35G2RQ5B45MI"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "smartbotbucket"

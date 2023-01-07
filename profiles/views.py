@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render
@@ -24,6 +25,7 @@ def index(request):
 
 def artist(request, artist_id):
     artist = Artist.objects.get(id=artist_id)
+
     context = {
         'User': request.user,
         'Artist':  artist,
@@ -32,6 +34,8 @@ def artist(request, artist_id):
         'languages': LANGUAGE,
         'genres': GENRES,
         'Manager': artist.manager,
+        'Social': artist.socialLinks.split(','),
+        'Works': artist.worksLink.all(),
     }
 
     if request.method == "POST":
@@ -94,6 +98,7 @@ def artist(request, artist_id):
             pass  # pass
 
         artist.save()
+
         context = {
             'User': request.user,
             'Artist': artist,
@@ -102,6 +107,8 @@ def artist(request, artist_id):
             'languages': LANGUAGE,
             'genres': GENRES,
             'Manager': artist.manager,
+            'Social': artist.socialLinks.split(','),
+
         }
         print(artist.manager)
 
@@ -138,7 +145,7 @@ def addArtist(request):
             artist.hasManager = True if request.POST['manager'] == 'on' else False
         except:
             artist.hasManager = False
-        print("here")
+
         if artist.hasManager:
             try:
                 artist.manager = Manager.objects.create(
@@ -184,6 +191,8 @@ def addArtist(request):
         'languages': LANGUAGE,
         'genres': GENRES,
         'Manager': None,
+        'Social': [],
+
     }
     return render(request, 'main/artist.html', context=context)
 

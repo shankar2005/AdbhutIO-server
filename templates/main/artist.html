@@ -14,6 +14,10 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
     {% block header %}
     {% endblock %}
 </head>
@@ -25,6 +29,25 @@
         height: 100%;
     }
 </style>
+
+
+<script>
+    $(function () {
+        $("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 500,
+            values: [$("#amountVal").val().split(',')[0], $("#amountVal").val().split(',')[1]],
+            slide: function (event, ui) {
+                $("#amount").val(" Rs. " + ui.values[0] + " -  Rs " + ui.values[1]);
+                $("#amountVal").val(ui.values[0] + "," + ui.values[1]);
+            }
+        });
+        $("#amount").val("Rs. " + $("#slider-range").slider("values", 0) +
+            " - Rs " + $("#slider-range").slider("values", 1));
+        $("#amountVal").val($("#slider-range").slider("values", 0) + "," + $("#slider-range").slider("values", 1));
+    });
+</script>
 
 <body>
 
@@ -140,11 +163,13 @@
                 <textarea class="form-control" id="PMNotes" required rows="3" name="PMNotes"
                     placeholder="{{ Artist.PMNotes }}">{{  Artist.pmNotes  }}</textarea>
                 <label for="budgetRange"> Budget Range (Rs)</label>
-                <input type="range" class="form-control" id="budgetRange" min="0" max="20000" step="1000" required
-                    name="budgetRange" value="{{Artist.budgetRange}}"
-                    oninput="this.nextElementSibling.value = this.value">
-                <output for="budgetRange" onforminput="value = budgetRange.valueAsNumber;">
-                    {{Artist.budgetRange}}</output> Rs.
+                <p>
+                    <input type="text" id="amount" readonly style="border:0; color:#1f58f6; font-weight:bold;">
+                    <input type="hidden" id="amountVal" value="{{   Artist.budgetRange}}" readonly
+                        style="border:0; color:#1f58f6; font-weight:bold;" name="budgetRange">
+                </p>
+                <div id="slider-range"></div>
+
             </div>
             <div class="form-group">
                 <h3> Agreement </h3>
@@ -152,6 +177,39 @@
                 <label for="agreement"> Agreement</label>
                 <input type="url" class="form-control" id="agreement" required name="agreement"
                     value="{{ Artist.agreement }}">
+            </div>
+
+            <div class="form-group">
+                <h3> Social</h3>
+                <hr>
+
+
+                <div class="d-flex">
+                    {% for social in Social %}
+                    <a href="{{social}}" class="btn btn-secondary m-2">{{ social }}</a>
+                    <br />
+
+                    {% endfor %}
+                </div>
+
+
+
+            </div>
+            <div class="form-group">
+                <h3> Work</h3>
+                <hr>
+
+
+                <div class="d-flex">
+                    {% for social in Works %}
+                    <a href="{{social.link}}" class="btn btn-secondary m-2">{{ social.name }}</a>
+                    <br />
+
+                    {% endfor %}
+                </div>
+
+
+
             </div>
 
 
