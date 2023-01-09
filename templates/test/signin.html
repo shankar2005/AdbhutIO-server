@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body>
+    <h3>SignIn</h3>
+    <form action="/signin" method="post">
+      {% csrf_token %}
+      <label for=""><b>Username</b></label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Enter your Username"
+        required
+      />
+      <br />
+
+      <label for=""><b>Password</b></label>
+      <input
+        type="password"
+        id="pass1"
+        name="pass1"
+        placeholder="Enter your password"
+        required
+      />
+      <br />
+      <button type="submit">Sign In</button>
+    </form>
+  </body>
+</html>

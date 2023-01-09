@@ -1,35 +1,15 @@
 from django.contrib import admin
 from .models import *
+from .modelAdmin import *
 # Register your models here.
 
 
-class ArtistAdmin(admin.ModelAdmin):
-
-    fieldsets = [
-        ("Contact", {'fields': [
-            ("name", "age"),
-            ("email", "phone"),
-            ("skill", "genre"),
-            ("location", "languages"),
-            "profilePic"
-        ]}),
-        ("Work", {
-            "fields": [
-                "worksLink",
-                "socialLinks",
-                ("hasManager",
-                 "manager")
-            ]}),
-        ("Contract", {"fields": [
-            ("profesionalRating", "attitudeRating"),
-         ("budgetRange", "budgetIdea"
-          ),
-         ("amNotes",
-                "pmNotes",),
-         ]})
-    ]
-
-
+admin.site.register(Work, WorkAdmin)
+admin.site.register(Client, ClientAdmin)
 admin.site.register(Artist, ArtistAdmin)
+admin.site.register(ArtistFeedback, ArtistFeedbackAdmin)
+admin.site.register(ProjectDemo,  ProjectDemoAdmin)
+admin.site.register(Project, ProjectAdmin)
+admin.site.register(ProjectFee,  ProjectFeeAdmin)
+admin.site.register(ArtistRequest, ArtistRequestAdmin)
 admin.site.register(Manager)
-admin.site.register(Work)
