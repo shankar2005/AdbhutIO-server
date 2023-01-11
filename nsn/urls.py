@@ -7,6 +7,7 @@ from .settings import MEDIA_ROOT, MEDIA_URL, STATIC_ROOT, STATIC_URL
 from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.views.decorators.csrf import csrf_exempt
+from .views import *
 
 router = routers.DefaultRouter()
 
@@ -15,6 +16,7 @@ urlpatterns = [
     path('', include('profiles.urls')),
     path('api/v1/',  include(router.urls)),
     path('api/v1/auth/login/', csrf_exempt(ObtainAuthToken.as_view())),
+    path('api/v1/auth/verify/', ValidateToken.as_view()),
 
     # Admin URLs
     path('admin/', admin.site.urls),
