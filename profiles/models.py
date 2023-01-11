@@ -34,6 +34,10 @@ class Client(models.Model):
     # Login details
     user = models.OneToOneField(
         User, on_delete=models.CASCADE)
+    email = models.EmailField(default='', blank=True)
+    email_confirmed = models.BooleanField(default=False)
+
+    # Eother
     projects = models.ManyToManyField(
         'Project', default='', blank=True, related_name='client_projects')
 
@@ -50,6 +54,9 @@ class Client(models.Model):
     contract_document_signing_status = models.CharField(
         max_length=100, default='', blank=True,  # options=CONTRACT_SIGNING_STATUS
     )
+
+    def __str__(self):
+        return self.name
 
 
 class Artist(models.Model):

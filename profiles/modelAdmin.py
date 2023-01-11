@@ -13,7 +13,8 @@ class WorkAdmin(admin.ModelAdmin):
 class ClientAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Contact", {'fields': [
-            "name", 'user', "details",
+            "name", ("email"), 'user', "details",
+
         ]
         }),
         ("Contract", {'fields': [

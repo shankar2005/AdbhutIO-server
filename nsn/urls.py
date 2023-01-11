@@ -9,6 +9,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from django.views.decorators.csrf import csrf_exempt
 from .views import *
 
+
 router = routers.DefaultRouter()
 
 
@@ -17,6 +18,7 @@ urlpatterns = [
     path('api/v1/',  include(router.urls)),
     path('api/v1/auth/login/', csrf_exempt(ObtainAuthToken.as_view())),
     path('api/v1/auth/verify/', ValidateToken.as_view()),
+    path('api/v1/auth/register/', RegisterUserView.as_view()),
 
     # Admin URLs
     path('admin/', admin.site.urls),
