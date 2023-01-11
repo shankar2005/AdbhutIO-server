@@ -28,6 +28,9 @@ class RegisterUserView(APIView):
             if password != password2:
                 return Response({'error': 'Passwords do not match'},
                                 status=status.HTTP_400_BAD_REQUEST)
+
+            if User.objects.filter(username=username).exists():
+                return Response({'error': 'Username already exists'},)
             else:
                 if len(password) >= 8:
                     if not User.objects.filter(username=username, email=email).exists():
