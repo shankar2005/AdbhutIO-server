@@ -4,10 +4,18 @@ from django.urls import path, include
 from .views import *
 from django.conf.urls.static import static
 from .settings import MEDIA_ROOT, MEDIA_URL, STATIC_ROOT, STATIC_URL
+from rest_framework import routers
+from rest_framework.authtoken.views import ObtainAuthToken
+from django.views.decorators.csrf import csrf_exempt
+
+router = routers.DefaultRouter()
 
 
 urlpatterns = [
     path('', include('profiles.urls')),
+    path('api/v1/',  include(router.urls)),
+    path('api/v1/auth/login/', csrf_exempt(ObtainAuthToken.as_view())),
+
     # Admin URLs
     path('admin/', admin.site.urls),
 ]

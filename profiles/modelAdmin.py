@@ -4,7 +4,8 @@ from django.contrib import admin
 class WorkAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Work", {'fields': [
-            "name", "weblink", "is_demo", "from_client", "is_active"
+            "owner", "name", ("weblink",
+                              "file"), "is_demo", "from_client", "is_active"
         ]})
     ]
 
@@ -43,9 +44,11 @@ class ArtistAdmin(admin.ModelAdmin):
                 'other_arts'
             ]}),
         ("Contract", {"fields": [
+            'has_agreement', 'agreement',
             ("professional_rating", "attitude_rating"),
          ("budget_range", "budget_idea"
-          ), 'agreement',
+          ),
+
          ("am_notes",
                 "pm_notes",),
          ]})

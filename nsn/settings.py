@@ -27,7 +27,6 @@ SECRET_KEY = 'django-insecure-t=u8335!zp&!=+$*qxx4ko6+=vhek90^aqr)c)f(r%esa2k096
 DEBUG = True
 
 
-
 ALLOWED_HOSTS = ['*']
 
 #ALLOWED_HOSTS = ['localhost']
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     # Custom apps
     'profiles',
     'rest_framework',
+
     'tinymce',
     'rest_framework.authtoken',
     'corsheaders',
@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
 
     'django.contrib.staticfiles',
+    'rest_auth',
+    'rest_auth.registration',
+    'storages',
 
 ]
 
@@ -157,6 +160,23 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "static_cdn", "media_root")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+
+    ],
+
+
+    """
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),"""
+    'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
+}
 
 AUTHENTICATION_BACKENDS = [
 

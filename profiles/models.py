@@ -5,12 +5,23 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
+def savenameLocationForAggreement(self, filename):
+    return f'userdata/{self.name}_files/aggreement--{filename}'
+
+
+def saveNameLocationForProfilePic(self, filename):
+    return f'userdata/{self.owner.name}_work_files/{filename}'
+
+
 class Work(models.Model):
     name = models.CharField(max_length=100, default='')
-    weblink = models.URLField(max_length=100, default='')
+    weblink = models.URLField(max_length=100, default='', blank=True)
     is_demo = models.BooleanField(default=False)
+    owner = models.ForeignKey(
+        'Artist', on_delete=models.CASCADE, default='',      related_name='%(class)s_Artist')
     from_client = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    file = models.FileField(upload_to='work_files', default='', blank=True)
 
     def __str__(self):
         return self.name
@@ -43,11 +54,11 @@ class Client(models.Model):
 
 class Artist(models.Model):
     # Base
-    name = models.CharField(max_length=100, default='', blank=True)
+    name = models.CharField(max_length=100, default='')
     skill = models.CharField(
-        choices=SKILLS, max_length=100, default='', blank=True)
+        max_length=100, default='', blank=True)  # choices=SKILLS
     profile_pic = models.ImageField(
-        upload_to='artist_pics', default='avatar.png', blank=True)
+        upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
     location = models.CharField(
         max_length=100, default='', choices=LOCATION, blank=True)
     languages = models.CharField(default='', blank=True, max_length=100)
@@ -65,13 +76,16 @@ class Artist(models.Model):
     has_manager = models.BooleanField(default=False, blank=True)
     manager = models.ForeignKey(
         'Manager', on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_Manager_relation')
-    budget_range = models.CharField(max_length=100, default='', blank=True)
+    budget_range = models.CharField(
+        max_length=100, default='', blank=True,     choices=BUDGET_RANGE)
     budget_idea = models.TextField(default='', blank=True)
     am_notes = models.TextField(default='', blank=True)
     pm_notes = models.TextField(default='', blank=True)
-    professional_rating = models.IntegerField(default=0, blank=True)  # 1-10
-    attitude_rating = models.IntegerField(default=0, blank=True)  # 1 - 10
-    agreement = models.URLField(max_length=100, default='', blank=True)
+    professional_rating = models.IntegerField(default=0)  # 1-10
+    attitude_rating = models.IntegerField(default=0)  # 1 - 10
+    has_agreement = models.BooleanField(default=False)
+    agreement = models.FileField(
+        upload_to=savenameLocationForAggreement, default='', blank=True)
 
     def __str__(self):
         return self.name
