@@ -12,10 +12,10 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
     serializer_class = WorkFeedSerializer
     filter_backends = [DjangoFilterBackend,
                        filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['demo_type', 'is_active', 'from_client', 'is_demo']
+    filterset_fields = []
     search_fields = ['name', 'owner__name']
     ordering_fields = '__all__'
 
     def get_queryset(self):
-        profile = Work.objects.all()
+        profile = Work.objects.all().order_by('show_on_top_feed')
         return profile
