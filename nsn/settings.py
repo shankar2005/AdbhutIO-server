@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Custom apps
     'profiles',
     'rest_framework',
+    'django_filters',
 
     'tinymce',
     'rest_framework.authtoken',
@@ -169,6 +170,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
 
     ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
 
     """
