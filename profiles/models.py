@@ -15,6 +15,7 @@ def saveNameLocationForProfilePic(self, filename):
 
 class Work(models.Model):
     name = models.CharField(max_length=100, default='')
+    details = models.TextField(default='', blank=True)
     weblink = models.URLField(max_length=100, default='', blank=True)
     is_demo = models.BooleanField(default=False)
     owner = models.ForeignKey(
@@ -22,6 +23,8 @@ class Work(models.Model):
     from_client = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     file = models.FileField(upload_to='work_files', default='', blank=True)
+    demo_type = models.CharField(
+        max_length=100, default='', blank=True, choices=DEMO_TYPE)
 
     def __str__(self):
         return self.name
@@ -67,7 +70,7 @@ class Artist(models.Model):
     profile_pic = models.ImageField(
         upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
     location = models.CharField(
-        max_length=100, default='', choices=LOCATION, blank=True)
+        max_length=100, default='', blank=True)
     languages = models.CharField(default='', blank=True, max_length=100)
     age = models.IntegerField(default=0)
     genre = models.CharField(max_length=100, default='', blank=True)

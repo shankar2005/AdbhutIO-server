@@ -8,9 +8,11 @@ from rest_framework import routers
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.views.decorators.csrf import csrf_exempt
 from .views import *
+from profiles.views import *
 
 
 router = routers.DefaultRouter()
+router.register('get_feed', WorkFeedViewSet, basename='get_feed')
 
 
 urlpatterns = [

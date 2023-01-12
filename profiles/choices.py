@@ -25,16 +25,6 @@ SKILLS = (
 
 )
 
-LOCATION = (
-    ('Asia', 'Asia'),
-    ('Africa', 'Africa'),
-    ('Europe', 'Europe'),
-    ('North America', 'North America'),
-    ('South America', 'South America'),
-    ('Australia', 'Australia'),
-    ('Antarctica', 'Antarctica'),
-)
-
 LANGUAGE = (
     ('English', 'English'),
     ('Hindi', 'Hindi'),
@@ -48,22 +38,6 @@ LANGUAGE = (
     ('Punjabi', 'Punjabi'),
     ('Other', 'Other')
 )
-
-
-# Singer
-GENRES = (
-    ('Pop', 'Pop'),
-    ('Rock', 'Rock'),
-    ('Rap', 'Rap'),
-    ('Hip Hop', 'Hip Hop'),
-    ('Country', 'Country'),
-    ('EDM', 'EDM'),
-    ('Jazz', 'Jazz'),
-    ('Classical', 'Classical'),
-    ('Folk', 'Folk'),
-    ('Other', 'Other'),
-)
-
 
 # Misc
 CLIENT_PAYOUT_STATUS = (
@@ -118,4 +92,16 @@ BUDGET_RANGE = (
     ('10K - 20k', '10k-20k'),
     ('20K - 40k', '20k-40k'),
     ('Above 40K', '>40k'),
+)
+
+
+DEMO_TYPE = (
+    ('Instagram Link', 'Instagram'),
+    ('Youtube Link', 'Youtube'),
+    ('Soundcloud Link', 'Soundcloud'),
+
+    ('Image', 'Image'),
+    ('Video', 'Video'),
+    ('Other Document', 'Other'),
+
 )

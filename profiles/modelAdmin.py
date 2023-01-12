@@ -4,8 +4,8 @@ from django.contrib import admin
 class WorkAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Work", {'fields': [
-            "owner", "name", ("weblink",
-                              "file"), "is_demo", "from_client", "is_active"
+            "owner", "name", 'demo_type', ("weblink",
+                                           "file"), "is_demo", "from_client", "is_active", 'details'
         ]})
     ]
 
