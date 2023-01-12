@@ -17,6 +17,7 @@ class Work(models.Model):
     name = models.CharField(max_length=100, default='')
     details = models.TextField(default='', blank=True)
     weblink = models.URLField(max_length=100, default='', blank=True)
+    show_in_top_feed = models.BooleanField(default=False)
     is_demo = models.BooleanField(default=False)
     owner = models.ForeignKey(
         'Artist', on_delete=models.CASCADE, default='',      related_name='%(class)s_Artist')
