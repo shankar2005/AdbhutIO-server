@@ -24,7 +24,8 @@ class WorkFeedSerializer(serializers.ModelSerializer):
             'demo_type',
             'owner_name',
             'owner_id',
-            'details'
+            'details',
+            'name'
 
 
         ]
