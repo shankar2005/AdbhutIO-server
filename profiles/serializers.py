@@ -80,6 +80,9 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         else:
             return []
 
+    def get_language(self, obj):
+        return [language.name for language in obj.languages.all()]
+
     def get_artistID(self, obj):
         return obj.pk
 
@@ -87,6 +90,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     social = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
     artistID = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
 
     class Meta:
         model = Artist
@@ -100,5 +104,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'social',
             'has_manager',
             "manager",
-            "artistID"
+            "artistID",
+            "location",
+            "language",
         ]

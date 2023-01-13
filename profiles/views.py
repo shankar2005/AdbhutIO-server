@@ -28,6 +28,16 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
 class ArtistViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistProfileSerializer
 
+    filter_backends = [DjangoFilterBackend,
+                       filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['skill', 'languages', 'location']
+    skill = Filter(name="skill", lookup_type='in')
+    language = Filter(name="languages", lookup_type='in')
+
+    search_fields = ['name', 'location__name',
+                     'skill__name', 'languages__name']
+    ordering_fields = '__all__'
+
     def get_queryset(self):
         profile = Artist.objects.filter()
         return profile
