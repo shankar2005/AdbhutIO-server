@@ -2,9 +2,12 @@ from dataclasses import field
 from rest_framework import serializers
 from .models import *
 from datetime import datetime, timedelta
+from urllib.parse import urlparse
 
 
 # Serializers define the API representation.
+
+
 class WorkFeedSerializer(serializers.ModelSerializer):
 
     owner_name = serializers.SerializerMethodField()
@@ -36,7 +39,36 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         return [skill.name for skill in obj.skill.all()]
 
     def get_social(self, obj):
-        return [social.replace(" ", "") for social in obj.social_links.split(",")]
+        q = {}
+        links = obj.social_links.split(",")
+
+        for social in links:
+            social = social.replace(" ", "")
+            domain = urlparse(social).netloc
+
+            domain = domain.split(".")
+
+            if "facebook" in domain:
+                q["facebook"] = social
+            elif "instagram" in domain:
+                q["instagram"] = social
+
+            elif "twitter" in domain:
+                q["twitter"] = social
+            elif "youtube" in domain:
+                q["youtube"] = social
+            elif "linkedin" in domain:
+                q["linkedin"] = social
+            elif "spotify" in domain:
+                q["spotify"] = social
+            elif "soundcloud" in domain:
+                q["soundcloud"] = social
+            elif "tiktok" in domain:
+                q["tiktok"] = social
+            elif "twitch" in domain:
+                q["twitch"] = social
+
+        return q
 
     def get_manager(self, obj):
         if obj.has_manager and obj.manager:
