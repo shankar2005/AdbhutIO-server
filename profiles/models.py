@@ -1,6 +1,7 @@
 from django.db import models
 from .choices import *
 from django.contrib.auth.models import User
+from misc.models import *
 
 # Create your models here.
 
@@ -10,14 +11,7 @@ def savenameLocationForAggreement(self, filename):
 
 
 def saveNameLocationForProfilePic(self, filename):
-    return f'userdata/{self.owner.name}_work_files/{filename}'
-
-
-class Skill(models.Model):
-    name = models.CharField(max_length=100, default='')
-
-    def __str__(self):
-        return self.name
+    return f'userdata/{self.name}_work_files/{filename}'
 
 
 class Work(models.Model):
@@ -76,11 +70,11 @@ class Artist(models.Model):
     skill = models.ManyToManyField(Skill, default='', blank=True)
     profile_pic = models.ImageField(
         upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
-    location = models.CharField(
-        max_length=100, default='', blank=True)
-    languages = models.CharField(default='', blank=True, max_length=100)
+    location = models.ForeignKey(
+        Location, on_delete=models.SET_NULL, null=True, blank=True)
+    languages = models.ManyToManyField(Language, default='', blank=True)
     age = models.IntegerField(default=0)
-    genre = models.CharField(max_length=100, default='', blank=True)
+    genre = models.ManyToManyField(Genre, default='', blank=True)
     email = models.EmailField(max_length=100, default='', blank=True)
     phone = models.IntegerField(default=0, blank=True)
 
@@ -188,7 +182,8 @@ class ProjectFee(models.Model):
         default=False, blank=True
     )
 
-    post_project_client_total_payout = models.FloatField(default=0, blank=True)
+    post_project_client_total_payout = models.FloatField(
+        default=0, blank=True)
 
     project_fee_Status = models.CharField(
         max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
@@ -198,9 +193,10 @@ class ArtistRequest(models.Model):
     skill = models.ManyToManyField(
         Skill, default='', blank=True, related_name='%(class)s_Skill')
 
-    location = models.CharField(max_length=100, default='', blank=True)
-    genre = models.CharField(max_length=100, default='', blank=True)
-    language = models.CharField(max_length=100, default='', blank=True)
+    location = models.ForeignKey(
+        Location, on_delete=models.SET_NULL, blank=True, null=True, related_name='%(class)s_Location')
+    genre = models.ManyToManyField(Genre, default='', blank=True)
+    languages = models.ManyToManyField(Language, default='', blank=True)
     other_performin_arts = models.TextField(default='', blank=True)
 
     budget_range = models.CharField(max_length=100, default='', blank=True)

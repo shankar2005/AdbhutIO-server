@@ -39,11 +39,12 @@ CORS_ALLOW_CREDENTIALS = True
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    # Custom apps
+
     'profiles',
+    'misc',
+    # Custom apps
     'rest_framework',
     'django_filters',
-
     'tinymce',
     'rest_framework.authtoken',
     'corsheaders',

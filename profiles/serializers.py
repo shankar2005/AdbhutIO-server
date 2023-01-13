@@ -34,7 +34,19 @@ class WorkFeedSerializer(serializers.ModelSerializer):
 class ArtistProfileSerializer(serializers.ModelSerializer):
     def get_skills(self, obj):
         return [skill.name for skill in obj.skill.all()]
+
+    def get_social(self, obj):
+        return [social.replace(" ", "") for social in obj.social_links.split(",")]
+
+    def get_manager(self, obj):
+        if obj.has_manager and obj.manager:
+            return {'name': obj.manager.name, 'email': obj.manager.email, 'phone': obj.manager.phone}
+        else:
+            return []
+
     skills = serializers.SerializerMethodField()
+    social = serializers.SerializerMethodField()
+    manager = serializers.SerializerMethodField()
 
     class Meta:
         model = Artist
@@ -44,5 +56,8 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'profile_pic',
             'phone',
             'skills',
-            'budget_range'
+            'budget_range',
+            'social',
+            'has_manager',
+            "manager"
         ]

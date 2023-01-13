@@ -17,13 +17,14 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
     ordering_fields = '__all__'
 
     def get_queryset(self):
-        profile = Work.objects.all().order_by('show_on_top_feed')
-        return profile
+
+        work = Work.objects.all().order_by('show_in_top_feed')
+
+        return work
 
 
 class ArtistViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistProfileSerializer
-    
 
     def get_queryset(self):
         profile = Artist.objects.filter()
