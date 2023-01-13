@@ -13,6 +13,8 @@ from profiles.views import *
 
 router = routers.DefaultRouter()
 router.register('get_feed', WorkFeedViewSet, basename='get_feed')
+router.register('get_artist',
+                ArtistViewSet, basename='get_artist')
 
 
 urlpatterns = [

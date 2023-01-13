@@ -13,6 +13,13 @@ def saveNameLocationForProfilePic(self, filename):
     return f'userdata/{self.owner.name}_work_files/{filename}'
 
 
+class Skill(models.Model):
+    name = models.CharField(max_length=100, default='')
+
+    def __str__(self):
+        return self.name
+
+
 class Work(models.Model):
     name = models.CharField(max_length=100, default='')
     details = models.TextField(default='', blank=True)
@@ -66,8 +73,7 @@ class Client(models.Model):
 class Artist(models.Model):
     # Base
     name = models.CharField(max_length=100, default='')
-    skill = models.CharField(
-        max_length=100, default='', blank=True)  # choices=SKILLS
+    skill = models.ManyToManyField(Skill, default='', blank=True)
     profile_pic = models.ImageField(
         upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
     location = models.CharField(
@@ -88,7 +94,7 @@ class Artist(models.Model):
     manager = models.ForeignKey(
         'Manager', on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_Manager_relation')
     budget_range = models.CharField(
-        max_length=100, default='', blank=True,     choices=BUDGET_RANGE)
+        max_length=100, default='Less Than 10,000', blank=True,     choices=BUDGET_RANGE)
     budget_idea = models.TextField(default='', blank=True)
     am_notes = models.TextField(default='', blank=True)
     pm_notes = models.TextField(default='', blank=True)
@@ -189,8 +195,8 @@ class ProjectFee(models.Model):
 
 
 class ArtistRequest(models.Model):
-    skill = models.  CharField(
-        max_length=100, default='', blank=True, choices=SKILLS)
+    skill = models.ManyToManyField(
+        Skill, default='', blank=True, related_name='%(class)s_Skill')
 
     location = models.CharField(max_length=100, default='', blank=True)
     genre = models.CharField(max_length=100, default='', blank=True)

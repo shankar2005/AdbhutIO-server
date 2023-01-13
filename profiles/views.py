@@ -2,7 +2,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import routers, serializers, viewsets, generics
-from .serializers import WorkFeedSerializer
+from .serializers import *
 from .models import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
@@ -18,4 +18,13 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         profile = Work.objects.all().order_by('show_on_top_feed')
+        return profile
+
+
+class ArtistViewSet(viewsets.ModelViewSet):
+    serializer_class = ArtistProfileSerializer
+    
+
+    def get_queryset(self):
+        profile = Artist.objects.filter()
         return profile

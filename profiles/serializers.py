@@ -29,3 +29,20 @@ class WorkFeedSerializer(serializers.ModelSerializer):
 
 
         ]
+
+
+class ArtistProfileSerializer(serializers.ModelSerializer):
+    def get_skills(self, obj):
+        return [skill.name for skill in obj.skill.all()]
+    skills = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Artist
+        fields = [
+            'name',
+            'email',
+            'profile_pic',
+            'phone',
+            'skills',
+            'budget_range'
+        ]

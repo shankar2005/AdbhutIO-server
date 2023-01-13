@@ -88,10 +88,10 @@ HIRING_STATUS = (
 )
 
 BUDGET_RANGE = (
-    ('Less Than 10,000', '<10k'),
-    ('10K - 20k', '10k-20k'),
+    ('<10k', 'Less Than 10,000'),
+    ('10k-20k', '10K - 20k'),
     ('20K - 40k', '20k-40k'),
-    ('Above 40K', '>40k'),
+    ('>40k',   'Above 40K'),
 )
 
 
