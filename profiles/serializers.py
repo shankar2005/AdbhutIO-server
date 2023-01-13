@@ -44,9 +44,13 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         else:
             return []
 
+    def get_artistID(self, obj):
+        return obj.pk
+
     skills = serializers.SerializerMethodField()
     social = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
+    artistID = serializers.SerializerMethodField()
 
     class Meta:
         model = Artist
@@ -59,5 +63,6 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             'budget_range',
             'social',
             'has_manager',
-            "manager"
+            "manager",
+            "artistID"
         ]
