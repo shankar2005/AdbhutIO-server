@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 
 class WorkFeedSerializer(serializers.ModelSerializer):
     def get_skills(self, obj):
-        return [skill.name for skill in obj.skill.all()]
+        return [skill.name for skill in obj.owner.skill.all()]
     owner_name = serializers.SerializerMethodField()
     owner_id = serializers.SerializerMethodField()
     skills = serializers.SerializerMethodField()
