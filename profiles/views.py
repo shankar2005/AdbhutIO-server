@@ -19,20 +19,42 @@ class chatflowSkills(APIView):
         try:
             data = request.data
             artists = data['artists']
+            product = data['product']
 
-            skills = []
+            skills = {}
             possible_projects = []
-
+            # print intersecting skills of artists
             for artist in artists.split(','):
-                artist = Artist.objects.get(pk=artist)
-                for skill in artist.skill.all():
-                    skills.append([skill.name, skill.id])
-            for project in TemplateProjects .objects.all():
+                artist_skills = Artist.objects.get(pk=artist).skill.all()
+                for skill in artist_skills:
+                    if skill.name in skills:
+                        skills[skill.name] += 1
+                    else:
+                        skills[skill.name] = 1
 
-                for skill in project.skills.all():
-                    print(skill)
-                    if [skill.name, skill.id] in skills:
-                        possible_projects.append([project.name, project.id])
+            print(skills)
+
+            if product in [0, '0', None, '']:
+                skills = [[skill.name, skill.id] for skill in Skill.objects.all(
+                ) if skill.name in skills and skills[skill.name] == len(artists.split(','))]    
+                for project in TemplateProjects.objects.all():
+                    for skill in project.skills.all():
+                        if [skill.name, skill.id] in skills:
+                            possible_projects.append(
+                                [project.name, project.id])
+            else:
+                product = int(product)
+                for project in TemplateProjects.objects.filter(pk=product):
+                    for skill in project.skills.all():
+                        if skill.name in skills:
+                            skills[skill.name] += 1
+                        else:
+                            skills[skill.name] = 1
+
+                skills = [[skill.name, skill.id] for skill in Skill.objects.all(
+                ) if skill.name in skills and skills[skill.name] == len(artists.split(','))+1]
+                possible_projects = TemplateProjects.objects.filter(pk=product).values_list(
+                    'name', 'id')
 
             return Response({'skills': skills, 'projects': possible_projects}, status=status.HTTP_200_OK)
         except Exception as e:
