@@ -28,7 +28,10 @@ class chatflowSkills(APIView):
                 if product in [0, '0', None, '']:
                     return Response({'skills': [], 'projects': []}, status=status.HTTP_200_OK)
                 else:
-                    return Response({'skills': [], 'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
+                    print([skill.name, skill.id]
+                          for skill in TemplateProjects.objects.get(id=int(product)).skills.all())
+                    return Response({'skills': [
+                        [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()], 'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
             for artist in artists.split(','):
                 artist_skills = Artist.objects.get(pk=artist).skill.all()
                 for skill in artist_skills:
