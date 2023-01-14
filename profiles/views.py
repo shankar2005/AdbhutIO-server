@@ -20,8 +20,6 @@ class chatflowSkills(APIView):
             data = request.data
             artists = data['artists']
 
-            print(artists.split(','))
-
             skills = []
             possible_projects = []
 
@@ -39,7 +37,7 @@ class chatflowSkills(APIView):
             return Response({'skills': skills, 'projects': possible_projects}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
-            return Response({'error': 'Something went wrong'},
+            return Response({'error': 'Something went wrong', 'error_message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
