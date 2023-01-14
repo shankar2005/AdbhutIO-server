@@ -36,7 +36,7 @@ class chatflowSkills(APIView):
 
             if product in [0, '0', None, '']:
                 skills = [[skill.name, skill.id] for skill in Skill.objects.all(
-                ) if skill.name in skills and skills[skill.name] == len(artists.split(','))]    
+                ) if skill.name in skills and skills[skill.name] == len(artists.split(','))]
                 for project in TemplateProjects.objects.all():
                     for skill in project.skills.all():
                         if [skill.name, skill.id] in skills:
@@ -95,3 +95,11 @@ class ArtistViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         profile = Artist.objects.filter()
         return profile
+
+
+class TemplateProjectViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = TemplateProjectsSerializer
+
+    def get_queryset(self):
+        return TemplateProjects.objects.all()

@@ -108,3 +108,18 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "location",
             "language",
         ]
+
+
+class TemplateProjectsSerializer(serializers.ModelSerializer):
+    def get_skills(self, obj):
+        return [skill.name for skill in obj.skills.all()]
+    skills = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TemplateProjects
+        fields = [
+            'name',
+            'details',
+            'skills',
+            'pk'
+        ]

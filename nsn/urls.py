@@ -17,6 +17,7 @@ router.register('get_feed', WorkFeedViewSet, basename='get_feed')
 router.register('get_artist',
                 ArtistViewSet, basename='get_artist')
 router.register('get_skill', SkillViewSet, basename='get_skill')
+router.register('get_content_products', TemplateProjectViewSet, basename='get_project')
 
 
 urlpatterns = [
