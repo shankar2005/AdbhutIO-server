@@ -7,6 +7,40 @@ from .models import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django_filters import Filter
+from rest_framework.views import APIView
+from rest_framework import permissions, status
+import json
+
+
+class chatflowSkills(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        try:
+            data = request.data
+            artists = data['artists']
+
+            print(artists.split(','))
+
+            skills = []
+            possible_projects = []
+
+            for artist in artists.split(','):
+                artist = Artist.objects.get(pk=artist)
+                for skill in artist.skill.all():
+                    skills.append([skill.name, skill.id])
+            for project in TemplateProjects .objects.all():
+
+                for skill in project.skills.all():
+                    print(skill)
+                    if [skill.name, skill.id] in skills:
+                        possible_projects.append([project.name, project.id])
+
+            return Response({'skills': skills, 'projects': possible_projects}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'error': 'Something went wrong'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class WorkFeedViewSet(viewsets.ModelViewSet):

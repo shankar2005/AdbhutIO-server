@@ -14,6 +14,16 @@ def saveNameLocationForProfilePic(self, filename):
     return f'userdata/{self.name}_work_files/{filename}'
 
 
+class TemplateProjects(models.Model):
+    name = models.CharField(max_length=100, default='')
+    details = models.TextField(default='', blank=True)
+    skills = models.ManyToManyField(
+        Skill, default='', blank=True, related_name='%(class)s_Skill')
+
+    def __str__(self):
+        return self.name
+
+
 class Work(models.Model):
     name = models.CharField(max_length=100, default='')
     details = models.TextField(default='', blank=True)
