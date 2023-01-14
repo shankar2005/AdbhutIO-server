@@ -24,6 +24,11 @@ class chatflowSkills(APIView):
             skills = {}
             possible_projects = []
             # print intersecting skills of artists
+            if artists in [0, '0', None, '']:
+                if product in [0, '0', None, '']:
+                    return Response({'skills': [], 'projects': []}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'skills': [], 'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
             for artist in artists.split(','):
                 artist_skills = Artist.objects.get(pk=artist).skill.all()
                 for skill in artist_skills:
