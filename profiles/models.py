@@ -25,8 +25,8 @@ class TemplateProjects(models.Model):
 
 
 class Work(models.Model):
-    #name = models.CharField(max_length=100, default='', blank=True)
-    #details = models.TextField(default='', blank=True)
+    name = models.CharField(max_length=100, default='', blank=True)
+    details = models.TextField(default='', blank=True)
     weblink = models.URLField(max_length=100, default='', blank=True)
     show_in_top_feed = models.BooleanField(default=False)
     # skill = models.ManyToManyField(
