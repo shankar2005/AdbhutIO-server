@@ -25,8 +25,8 @@ class TemplateProjects(models.Model):
 
 
 class Work(models.Model):
-    name = models.CharField(max_length=100, default='', blank=True)
-    details = models.TextField(default='', blank=True)
+    #name = models.CharField(max_length=100, default='', blank=True)
+    #details = models.TextField(default='', blank=True)
     weblink = models.URLField(max_length=100, default='', blank=True)
     show_in_top_feed = models.BooleanField(default=False)
     # skill = models.ManyToManyField(
@@ -41,7 +41,7 @@ class Work(models.Model):
         max_length=100, default='', blank=True, choices=DEMO_TYPE)
 
     def __str__(self):
-        return self.name + ' - ' + self.owner.name
+        return self.owner.name + ' - ' + self.demo_type + ' - ' + ('Best Work ' if self.show_in_top_feed else 'Work_ID '+str(self.id))
 
 
 class Client(models.Model):
