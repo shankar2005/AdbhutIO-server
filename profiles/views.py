@@ -75,9 +75,10 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
     serializer_class = WorkFeedSerializer
     filter_backends = [DjangoFilterBackend,
                        filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['skill', 'demo_type', 'owner', 'show_in_top_feed']
-    skill = Filter(name="skill", lookup_type='in')
-    search_fields = ['name', 'owner__name', 'skill__name']
+    filterset_fields = ['demo_type',
+                        'owner', 'show_in_top_feed', 'owner__skill']
+
+    search_fields = ['name', 'owner__name', 'owner_skill__name']
     ordering_fields = '__all__'
 
     def get_queryset(self):
