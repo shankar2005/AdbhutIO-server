@@ -2,6 +2,7 @@ from django.contrib import admin
 
 
 class WorkAdmin(admin.ModelAdmin):
+
     fieldsets = [
         ("Work", {'fields': [
             "owner", "name",  ('show_in_top_feed', 'demo_type'), ("weblink",
@@ -11,6 +12,7 @@ class WorkAdmin(admin.ModelAdmin):
 
 
 class ClientAdmin(admin.ModelAdmin):
+    filter_horizontal = ('projects',)
     fieldsets = [
         ("Contact", {'fields': [
             "name", ("email"), 'user', "details",
@@ -27,6 +29,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 
 class ArtistAdmin(admin.ModelAdmin):
+    filter_horizontal = ('skill', 'genre', 'languages', 'works_links')
 
     fieldsets = [
         ("Contact", {'fields': [
@@ -111,6 +114,7 @@ class ProjectFeeAdmin(admin.ModelAdmin):
 
 
 class ArtistRequestAdmin(admin.ModelAdmin):
+    filter_horizontal = ('skill', 'genre', 'languages')
     fieldsets = [
         ("Brief", {'fields': [
             'skill', 'location', 'genre',  'language'

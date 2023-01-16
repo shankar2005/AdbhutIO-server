@@ -25,7 +25,7 @@ class TemplateProjects(models.Model):
 
 
 class Work(models.Model):
-    name = models.CharField(max_length=100, default='')
+    name = models.CharField(max_length=100, default='', blank=True)
     details = models.TextField(default='', blank=True)
     weblink = models.URLField(max_length=100, default='', blank=True)
     show_in_top_feed = models.BooleanField(default=False)
@@ -41,7 +41,7 @@ class Work(models.Model):
         max_length=100, default='', blank=True, choices=DEMO_TYPE)
 
     def __str__(self):
-        return self.name
+        return self.name + ' - ' + self.owner.name
 
 
 class Client(models.Model):
