@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
 
 
-    'django_extensions',
+    # 'django_extensions',
     'tinymce',
     'rest_framework.authtoken',
     'corsheaders',

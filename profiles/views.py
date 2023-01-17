@@ -84,7 +84,8 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
 
-        work = Work.objects.all().order_by('show_in_top_feed')
+        work = Work.objects.filter(
+            show_in_top_feed=True).order_by('show_in_top_feed')
 
         return work
 
