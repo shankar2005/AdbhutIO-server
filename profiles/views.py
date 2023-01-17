@@ -79,7 +79,7 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
                         'owner', 'show_in_top_feed', 'owner__skill', 'owner__skill__genres']
 
     search_fields = ['name', 'owner__name',
-                     'owner_skill__name', 'owner_skill__genre__name']
+                     'owner__skill__name', 'owner__skill__genres__name']
     ordering_fields = '__all__'
 
     def get_queryset(self):
