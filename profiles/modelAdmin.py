@@ -34,6 +34,7 @@ class ArtistAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Contact", {'fields': [
             ("name", "age"),
+            ('artist_intro'),
             ("email", "phone"),
             ("skill", "genre"),
             ("location", "languages"),

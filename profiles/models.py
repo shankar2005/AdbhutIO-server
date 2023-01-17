@@ -80,6 +80,7 @@ class Artist(models.Model):
     # Base
     name = models.CharField(max_length=100, default='')
     skill = models.ManyToManyField(Skill, default='', blank=True)
+    artist_intro = models.TextField(default='', blank=True)
     profile_pic = models.ImageField(
         upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
     location = models.ForeignKey(

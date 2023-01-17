@@ -18,3 +18,18 @@ class SkillViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         skill = Skill.objects.filter()
         return skill
+
+
+class LocationViewSet(viewsets.ModelViewSet):
+    serializer_class = LocationSerializer
+
+    def get_queryset(self):
+        location = Location.objects.filter()
+        return location
+
+class GenreViewSet(viewsets.ModelViewSet):
+    serializer_class = GenreSerializer
+
+    def get_queryset(self):
+        genre = Genre.objects.filter()
+        return genre
