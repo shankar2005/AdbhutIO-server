@@ -39,8 +39,7 @@ class chatflowSkills(APIView):
             print(skills)
 
             if product in [0, '0', None, '']:
-                skills = [[skill.name, skill.id] for skill in Skill.objects.all(
-                ) if skill.name in skills]
+
                 for project in TemplateProjects.objects.all():
                     for skill in project.skills.all():
                         if [skill.name, skill.id] in skills:
