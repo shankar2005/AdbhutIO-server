@@ -13,6 +13,6 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(ProjectFee,  ProjectFeeAdmin)
 admin.site.register(ArtistRequest, ArtistRequestAdmin)
 
-admin.site.register(TemplateProjects)
+admin.site.register(TemplateProjects, TemplateProjectsAdmin)
 
 admin.site.register(Manager)

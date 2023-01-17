@@ -1,6 +1,16 @@
 from django.contrib import admin
 
 
+class TemplateProjectsAdmin(admin.ModelAdmin):
+    filter_horizontal = ('skills',)
+    fieldsets = [
+        ("Work", {'fields': [
+            "name",  'details', "skills"
+
+        ]})
+    ]
+
+
 class WorkAdmin(admin.ModelAdmin):
 
     fieldsets = [
