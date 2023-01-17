@@ -76,9 +76,10 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend,
                        filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['demo_type',
-                        'owner', 'show_in_top_feed', 'owner__skill']
+                        'owner', 'show_in_top_feed', 'owner__skill', 'owner__skill__genres']
 
-    search_fields = ['name', 'owner__name', 'owner_skill__name']
+    search_fields = ['name', 'owner__name',
+                     'owner_skill__name', 'owner_skill__genre__name']
     ordering_fields = '__all__'
 
     def get_queryset(self):
