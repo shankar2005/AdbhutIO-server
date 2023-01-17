@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     # Custom apps
     'rest_framework',
     'django_filters',
+
+
+    'django_extensions',
     'tinymce',
     'rest_framework.authtoken',
     'corsheaders',
