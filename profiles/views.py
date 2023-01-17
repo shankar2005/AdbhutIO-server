@@ -21,23 +21,20 @@ class chatflowSkills(APIView):
             artists = data['artists']
             product = data['product']
 
-            skills = {}
+            skills = []
             possible_projects = []
             # print intersecting skills of artists
             if artists in [0, '0', None, '']:
                 if product in [0, '0', None, '']:
                     return Response({'skills': [], 'projects': []}, status=status.HTTP_200_OK)
                 else:
-
                     return Response({'skills': [
                         [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()], 'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
             for artist in artists.split(','):
                 artist_skills = Artist.objects.get(pk=artist).skill.all()
                 for skill in artist_skills:
-                    if skill.name in skills:
-                        skills[skill.name] += 1
-                    else:
-                        skills[skill.name] = 1
+                    if [skill.name, skill.id] not in skills:
+                        skills.append([skill.name, skill.id])
 
             print(skills)
 
@@ -50,18 +47,8 @@ class chatflowSkills(APIView):
                             possible_projects.append(
                                 [project.name, project.id])
             else:
-                product = int(product)
-                for project in TemplateProjects.objects.filter(pk=product):
-                    for skill in project.skills.all():
-                        if skill.name in skills:
-                            skills[skill.name] += 1
-                        else:
-                            skills[skill.name] = 1
-
-                skills = [[skill.name, skill.id] for skill in Skill.objects.all(
-                ) if skill.name in skills and skills[skill.name] == len(artists.split(','))+1]
-                possible_projects = TemplateProjects.objects.filter(pk=product).values_list(
-                    'name', 'id')
+                return Response({'skills': [
+                    [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()], 'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
 
             return Response({'skills': skills, 'projects': possible_projects}, status=status.HTTP_200_OK)
         except Exception as e:
