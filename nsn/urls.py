@@ -17,7 +17,11 @@ router.register('get_feed', WorkFeedViewSet, basename='get_feed')
 router.register('get_artist',
                 ArtistViewSet, basename='get_artist')
 router.register('get_skill', SkillViewSet, basename='get_skill')
-router.register('get_content_products', TemplateProjectViewSet, basename='get_project')
+router.register('get_content_products',
+                TemplateProjectViewSet, basename='get_project')
+router.register('get_my_projects', MyProjectsViewSet,
+                basename='get_my_projects')
+router.register('edit_project', EditProjectViewSet, basename='edit_project')
 
 
 urlpatterns = [
@@ -27,8 +31,7 @@ urlpatterns = [
     path('api/v1/auth/login/', csrf_exempt(ObtainAuthToken.as_view())),
     path('api/v1/auth/verify/', ValidateToken.as_view()),
     path('api/v1/auth/register/', RegisterUserView.as_view()),
-
-
+    path('api/v1/create_project/', CreateProjectView.as_view()),
 
     # Admin URLs
     path('admin/', admin.site.urls),

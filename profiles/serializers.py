@@ -85,8 +85,9 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 
     def get_artistID(self, obj):
         return obj.pk
+
     def get_workLinks(self, obj):
-        return [ [work.weblink, work.demo_type, work.id] for work in obj.works_links.all()]
+        return [[work.weblink, work.demo_type, work.id] for work in obj.works_links.all()]
 
     skills = serializers.SerializerMethodField()
     social = serializers.SerializerMethodField()
@@ -111,6 +112,39 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "location",
             "language",
             "workLinks"
+        ]
+
+
+class ProjectSerializerMini(serializers.ModelSerializer):
+
+    template = serializers.SerializerMethodField()
+
+    def get_template(self, obj):
+        return [obj.project_template.id,  obj.project_template.name]
+
+    class Meta:
+        model = Project
+        fields = [
+            'stage',
+            'template',
+            'pk'
+        ]
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    template = serializers.SerializerMethodField()
+
+    def get_template(self, obj):
+        return [obj.project_template.id,  obj.project_template.name]
+
+    class Meta:
+        model = Project
+        fields = [
+            'stage',
+            'brief',
+            'template',
+            'shortlisted_artists',
+            'pk'
         ]
 
 

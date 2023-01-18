@@ -54,6 +54,7 @@ PROJECT_DEMO_STATUS = (
 
 
 PROJECT_STAGE = (
+    ('DreamProject', 'DreamProject'),
     ('Lead', 'Lead'),
     ('In Progress',   'In Progress'),
     ('Halt', 'Halt'),

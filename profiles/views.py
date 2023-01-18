@@ -56,6 +56,48 @@ class chatflowSkills(APIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class CreateProjectView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        try:
+            data = request.data
+            artists = data['shortlisted_artists']
+            product = data['product']
+            brief = data['brief']
+            stage = data['stage']
+
+            print(brief)
+            print(artists)
+            print(product)
+            print(stage)
+
+            if artists in [0, '0', None, '']:
+                return Response({'error': 'Please select an artist'}, status=status.HTTP_200_OK)
+            if product in [0, '0', None, '']:
+                return Response({'error': 'Please select a product'}, status=status.HTTP_200_OK)
+            if brief in [0, '0', None, '']:
+                return Response({'error': 'Please send a brief message '}, status=status.HTTP_200_OK)
+
+            # create project
+            project = TemplateProjects.objects.get(pk=product)
+            new_project = Project.objects.create(
+                stage=stage,
+                brief=brief, project_template=project, client=Client.objects.get(user=request.user))
+
+            # add artists
+            for artist in artists:
+                new_project.shortlisted_artists.add(
+                    Artist.objects.get(pk=artist))
+
+            new_project.save()
+            return Response({'success': 'Project created successfully'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({'error': 'Something went wrong', 'error_message': str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class WorkFeedViewSet(viewsets.ModelViewSet):
     serializer_class = WorkFeedSerializer
     filter_backends = [DjangoFilterBackend,
@@ -99,3 +141,19 @@ class TemplateProjectViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return TemplateProjects.objects.all()
+
+
+class MyProjectsViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ProjectSerializerMini
+
+    def get_queryset(self):
+        return Project.objects.filter(client__user=self.request.user)
+
+
+class EditProjectViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        return Project.objects.filter(client__user=self.request.user, pk=self.kwargs['pk'])

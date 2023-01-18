@@ -89,6 +89,9 @@ class ProjectDemoAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(admin.ModelAdmin):
+    filter_horizontal = ('shortlisted_artists',
+                         'assigned_artists', 'showcase_demos', 'project_demos')
+
     fieldSets = [
         ("Brief", {'fields': [
             'client', 'stage', 'brief', 'production_solution', 'comments'
