@@ -67,11 +67,6 @@ class CreateProjectView(APIView):
             brief = data['brief']
             stage = data['stage']
 
-            print(brief)
-            print(artists)
-            print(product)
-            print(stage)
-
             if artists in [0, '0', None, '']:
                 return Response({'error': 'Please select an artist'}, status=status.HTTP_200_OK)
             if product in [0, '0', None, '']:
