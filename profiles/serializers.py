@@ -85,12 +85,15 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 
     def get_artistID(self, obj):
         return obj.pk
+    def get_workLinks(self, obj):
+        return [ [work.weblink, work.demo_type, work.id] for work in obj.works_links.all()]
 
     skills = serializers.SerializerMethodField()
     social = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
     artistID = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
+    workLinks = serializers.SerializerMethodField()
 
     class Meta:
         model = Artist
@@ -107,6 +110,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "artistID",
             "location",
             "language",
+            "workLinks"
         ]
 
 
