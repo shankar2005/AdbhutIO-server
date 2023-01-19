@@ -118,15 +118,20 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 class ProjectSerializerMini(serializers.ModelSerializer):
 
     template = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
     def get_template(self, obj):
         return [obj.project_template.id,  obj.project_template.name]
+
+    def get_name(self, obj):
+        return obj.project_template.name + " - " + obj.stage + "-" + str(obj.id)
 
     class Meta:
         model = Project
         fields = [
             'stage',
             'template',
+            'name',
             'pk'
         ]
 
