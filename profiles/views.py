@@ -10,6 +10,7 @@ from django_filters import Filter
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 import json
+from rest_framework.pagination import PageNumberPagination
 
 
 class chatflowSkills(APIView):
@@ -93,7 +94,14 @@ class CreateProjectView(APIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
 class WorkFeedViewSet(viewsets.ModelViewSet):
+    pagination_class = StandardResultsSetPagination
     serializer_class = WorkFeedSerializer
     filter_backends = [DjangoFilterBackend,
                        filters.SearchFilter, filters.OrderingFilter]
