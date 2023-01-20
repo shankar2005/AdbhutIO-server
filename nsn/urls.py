@@ -21,6 +21,8 @@ router.register('get_content_products',
                 TemplateProjectViewSet, basename='get_project')
 router.register('get_my_projects', MyProjectsViewSet,
                 basename='get_my_projects')
+router.register('get_dreamproject', GetDreamProjectViewSet,
+                basename='get_dreamproject')
 router.register('edit_project', EditProjectViewSet, basename='edit_project')
 
 

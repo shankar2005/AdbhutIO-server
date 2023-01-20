@@ -151,7 +151,15 @@ class MyProjectsViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        return Project.objects.filter(client__user=self.request.user)
+        return Project.objects.filter(client__user=self.request.user, stage='Lead')
+
+
+class GetDreamProjectViewSet(viewsets.ModelViewSet):
+
+    serializer_class = ProjectSerializerMini
+
+    def get_queryset(self):
+        return Project.objects.filter(stage='DreamProject')
 
 
 class EditProjectViewSet(viewsets.ModelViewSet):
