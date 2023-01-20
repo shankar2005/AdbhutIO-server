@@ -120,6 +120,27 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
         return work
 
 
+class GetRecommendationsViewSet(viewsets.ModelViewSet):
+    pagination_class = StandardResultsSetPagination
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = WorkFeedSerializer
+    filter_backends = [DjangoFilterBackend,
+                       filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['demo_type',
+                        'owner', 'show_in_top_feed', 'owner__skill', 'owner__skill__genres', 'owner__location']
+
+    search_fields = ['name', 'owner__name',
+                     'owner__skill__name', 'owner__skill__genres__name']
+    ordering_fields = '__all__'
+
+    def get_queryset(self):
+
+        work = Work.objects.filter(
+            owner__in=Client.objects.get(user=self.request.user).recommended_artists.all()).order_by('show_in_top_feed')
+
+        return work
+
+
 class ArtistViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistProfileSerializer
 

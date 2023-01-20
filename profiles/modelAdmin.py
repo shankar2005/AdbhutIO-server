@@ -22,7 +22,7 @@ class WorkAdmin(admin.ModelAdmin):
 
 
 class ClientAdmin(admin.ModelAdmin):
-    filter_horizontal = ('projects',)
+    filter_horizontal = ('projects', 'recommended_artists')
     fieldsets = [
         ("Contact", {'fields': [
             "name", ("email"), 'user', "details",
@@ -33,7 +33,7 @@ class ClientAdmin(admin.ModelAdmin):
             'projects', 'client_previous_payout',
             'production_suggested_project_advance', 'latest_project_advance',
             'latest_client_payout_status', 'total_client_payout',
-            'contract_document_signing_status',
+            'contract_document_signing_status', 'recommended_artists'
         ]}),
     ]
 

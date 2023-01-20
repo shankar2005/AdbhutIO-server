@@ -17,7 +17,7 @@ default_storage = get_storage_class()()
 
 @receiver(post_save, sender=User)
 def post_save_create_client(sender, instance, created, **kwargs):
-    print("kjsdfkdfj")
+
     if created:
         Client.objects.create(
             user=instance,

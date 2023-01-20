@@ -57,6 +57,8 @@ class Client(models.Model):
     # Eother
     projects = models.ManyToManyField(
         'Project', default='', blank=True, related_name='client_projects')
+    recommended_artists = models.ManyToManyField(
+        'Artist', default='', blank=True, related_name='client_recommended_artists')
 
     # Gray   Man
     client_previous_payout = models.IntegerField(default=0, blank=True)
