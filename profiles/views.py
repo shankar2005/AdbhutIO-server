@@ -113,7 +113,7 @@ class CreateProjectView(APIView):
             
             project = get_object_or_404(Project,id = project_id)
             brief = project.brief[:-1]
-            brief += f',{message}]'
+            brief += f",{json.dumps(message)}]"
             project.brief = brief
             project.save()
 
