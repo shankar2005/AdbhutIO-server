@@ -33,11 +33,10 @@ class WorkFeedSerializer(serializers.ModelSerializer):
             'name',
             'skills',
             'pk'
-
-
         ]
 
 
+# update the artist
 class ArtistProfileSerializer(serializers.ModelSerializer):
     def get_skills(self, obj):
         return [skill.name for skill in obj.skill.all()]
@@ -88,6 +87,11 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 
     def get_workLinks(self, obj):
         return [[work.weblink, work.demo_type, work.id] for work in obj.works_links.all()]
+    
+    def get_location_name(self,obj):
+        if obj.location is not None:
+            return obj.location.name
+        return None
 
     skills = serializers.SerializerMethodField()
     social = serializers.SerializerMethodField()
@@ -95,6 +99,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     artistID = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
     workLinks = serializers.SerializerMethodField()
+    location_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Artist
@@ -110,6 +115,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "manager",
             "artistID",
             "location",
+            "location_name",
             "language",
             "workLinks"
         ]

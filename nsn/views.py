@@ -26,8 +26,7 @@ class RegisterUserView(APIView):
                 return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
             if password != password2:
-                return Response({'error': 'Passwords do not match'},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Passwords do not match'},status=status.HTTP_400_BAD_REQUEST)
 
             if User.objects.filter(username=username).exists():
                 return Response({'error': 'Username already exists'},)
@@ -60,38 +59,30 @@ class RegisterUserView(APIView):
                         #user.email_user(subject, message)
 
                         if User.objects.filter(username=username).exists():
-                            return Response({'success': 'User created successfully'},
-                                            status=status.HTTP_201_CREATED)
+                            return Response({'success': 'User created successfully'},status=status.HTTP_201_CREATED)
                     else:
-                        return Response({'error': 'User already exists'},
-                                        status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'error': 'User already exists'},status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response({'error': 'Password must be at least 8 characters'},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'error': 'Password must be at least 8 characters'},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(e)
-            return Response({'error': 'Something went wrong'},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': 'Something went wrong'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ValidateToken(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
-
         data = request.data
-
         token = data['token']
 
         if Token.objects.filter(key=token).exists():
             return Response({
                 'status': 'success',
                 'msg': 'Token is valid',
-            },
-                status=status.HTTP_200_OK)
+            },status=status.HTTP_200_OK)
         else:
             return Response({
                 'status': 'failed',
                 'msg': 'Token is invalid',
-            },
-                status=status.HTTP_400_BAD_REQUEST)
+            },status=status.HTTP_400_BAD_REQUEST)
