@@ -49,16 +49,13 @@ class Client(models.Model):
     details = models.TextField(default='', blank=True)
 
     # Login details
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(default='', blank=True)
     email_confirmed = models.BooleanField(default=False)
 
     # Eother
-    projects = models.ManyToManyField(
-        'Project', default='', blank=True, related_name='client_projects')
-    recommended_artists = models.ManyToManyField(
-        'Artist', default='', blank=True, related_name='client_recommended_artists')
+    projects = models.ManyToManyField('Project', default='', blank=True, related_name='client_projects')
+    recommended_artists = models.ManyToManyField('Artist', default='', blank=True, related_name='client_recommended_artists')
 
     # Gray   Man
     client_previous_payout = models.IntegerField(default=0, blank=True)
@@ -85,8 +82,7 @@ class Artist(models.Model):
     artist_intro = models.TextField(default='', blank=True)
     profile_pic = models.ImageField(
         upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
-    location = models.ForeignKey(
-        Location, on_delete=models.SET_NULL, null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
     languages = models.ManyToManyField(Language, default='', blank=True)
     age = models.IntegerField(default=0)
     genre = models.ManyToManyField(Genre, default='', blank=True)
@@ -145,12 +141,9 @@ class ProjectDemo (models.Model):
 
 
 class Project(models.Model):
-    client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, default='', blank=True, null=True,   related_name='%(class)s_Artist')
-    stage = models.CharField(
-        max_length=100, default='', blank=True,  choices=PROJECT_STAGE)
-    project_template = models.ForeignKey(
-        TemplateProjects, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_TemplateProjects_relation')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, default='', blank=True, null=True,   related_name='%(class)s_Artist')
+    stage = models.CharField(max_length=100, default='', blank=True,  choices=PROJECT_STAGE)
+    project_template = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_TemplateProjects_relation')
 
     brief = models.TextField(default='', blank=True)
     production_solution = models.TextField(default='', blank=True)
@@ -160,15 +153,13 @@ class Project(models.Model):
         Artist, default='', blank=True, related_name='%(class)s_shortlistedArtist')
     assigned_artists = models.ManyToManyField(
         Artist, default='', blank=True, related_name='%(class)s_AssignedArtist')
-    showcase_demos = models.ManyToManyField(
-        Work, default='', blank=True)
+    showcase_demos = models.ManyToManyField(Work, default='', blank=True)
 
     project_demos = models.ManyToManyField(
         ProjectDemo, default='', blank=True, related_name='%(class)s_ProjectDemo')
 
     post_project_client_feedback = models.TextField(default='', blank=True)
-    project_fee_Status = models.CharField(
-        max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
+    project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
 
     contract_status = models.BooleanField(default=False, blank=True)
     # project tracking stuff here

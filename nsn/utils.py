@@ -1,9 +1,7 @@
-
 import json
 
 
 def processChatbotData(data):
-
     nodes = data['nodes']
     edges = data['edges']
     details = data['details']

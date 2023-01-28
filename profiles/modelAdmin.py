@@ -15,8 +15,9 @@ class WorkAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ("Work", {'fields': [
-            "owner",  ('show_in_top_feed', 'demo_type'), ("weblink",
-                                                          "file"), "is_demo", "from_client", "is_active",
+            "owner",  ('show_in_top_feed', 'demo_type'),
+             ("weblink","file"), 
+             "is_demo", "from_client", "is_active",
         ]})
     ]
 
@@ -115,8 +116,6 @@ class ProjectFeeAdmin(admin.ModelAdmin):
         ("Info", {'fields': [
             'production_advance', 'negotiated_advance', 'final_advance',
             'post_project_client_total_payout'
-
-
         ]}),
         ('status', {
             'fields': [
@@ -138,11 +137,5 @@ class ArtistRequestAdmin(admin.ModelAdmin):
             'production_hiring', 'service_hiring', 'shortlisted_artists', 'rejected_artists',
             'target', 'comments',  'hiring_status'
         ]})
-
-
-
-
-
-
 
     ]

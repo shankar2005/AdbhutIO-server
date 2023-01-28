@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 
 
 def TokenLoginConfirm(request):
-    if (request.method == "GET"):
+    if request.method == "GET":
         request.user.is_active = True
         request.user.profile.email_confirmed = True
         request.user.save()

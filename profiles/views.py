@@ -2,15 +2,20 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import routers, serializers, viewsets, generics
-from .serializers import *
-from .models import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django_filters import Filter
 from rest_framework.views import APIView
 from rest_framework import permissions, status
-import json
 from rest_framework.pagination import PageNumberPagination
+import json
+from django.shortcuts import get_object_or_404
+
+# serializers
+from .serializers import *
+
+# models
+from .models import *
 
 
 class chatflowSkills(APIView):
@@ -30,7 +35,9 @@ class chatflowSkills(APIView):
                     return Response({'skills': [], 'projects': []}, status=status.HTTP_200_OK)
                 else:
                     return Response({'skills': [
-                        [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()], 'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
+                        [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()],
+                         'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')},
+                          status=status.HTTP_200_OK)
             for artist in artists.split(','):
                 artist_skills = Artist.objects.get(pk=artist).skill.all()
                 for skill in artist_skills:
@@ -48,7 +55,8 @@ class chatflowSkills(APIView):
                                 [project.name, project.id])
             else:
                 return Response({'skills': [
-                    [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()], 'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
+                    [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()],
+                     'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
 
             return Response({'skills': skills, 'projects': possible_projects}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -57,6 +65,7 @@ class chatflowSkills(APIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# create project api
 class CreateProjectView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -79,17 +88,40 @@ class CreateProjectView(APIView):
             project = TemplateProjects.objects.get(pk=product)
             new_project = Project.objects.create(
                 stage=stage,
-                brief=brief, project_template=project, client=Client.objects.get(user=request.user))
+                brief=brief, 
+                project_template=project, 
+                client=Client.objects.get(user=request.user))
 
             # add artists
             for artist in artists:
-                new_project.shortlisted_artists.add(
-                    Artist.objects.get(pk=artist))
+                new_project.shortlisted_artists.add(Artist.objects.get(pk=artist))
 
             new_project.save()
             return Response({'success': 'Project created successfully'}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
+            return Response({'error': 'Something went wrong', 'error_message': str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def patch(self,request,*args, **kwargs):
+        try:
+            message = request.data['message']
+            project_id = request.data['project_id']
+
+            if not Project.objects.filter(id = project_id).exists():
+                return Response({'error':'please send the proper project id'},status=status.HTTP_400_BAD_REQUEST)
+            
+            project = get_object_or_404(Project,id = project_id)
+            brief = project.brief[:-1]
+            brief += f',{message}]'
+            project.brief = brief
+            project.save()
+
+            project_serializer = ProjectSerializer(instance=project,many = False)
+            return Response({'project':project_serializer.data,'success':'Project is updated!'},
+            status=status.HTTP_200_OK)
+
+        except Exception as e:
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -120,8 +152,13 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
         return work
 
 
+class RecommendedResultsSetPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class GetRecommendationsViewSet(viewsets.ModelViewSet):
-    pagination_class = StandardResultsSetPagination
+    pagination_class = RecommendedResultsSetPagination
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = WorkFeedSerializer
     filter_backends = [DjangoFilterBackend,
@@ -176,7 +213,6 @@ class MyProjectsViewSet(viewsets.ModelViewSet):
 
 
 class GetDreamProjectViewSet(viewsets.ModelViewSet):
-
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
