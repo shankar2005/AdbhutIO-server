@@ -146,7 +146,9 @@ class ProjectSerializer(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
 
     def get_template(self, obj):
-        return [obj.project_template.id,  obj.project_template.name]
+        if obj.project_template is not None:
+            return [obj.project_template.id,  obj.project_template.name]
+        return None
 
     class Meta:
         model = Project
