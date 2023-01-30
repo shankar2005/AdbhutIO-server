@@ -165,9 +165,9 @@ class Project(models.Model):
     # project tracking stuff here
 
     def __str__(self):
-        return self.client.name + "--" + " Project" + "--" + self.stage
+        return str(self.client and self.client.name) + "--" + " Project" + "--" + self.stage
 
-
+    
 class ProjectFee(models.Model):
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='ProjectFee_to_Project_relation')
