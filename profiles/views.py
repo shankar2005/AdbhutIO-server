@@ -222,7 +222,14 @@ class GetDreamProjectViewSet(viewsets.ModelViewSet):
 class EditProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+    
+    def get_queryset(self):
+        try:
+            if not self.request.user.is_anonymous:
+                return get_object_or_404(Project,pk=pk,client__user=self.request.user)
+            return Project.objects.filter(stage='DreamProject')
+        except Exception as e:
+            return None
 
     def retrieve(self, request, pk=None):
         try:
