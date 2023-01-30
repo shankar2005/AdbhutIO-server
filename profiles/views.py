@@ -10,6 +10,7 @@ from rest_framework import permissions, status
 from rest_framework.pagination import PageNumberPagination
 import json
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import AnonymousUser
 
 # serializers
 from .serializers import *
@@ -108,12 +109,13 @@ class CreateProjectView(APIView):
             message = request.data['message']
             project_id = request.data['project_id']
 
+
             if not Project.objects.filter(id = project_id).exists():
                 return Response({'error':'please send the proper project id'},status=status.HTTP_400_BAD_REQUEST)
             
             project = get_object_or_404(Project,id = project_id)
             brief = project.brief[:-1]
-            brief += f',{message}]'
+            brief += f",{json.dumps(message)}]"
             project.brief = brief
             project.save()
 
@@ -220,8 +222,76 @@ class GetDreamProjectViewSet(viewsets.ModelViewSet):
 
 
 class EditProjectViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
     serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
 
-    def get_queryset(self):
-        return Project.objects.filter(client__user=self.request.user, pk=self.kwargs['pk'])
+    def retrieve(self, request, pk=None):
+        try:
+            if pk is None:
+                return Response({'error':'Please send the id.'},status=status.HTTP_400_BAD_REQUEST)
+            if Project.objects.filter(pk=pk).exists():
+                project = Project.objects.get(pk=pk)
+                if project.stage == 'DreamProject':
+                    return Response(self.serializer_class(project).data,status=status.HTTP_200_OK)
+                else:
+                    if not request.user.is_anonymous:
+                        project = get_object_or_404(Project,pk=pk,client__user=self.request.user)
+                        return Response(self.serializer_class(project).data,status=status.HTTP_200_OK)
+
+            return Response({'error':'user is not logged in or project is not dream project'},
+                            status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': 'Something went wrong', 'error_message': str(e)},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def update(self, request, pk=None):
+        try:
+            if pk is None:
+                return Response({'error':'Please send the id.'},status=status.HTTP_400_BAD_REQUEST)
+            if Project.objects.filter(pk=pk).exists():
+                project = Project.objects.get(pk=pk)
+                if project.stage == 'DreamProject':
+                    project_serializer = ProjectSerializer(instance=project,data = request.data)
+                    if project_serializer.is_valid():
+                        project_serializer.save()
+                        return Response(project_serializer.data,status=status.HTTP_200_OK)
+                    return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+                else:
+                    if not request.user.is_anonymous:
+                        project = get_object_or_404(Project,pk=pk,client__user=self.request.user)
+                        project_serializer = ProjectSerializer(instance=project,data = request.data)
+                        if project_serializer.is_valid():
+                            project_serializer.save()
+                            return Response(project_serializer.data,status=status.HTTP_200_OK)
+                        return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'user is not logged in or project is not dream project', 
+                             'error_message': str(e)},status=status.HTTP_404_NOT_FOUND)
+    
+    def partial_update(self, request, pk=None):
+        try:
+            if pk is None:
+                return Response({'error':'Please send the id.'},status=status.HTTP_400_BAD_REQUEST)
+            if Project.objects.filter(pk=pk).exists():
+                project = Project.objects.get(pk=pk)
+                if project.stage == 'DreamProject':
+                    project_serializer = ProjectSerializer(instance=project,data = request.data)
+                    if project_serializer.is_valid():
+                        project_serializer.save()
+                        return Response(project_serializer.data,status=status.HTTP_200_OK)
+                    return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+                else:
+                    if not request.user.is_anonymous:
+                        project = get_object_or_404(Project,pk=pk,client__user=self.request.user)
+                        project_serializer = ProjectSerializer(instance=project,data = request.data)
+                        if project_serializer.is_valid():
+                            project_serializer.save()
+                            return Response(project_serializer.data,status=status.HTTP_200_OK)
+                        return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'user is not logged in or project is not dream project', 
+                             'error_message': str(e)},status=status.HTTP_404_NOT_FOUND)
+
+        
+
