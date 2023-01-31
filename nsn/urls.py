@@ -23,6 +23,12 @@ router.register('get_recommendations',GetRecommendationsViewSet, 'get_recommenda
 router.register('edit_project', EditProjectViewSet, basename='edit_project')
 
 
+# ==================== product manager urls ==========================
+router.register('artist_feedback_action', ArtistFeedBackViewSet,basename='artist_feedback')
+router.register('project_fee_actions', ProjectFeeViewSet,basename='project_fee')
+router.register('artist_request_action', ArtistRequestViewSet,basename='artist_request')
+
+
 urlpatterns = [
     path('', include('profiles.urls')),
     path('api/v1/', include(router.urls)),
