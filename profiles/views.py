@@ -208,7 +208,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
             if not self.request.user.is_anonymous:
-                return get_object_or_404(Project,pk=pk,client__user=self.request.user)
+                return Project.objects.filter(client__user=self.request.user)
             return Project.objects.filter(stage='DreamProject')
         except Exception as e:
             return None
@@ -278,6 +278,21 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                         return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': 'user is not logged in or project is not dream project', 
+                             'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
+
+
+# ====================== delete project api ==============================
+class ProjectDeleteViewSet(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def delete(self,request,pk,format=None):
+        try:
+            if not Project.objects.filter(id = pk).exists():
+                return Response({'error':'project Not Found'},status=status.HTTP_404_NOT_FOUND)
+            project = get_object_or_404(Project,id = pk)
+            project.delete()
+            return Response({'message':'project is deleted'},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'something went wrong', 
                              'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
 
 
