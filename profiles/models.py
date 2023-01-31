@@ -32,13 +32,11 @@ class Work(models.Model):
     # skill = models.ManyToManyField(
     #    Skill, default='', blank=True, related_name='%(class)s_Skill')
     is_demo = models.BooleanField(default=False)
-    owner = models.ForeignKey(
-        'Artist', on_delete=models.CASCADE, default='',      related_name='%(class)s_Artist')
+    owner = models.ForeignKey('Artist', on_delete=models.CASCADE, default='',related_name='%(class)s_Artist')
     from_client = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     file = models.FileField(upload_to='work_files', default='', blank=True)
-    demo_type = models.CharField(
-        max_length=100, default='', blank=True, choices=DEMO_TYPE)
+    demo_type = models.CharField(max_length=100, default='', blank=True, choices=DEMO_TYPE)
 
     def __str__(self):
         return self.owner.name + ' - ' + self.demo_type + ' - ' + ('Best Work ' if self.show_in_top_feed else 'Work_ID '+str(self.id))
@@ -144,14 +142,14 @@ class Project(models.Model):
     title = models.CharField(max_length=500,null=True,blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, default='', blank=True, null=True,   related_name='%(class)s_Artist')
     stage = models.CharField(max_length=100, default='', blank=True,  choices=PROJECT_STAGE)
-    project_template = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_TemplateProjects_relation')
+    project_template = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE, default='', 
+    blank=True, null=True, related_name='%(class)s_to_TemplateProjects_relation')
 
     brief = models.TextField(default='', blank=True)
     production_solution = models.TextField(default='', blank=True)
     comments = models.TextField(default='', blank=True)
 
-    shortlisted_artists = models.ManyToManyField(
-        Artist, default='', blank=True, related_name='%(class)s_shortlistedArtist')
+    shortlisted_artists = models.ManyToManyField(Artist, default='', blank=True, related_name='%(class)s_shortlistedArtist')
     assigned_artists = models.ManyToManyField(
         Artist, default='', blank=True, related_name='%(class)s_AssignedArtist')
     showcase_demos = models.ManyToManyField(Work, default='', blank=True)
@@ -166,7 +164,7 @@ class Project(models.Model):
     # project tracking stuff here
 
     def __str__(self):
-        return str(self.client and self.client.name) + "--" + " Project" + "--" + self.stage
+        return str(self.project_template.name) + " - " + self.stage + " - " + str(self.id)
 
     
 class ProjectFee(models.Model):
