@@ -141,6 +141,7 @@ class ProjectDemo (models.Model):
 
 
 class Project(models.Model):
+    title = models.CharField(max_length=500,null=True,blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, default='', blank=True, null=True,   related_name='%(class)s_Artist')
     stage = models.CharField(max_length=100, default='', blank=True,  choices=PROJECT_STAGE)
     project_template = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_TemplateProjects_relation')
