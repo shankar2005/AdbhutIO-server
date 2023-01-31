@@ -59,6 +59,7 @@ class ProjectSerializerMini(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
     client_details = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -69,9 +70,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         if obj.client is not None:
             return {'id':obj.client.id,'name':obj.client.name,'email':obj.client.name}
 
+    def get_name(self, obj):
+        return obj.project_template.name + " - " + obj.stage + " - " + str(obj.id)
+
     class Meta:
         model = Project
         fields = [
+            'name',
             'title',
             'client',
             'client_details',
@@ -80,6 +85,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'template',
             'shortlisted_artists',
             'production_solution',
+            'project_template',
             'pk'
         ]
 
