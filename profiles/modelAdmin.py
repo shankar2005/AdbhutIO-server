@@ -130,7 +130,7 @@ class ArtistRequestAdmin(admin.ModelAdmin):
     filter_horizontal = ('skill', 'genre', 'languages')
     fieldsets = [
         ("Brief", {'fields': [
-            'skill', 'location', 'genre',  'language'
+            'skill', 'location', 'genre',  'languages'
         ]}),
         ("Details", {'fields': [
             'other_performin_arts', 'budget_idea', 'budget_range', 'project',

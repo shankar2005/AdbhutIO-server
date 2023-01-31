@@ -22,7 +22,6 @@ class SkillSerializer(serializers.ModelSerializer):
             'pk'
         ]
 
-
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location

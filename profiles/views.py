@@ -180,24 +180,6 @@ class GetRecommendationsViewSet(viewsets.ModelViewSet):
         return work
 
 
-class ArtistViewSet(viewsets.ModelViewSet):
-    serializer_class = ArtistProfileSerializer
-
-    filter_backends = [DjangoFilterBackend,
-                       filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['skill', 'languages', 'location']
-    skill = Filter(name="skill", lookup_type='in')
-    language = Filter(name="languages", lookup_type='in')
-
-    search_fields = ['name', 'location__name',
-                     'skill__name', 'languages__name']
-    ordering_fields = '__all__'
-
-    def get_queryset(self):
-        profile = Artist.objects.filter()
-        return profile
-
-
 class TemplateProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = TemplateProjectsSerializer
@@ -224,7 +206,14 @@ class GetDreamProjectViewSet(viewsets.ModelViewSet):
 class EditProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+
+    def get_queryset(self):
+        try:
+            if not self.request.user.is_anonymous:
+                return get_object_or_404(Project,pk=pk,client__user=self.request.user)
+            return Project.objects.filter(stage='DreamProject')
+        except Exception as e:
+            return None
 
     def retrieve(self, request, pk=None):
         try:
@@ -243,7 +232,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                            status=status.HTTP_401_UNAUTHORIZED)
 
     def update(self, request, pk=None):
         try:
@@ -267,7 +256,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                         return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': 'user is not logged in or project is not dream project', 
-                             'error_message': str(e)},status=status.HTTP_404_NOT_FOUND)
+                             'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
     
     def partial_update(self, request, pk=None):
         try:
@@ -291,7 +280,95 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                         return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': 'user is not logged in or project is not dream project', 
-                             'error_message': str(e)},status=status.HTTP_404_NOT_FOUND)
+                             'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
 
-        
 
+# ================== artist manager API's =======================
+class ArtistViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = ArtistProfileSerializer
+
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['skill', 'languages', 'location']
+    skill = Filter(name="skill", lookup_type='in')
+    language = Filter(name="languages", lookup_type='in')
+
+    search_fields = ['name', 'location__name','skill__name', 'languages__name']
+    ordering_fields = '__all__'
+
+    def get_queryset(self):
+        profile = Artist.objects.filter()
+        return profile
+
+# ====================== artist action ===================================
+class ArtistActionviewSet(APIView):
+    permission_classes = (permissions.AllowAny,)
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['skill', 'languages', 'location']
+    skill = Filter(name="skill", lookup_type='in')
+    language = Filter(name="languages", lookup_type='in')
+    search_fields = ['name', 'location__name','skill__name', 'languages__name']
+    ordering_fields = '__all__'
+
+    def get(self,request,*args, **kwargs):
+        try:
+            id = request.query_params.get('id', None)
+            if id is not None:
+                artists = get_object_or_404(Artist,id = id)
+                artist_serializer = ArtistFilterSerializer(artists,many = False)
+                return Response({'artists':artist_serializer.data},status=status.HTTP_200_OK)
+            artists = Artist.objects.all()
+            artist_serializer = ArtistFilterSerializer(artists,many = True)
+            return Response({'artists':artist_serializer.data},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self,request,*args, **kwargs):
+        try:
+            data = request.data
+            if data['has_manager']:
+                manager = Manager.objects.create(name= data['manager']['name'],phone= data['manager']['phone'],
+                email = data['manager']['email'])
+                data['manager'] = manager.id
+            artist_serializer = ArtistActionSerializer(data = request.data)
+            if artist_serializer.is_valid():
+                artist_serializer.save()
+                new_artist = ArtistFilterSerializer(instance=Artist.objects.get(id = artist_serializer.data['id']),many=False)
+                return Response({'artist':new_artist.data,'message':'artist is created'},status=status.HTTP_201_CREATED)
+            print(artist_serializer.errors)
+        except Exception as e:
+            print(e)
+            return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self,request,pk = None):
+        try:
+            if pk is None:
+                return Response({'error':'artist not found with empty id!'},status=status.HTTP_404_NOT_FOUND)
+            artist = get_object_or_404(Artist,id = pk)
+            artist_serializer = ArtistActionSerializer(instance=artist,data = request.data)
+            if artist_serializer.is_valid():
+                artist_serializer.save()
+                new_artist = ArtistFilterSerializer(instance=Artist(id = artist.id),many=False)
+                return Response({'artist':new_artist,'message':'artist is created'},status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# ================= product manager API's =======================
+class ArtistFeedBackViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = ArtistFeedbackSerializer
+    queryset = ArtistFeedback.objects.all()
+
+
+class ProjectFeeViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = ProjectFeeSerializers
+    queryset = ProjectFee.objects.all()
+
+
+class ArtistRequestViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = ArtistRequestSerializers
+    queryset = ArtistRequest.objects.all()

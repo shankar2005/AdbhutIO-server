@@ -32,13 +32,11 @@ class Work(models.Model):
     # skill = models.ManyToManyField(
     #    Skill, default='', blank=True, related_name='%(class)s_Skill')
     is_demo = models.BooleanField(default=False)
-    owner = models.ForeignKey(
-        'Artist', on_delete=models.CASCADE, default='',      related_name='%(class)s_Artist')
+    owner = models.ForeignKey('Artist', on_delete=models.CASCADE, default='',related_name='%(class)s_Artist')
     from_client = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     file = models.FileField(upload_to='work_files', default='', blank=True)
-    demo_type = models.CharField(
-        max_length=100, default='', blank=True, choices=DEMO_TYPE)
+    demo_type = models.CharField(max_length=100, default='', blank=True, choices=DEMO_TYPE)
 
     def __str__(self):
         return self.owner.name + ' - ' + self.demo_type + ' - ' + ('Best Work ' if self.show_in_top_feed else 'Work_ID '+str(self.id))
@@ -80,8 +78,7 @@ class Artist(models.Model):
     name = models.CharField(max_length=100, default='')
     skill = models.ManyToManyField(Skill, default='', blank=True)
     artist_intro = models.TextField(default='', blank=True)
-    profile_pic = models.ImageField(
-        upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
+    profile_pic = models.ImageField(upload_to=saveNameLocationForProfilePic, default='avatar.png', blank=True)
     location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
     languages = models.ManyToManyField(Language, default='', blank=True)
     age = models.IntegerField(default=0)
@@ -96,26 +93,22 @@ class Artist(models.Model):
     social_links = models.CharField(default='', blank=True, max_length=200)
 
     has_manager = models.BooleanField(default=False, blank=True)
-    manager = models.ForeignKey(
-        'Manager', on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_Manager_relation')
-    budget_range = models.CharField(
-        max_length=100, default='Less Than 10,000', blank=True,     choices=BUDGET_RANGE)
+    manager = models.ForeignKey('Manager', on_delete=models.CASCADE, default='', blank=True, null=True, related_name='%(class)s_to_Manager_relation')
+    budget_range = models.CharField(max_length=100, default='Less Than 10,000', blank=True,choices=BUDGET_RANGE)
     budget_idea = models.TextField(default='', blank=True)
     am_notes = models.TextField(default='', blank=True)
     pm_notes = models.TextField(default='', blank=True)
     professional_rating = models.IntegerField(default=0)  # 1-10
     attitude_rating = models.IntegerField(default=0)  # 1 - 10
     has_agreement = models.BooleanField(default=False)
-    agreement = models.FileField(
-        upload_to=savenameLocationForAggreement, default='', blank=True)
+    agreement = models.FileField(upload_to=savenameLocationForAggreement, default='', blank=True)
 
     def __str__(self):
         return self.name
 
 
 class ArtistFeedback (models.Model):
-    artist = models.ForeignKey(
-        Artist, on_delete=models.CASCADE, default='', blank=True, null=True,      related_name='%(class)s_Artist')
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, default='', blank=True, null=True,related_name='%(class)s_Artist')
     pre_project_feedbace = models.TextField(default='', blank=True)
     on_project_feedback = models.TextField(default='', blank=True)
     post_project_feedback = models.TextField(default='', blank=True)
@@ -133,8 +126,7 @@ class ProjectDemo (models.Model):
         'Project', on_delete=models.CASCADE, default='', blank=True, null=True,   related_name='%(class)s_Project')
 
     comment = models.TextField(default='', blank=True)
-    status = models.CharField(
-        max_length=100, default='', blank=True,       choices=PROJECT_DEMO_STATUS)
+    status = models.CharField(max_length=100, default='', blank=True,choices=PROJECT_DEMO_STATUS)
 
     def __str__(self):
         return self.artist.name + "--" + self.project.name + "--" + " Demo"
@@ -169,52 +161,31 @@ class Project(models.Model):
 
 
 class ProjectFee(models.Model):
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='ProjectFee_to_Project_relation')
-
-    client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, default='', blank=True, null=True,  related_name='ProjectFee_to_client_relation')
-
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, default='', blank=True, 
+        null=True, related_name='ProjectFee_to_Project_relation')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, default='', blank=True, 
+    null=True,  related_name='ProjectFee_to_client_relation')
     solution_fee = models .FloatField(default=0, blank=True)
-
     production_advance = models.FloatField(default=0, blank=True)
     negotiated_advance = models.FloatField(default=0, blank=True)
     final_advance = models.FloatField(default=0, blank=True)
-
-    advance_status = models.CharField(
-        max_length=100, default='', blank=True, choices=PROJECT_ADVANCE_STATUS)
-
-    assigned_artist_payouts = models.ManyToManyField(
-        Artist, default='')
-    artist_payout_status = models.CharField(
-        max_length=100, default='', choices=ARTIST_PAYOUT_STATUS)
-
-    final_fee_settlement_status = models.BooleanField(
-        default=False, blank=True
-    )
-
-    post_project_client_total_payout = models.FloatField(
-        default=0, blank=True)
-
-    project_fee_Status = models.CharField(
-        max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
+    advance_status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_ADVANCE_STATUS)
+    assigned_artist_payouts = models.ManyToManyField(Artist, default='')
+    artist_payout_status = models.CharField(max_length=100, default='', choices=ARTIST_PAYOUT_STATUS)
+    final_fee_settlement_status = models.BooleanField(default=False, blank=True)
+    post_project_client_total_payout = models.FloatField(default=0, blank=True)
+    project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
 
 
 class ArtistRequest(models.Model):
-    skill = models.ManyToManyField(
-        Skill, default='', blank=True, related_name='%(class)s_Skill')
-
-    location = models.ForeignKey(
-        Location, on_delete=models.SET_NULL, blank=True, null=True, related_name='%(class)s_Location')
+    skill = models.ManyToManyField(Skill, default='', blank=True, related_name='%(class)s_Skill')
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True, related_name='%(class)s_Location')
     genre = models.ManyToManyField(Genre, default='', blank=True)
     languages = models.ManyToManyField(Language, default='', blank=True)
     other_performin_arts = models.TextField(default='', blank=True)
-
     budget_range = models.CharField(max_length=100, default='', blank=True)
     budget_idea = models.TextField(default='', blank=True)
-
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='ArtistRequest_to_Project_relation')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='ArtistRequest_to_Project_relation')
 
     production_hiring = models.IntegerField(default=0, blank=True)
     service_hiring = models.IntegerField(default=0, blank=True)
