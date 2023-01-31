@@ -173,9 +173,7 @@ class GetRecommendationsViewSet(viewsets.ModelViewSet):
     ordering_fields = '__all__'
 
     def get_queryset(self):
-
-        work = Work.objects.filter(
-            owner__in=Client.objects.get(user=self.request.user).recommended_artists.all()).order_by('show_in_top_feed')
+        work = Work.objects.filter(owner__in=Client.objects.get(user=self.request.user).recommended_artists.all()).order_by('show_in_top_feed')
 
         return work
 
@@ -330,12 +328,21 @@ class ArtistActionviewSet(APIView):
                 manager = Manager.objects.create(name= data['manager']['name'],phone= data['manager']['phone'],
                 email = data['manager']['email'])
                 data['manager'] = manager.id
+            works_links = data['works_links']
+            del data['works_links']
+            works = []
             artist_serializer = ArtistActionSerializer(data = request.data)
             if artist_serializer.is_valid():
                 artist_serializer.save()
-                new_artist = ArtistFilterSerializer(instance=Artist.objects.get(id = artist_serializer.data['id']),many=False)
-                return Response({'artist':new_artist.data,'message':'artist is created'},status=status.HTTP_201_CREATED)
-            print(artist_serializer.errors)
+                artist = Artist.objects.get(id = artist_serializer.data['id'])
+                for work_link in works_links:
+                    work = Work.objects.create(owner = artist,demo_type=work_link['demo_type'],
+                    weblink=work_link['weblink'])
+                    works.append(work.id)
+                artist.works_links.set(works)
+                return Response({'artist':ArtistFilterSerializer(instance=artist,many=False).data,
+                'message':'artist is created'},status=status.HTTP_201_CREATED)
+            return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(e)
             return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
@@ -352,7 +359,6 @@ class ArtistActionviewSet(APIView):
                 return Response({'artist':new_artist,'message':'artist is created'},status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
-
 
 
 # ================= product manager API's =======================
