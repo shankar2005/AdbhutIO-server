@@ -29,5 +29,5 @@ def post_save_create_client(sender, instance, created, **kwargs):
 def post_save_update_project(sender,instance,created,**kwargs):
     if created:
         if instance.title is None:
-            instance.title = str(instance.client and instance.client.name) + "--" + " Project" + "--" + instance.stage
+            instance.title = str(obj.project_template.name) + " - " + obj.stage + "-" + str(obj.id)
             instance.save()
