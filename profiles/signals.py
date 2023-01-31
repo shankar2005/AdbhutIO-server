@@ -10,7 +10,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 from django.dispatch import receiver
-from .models import Client
+from .models import Client,Project
 from django.core.files.storage import get_storage_class
 default_storage = get_storage_class()()
 
@@ -24,3 +24,10 @@ def post_save_create_client(sender, instance, created, **kwargs):
             name=instance.username,
             email=instance.email,
         )
+
+@receiver(post_save,sender=Project)
+def post_save_update_project(sender,instance,created,**kwargs):
+    if created:
+        if instance.title is None:
+            instance.title = str(instance.client and instance.client.name) + "--" + " Project" + "--" + instance.stage
+            instance.save()
