@@ -12,6 +12,10 @@ import json
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
 
+
+# custom permissions
+from .customPermission import ArtistManagerPermisson
+
 # serializers
 from .serializers import *
 
@@ -393,3 +397,10 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistRequestSerializers
     queryset = ArtistRequest.objects.all()
+
+#==== demo purpose =====
+class DemoView(APIView):
+    permission_classes = (IsAuthenticated,ArtistManagerPermisson,)
+
+    def get(self,request):
+        return Response({'message':'for permission check'},status=status.HTTP_200_OK)
