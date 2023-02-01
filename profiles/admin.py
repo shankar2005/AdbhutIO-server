@@ -3,7 +3,7 @@ from .models import *
 from .modelAdmin import *
 # Register your models here.
 
-
+admin.site.register(Role)
 admin.site.register(Work, WorkAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Artist, ArtistAdmin)
