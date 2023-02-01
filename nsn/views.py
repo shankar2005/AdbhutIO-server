@@ -69,6 +69,8 @@ class RegisterUserView(APIView):
                     return Response({'error': 'Password must be at least 8 characters'},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(e)
+            if str(e) == 'User has no client.':
+                return Response({'success':'User is created successfully'},status=status.HTTP_200_OK)
             return Response({'error': 'Something went wrong'},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
