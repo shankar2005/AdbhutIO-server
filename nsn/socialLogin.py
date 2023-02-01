@@ -13,6 +13,5 @@ def TokenLoginConfirm(request):
         request.user.profile.save()
 
         token, created = Token.objects.get_or_create(user=request.user)
-        redirectUrl = 'https://orangewaves.tech/auth/token/login/?{}'.format(
-            token.key)
+        redirectUrl = 'https://orangewaves.tech/auth/token/login/?{}'.format(token.key)
         return redirect(redirectUrl)
