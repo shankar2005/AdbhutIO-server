@@ -5,6 +5,9 @@ from rest_framework import permissions, status
 from profiles.models import *
 from rest_framework.authtoken.models import Token
 from .tokens import account_activation_token
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from profiles.serializers import ClientSerializer
 
 
 class RegisterUserView(APIView):
@@ -77,7 +80,17 @@ class ValidateToken(APIView):
         token = data['token']
 
         if Token.objects.filter(key=token).exists():
+            token = get_object_or_404(Token,key=token)
+            user = User.objects.get(username = token.user.username)
+            role = get_object_or_404(Role,user=user)
+            user = {
+                "name":user.first_name +" "+user.last_name,
+                "email":user.email,
+                "username":user.username,
+                "role":role.role
+            }
             return Response({
+                'user':user,
                 'status': 'success',
                 'msg': 'Token is valid',
             },status=status.HTTP_200_OK)
@@ -86,3 +99,35 @@ class ValidateToken(APIView):
                 'status': 'failed',
                 'msg': 'Token is invalid',
             },status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDetailsView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self,request,*args, **kwargs):
+        try:
+            role = get_object_or_404(Role,user=request.user)
+            if role.role == 'Client':
+                client = get_object_or_404(Client,user = request.user)
+                client_serializer = ClientSerializer(instance=client,many=False)
+                return Response({'user':client_serializer.data,'role':role.role},status=status.HTTP_200_OK)
+            elif role.role == 'Artist Manager':
+                user = {
+                    'name':request.user.first_name +" "+request.user.last_name,
+                    'email':request.user.email,
+                    'username':request.user.username
+                }
+                return Response({'user':user,'role':role.role},status=status.HTTP_200_OK)
+            elif role.role == 'Product Manager':
+                user = {
+                    'name':request.user.first_name +" "+request.user.last_name,
+                    'email':request.user.email,
+                    'username':request.user.username
+                }
+                return Response({'user':user,'role':role.role},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'message':'something went wrong'},status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
