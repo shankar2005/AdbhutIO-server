@@ -5,6 +5,14 @@ from misc.models import *
 
 # Create your models here.
 
+# ==============  user roles ======================
+class Role(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=100, default='Client', blank=True, choices=ROLE_TYPE)
+
+    def __str__(self):
+        return str(self.user) + " - " + self.role
+
 
 def savenameLocationForAggreement(self, filename):
     return f'userdata/{self.name}_files/aggreement--{filename}'
