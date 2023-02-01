@@ -7,6 +7,17 @@ from urllib.parse import urlparse
 
 # Serializers define the API representation.
 
+# client serializer
+class ClientSerializer(serializers.ModelSerializer):
+    user_details = serializers.SerializerMethodField()
+
+    def get_user_details(self,obj):
+        return {'username':obj.user.username}
+        
+    class Meta:
+        model = Client
+        fields = ['name','email','user_details']
+
 
 class WorkFeedSerializer(serializers.ModelSerializer):
     def get_skills(self, obj):
@@ -235,9 +246,9 @@ class ArtistActionSerializer(serializers.ModelSerializer):
 
 
 
+
+
 # ====================== product manager serializers ===========================
-
-
 class ArtistFeedbackSerializer(serializers.ModelSerializer):
     artist_details = serializers.SerializerMethodField()
 
