@@ -15,3 +15,12 @@ class ProductManagerPermission(BasePermission):
         if Role.objects.get(user = user).role == 'Product Manager':
             return True
         return False
+
+
+class CustomPermissionForClientAndPM(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if Role.objects.get(user = user).role in ['Product Manager','Client'] : 
+            return True
+        return False
+
