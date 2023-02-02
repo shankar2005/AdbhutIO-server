@@ -95,6 +95,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'brief',
             'template',
             'shortlisted_artists',
+            'assigned_artists',
             'production_solution',
             'project_template',
             'pk'
