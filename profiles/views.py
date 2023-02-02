@@ -12,9 +12,8 @@ import json
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
 
-
 # custom permissions
-from .customPermission import ArtistManagerPermisson
+from .customPermission import ArtistManagerPermisson,CustomPermissionForClientAndPM,ProductManagerPermission
 
 # serializers
 from .serializers import *
@@ -212,24 +211,21 @@ class EditProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
             if not self.request.user.is_anonymous:
-                return Project.objects.filter(client__user=self.request.user)
+                return Project.objects.exclude(stage='DreamProject')
             return Project.objects.filter(stage='DreamProject')
         except Exception as e:
             return None
 
     def retrieve(self, request, pk=None):
         try:
-            if pk is None:
-                return Response({'error':'Please send the id.'},status=status.HTTP_400_BAD_REQUEST)
-            if Project.objects.filter(pk=pk).exists():
-                project = Project.objects.get(pk=pk)
-                if project.stage == 'DreamProject':
+            project = get_object_or_404(Project,pk=pk)
+            if project.stage == 'DreamProject':
+                return Response(self.serializer_class(project).data,status=status.HTTP_200_OK)
+            elif not request.user.is_anonymous:
+                if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
                     return Response(self.serializer_class(project).data,status=status.HTTP_200_OK)
-                else:
-                    if not request.user.is_anonymous:
-                        project = get_object_or_404(Project,pk=pk,client__user=self.request.user)
-                        return Response(self.serializer_class(project).data,status=status.HTTP_200_OK)
-
+                return Response({'error':"you don't have permission to update"},
+                status=status.HTTP_400_BAD_REQUEST)
             return Response({'error':'user is not logged in or project is not dream project'},
                             status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
@@ -238,48 +234,51 @@ class EditProjectViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         try:
-            if pk is None:
-                return Response({'error':'Please send the id.'},status=status.HTTP_400_BAD_REQUEST)
-            if Project.objects.filter(pk=pk).exists():
-                project = Project.objects.get(pk=pk)
-                if project.stage == 'DreamProject':
+            project = get_object_or_404(Project,pk=pk)
+            if project.stage == 'DreamProject':
+                project_serializer = ProjectSerializer(instance=project,data = request.data)
+                if project_serializer.is_valid():
+                    project_serializer.save()
+                    return Response(project_serializer.data,status=status.HTTP_200_OK)
+
+                return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+            elif not request.user.is_anonymous:
+                if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
                     project_serializer = ProjectSerializer(instance=project,data = request.data)
                     if project_serializer.is_valid():
                         project_serializer.save()
                         return Response(project_serializer.data,status=status.HTTP_200_OK)
-                    return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
-                else:
-                    if not request.user.is_anonymous:
-                        project = get_object_or_404(Project,pk=pk,client__user=self.request.user)
-                        project_serializer = ProjectSerializer(instance=project,data = request.data)
-                        if project_serializer.is_valid():
-                            project_serializer.save()
-                            return Response(project_serializer.data,status=status.HTTP_200_OK)
-                        return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+                    return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+
+                return Response({'error':"you don't have permission to update"},
+                status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error':'user is not logged in or project is not dream project'},
+                        status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': 'user is not logged in or project is not dream project', 
                              'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
     
     def partial_update(self, request, pk=None):
         try:
-            if pk is None:
-                return Response({'error':'Please send the id.'},status=status.HTTP_400_BAD_REQUEST)
-            if Project.objects.filter(pk=pk).exists():
-                project = Project.objects.get(pk=pk)
-                if project.stage == 'DreamProject':
+            project = get_object_or_404(Project,pk=pk)
+            if project.stage == 'DreamProject':
+                project_serializer = ProjectSerializer(instance=project,data = request.data)
+                if project_serializer.is_valid():
+                    project_serializer.save()
+                    return Response(project_serializer.data,status=status.HTTP_200_OK)
+                return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+            elif not request.user.is_anonymous:
+                if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
                     project_serializer = ProjectSerializer(instance=project,data = request.data)
                     if project_serializer.is_valid():
                         project_serializer.save()
                         return Response(project_serializer.data,status=status.HTTP_200_OK)
+
                     return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
-                else:
-                    if not request.user.is_anonymous:
-                        project = get_object_or_404(Project,pk=pk,client__user=self.request.user)
-                        project_serializer = ProjectSerializer(instance=project,data = request.data)
-                        if project_serializer.is_valid():
-                            project_serializer.save()
-                            return Response(project_serializer.data,status=status.HTTP_200_OK)
-                        return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+                return Response({'error':"you don't have permission to update"},status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'error':'user is not logged in or project is not dream project'},
+                        status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': 'user is not logged in or project is not dream project', 
                              'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
@@ -398,9 +397,16 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
     serializer_class = ArtistRequestSerializers
     queryset = ArtistRequest.objects.all()
 
-#==== demo purpose =====
+
+class AllProjectViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ProjectSerializerMini
+    queryset = Project.objects.exclude(stage="DreamProject")
+
+
 class DemoView(APIView):
     permission_classes = (IsAuthenticated,ArtistManagerPermisson,)
 
     def get(self,request):
         return Response({'message':'for permission check'},status=status.HTTP_200_OK)
+
