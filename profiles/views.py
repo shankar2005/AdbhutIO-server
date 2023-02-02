@@ -401,7 +401,14 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
 class AllProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ProjectSerializerMini
-    queryset = Project.objects.exclude(stage="DreamProject")
+
+    def get_queryset(self):
+        role = Role.objects.get(user = self.request.user).role
+        if role == 'Client':
+            return Project.objects.filter(client__user=self.request.user, stage='Lead')
+        elif role == 'Product Manager':
+            return Project.objects.exclude(stage="DreamProject")
+        return None
 
 
 class DemoView(APIView):
