@@ -39,3 +39,11 @@ class GenreSerializer(serializers.ModelSerializer):
             'name',
             'pk'
         ]
+
+class LanguageSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = [
+            'pk',
+            'name'
+        ]
