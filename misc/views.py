@@ -33,3 +33,10 @@ class GenreViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         genre = Genre.objects.filter()
         return genre
+    
+
+class LanguageViewSet(viewsets.ModelViewSet):
+    serializer_class = LanguageSerializers
+
+    def get_queryset(self):
+        return Language.objects.all()
