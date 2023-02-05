@@ -96,7 +96,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'assigned_artists','production_solution','project_template','post_project_client_feedback',
             'project_fee_Status','contract_status','solution_fee','production_advance','negotiated_advance',
             'final_advance','advance_status','assigned_artist_payouts','assigned_artist_payouts_details','artist_payout_status','final_fee_settlement_status',
-            'post_project_client_total_payout','project_fee_Status'
+            'post_project_client_total_payout','project_fee_Status','artist_discussion_updates'
         ]
 
 
