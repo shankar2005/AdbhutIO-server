@@ -4,9 +4,6 @@ from .models import *
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
-
-# Serializers define the API representation.
-
 # client serializer
 class ClientSerializer(serializers.ModelSerializer):
     user_details = serializers.SerializerMethodField()
@@ -46,6 +43,9 @@ class WorkFeedSerializer(serializers.ModelSerializer):
             'pk'
         ]
 
+
+# ===================== project serializers ===================================
+
 class ProjectSerializerMini(serializers.ModelSerializer):
 
     template = serializers.SerializerMethodField()
@@ -55,15 +55,16 @@ class ProjectSerializerMini(serializers.ModelSerializer):
         return [obj.project_template.id,  obj.project_template.name]
 
     def get_name(self, obj):
-        return obj.project_template.name + " - " + obj.stage + "-" + str(obj.id)
+        return obj.title or None
 
     class Meta:
         model = Project
         fields = [
+            'pk',
+            'title',
+            'name',
             'stage',
             'template',
-            'name',
-            'pk'
         ]
 
 
@@ -71,6 +72,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
     client_details = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
+    assigned_artist_payouts_details = serializers.SerializerMethodField()
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -82,23 +84,19 @@ class ProjectSerializer(serializers.ModelSerializer):
             return {'id':obj.client.id,'name':obj.client.name,'email':obj.client.name}
 
     def get_name(self, obj):
-        return obj.project_template.name + " - " + obj.stage + " - " + str(obj.id)
+        return obj.title or None
+
+    def get_assigned_artist_payouts_details(self,obj):
+        return [{'id':artist.id,'name':artist.name} for artist in obj.assigned_artist_payouts.all()]
 
     class Meta:
         model = Project
         fields = [
-            'name',
-            'title',
-            'client',
-            'client_details',
-            'stage',
-            'brief',
-            'template',
-            'shortlisted_artists',
-            'assigned_artists',
-            'production_solution',
-            'project_template',
-            'pk'
+            'pk','name','title','client','client_details','stage','brief','template','shortlisted_artists',
+            'assigned_artists','production_solution','project_template','post_project_client_feedback',
+            'project_fee_Status','contract_status','solution_fee','production_advance','negotiated_advance',
+            'final_advance','advance_status','assigned_artist_payouts','assigned_artist_payouts_details','artist_payout_status','final_fee_settlement_status',
+            'post_project_client_total_payout','project_fee_Status'
         ]
 
 
@@ -115,6 +113,9 @@ class TemplateProjectsSerializer(serializers.ModelSerializer):
             'skills',
             'pk'
         ]
+
+# ===================== project serializers end ===================================
+
 
 
 # ====================== artist manager serializers ===========================
@@ -322,3 +323,5 @@ class ArtistRequestSerializers(serializers.ModelSerializer):
         fields = ['id','skill','skills_details','location','location_details','genre','genre_details',
         'languages','languages_details','other_performin_arts','budget_idea','project','project_details','production_hiring',
         'shortlisted_artists','shortlisted_artists_details','rejected_artists','rejected_artists_details']
+
+ 
