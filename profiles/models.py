@@ -14,6 +14,8 @@ class Role(models.Model):
         return str(self.user) + " - " + self.role
 
 
+    
+
 def savenameLocationForAggreement(self, filename):
     return f'userdata/{self.name}_files/aggreement--{filename}'
 
@@ -148,7 +150,8 @@ class ProjectDemo (models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=500,null=True,blank=True)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, default='', blank=True, null=True,   related_name='%(class)s_Artist')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, default='',
+     blank=True, null=True,   related_name='%(class)s_Artist')
     stage = models.CharField(max_length=100, default='', blank=True,  choices=PROJECT_STAGE)
     project_template = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE, default='', 
     blank=True, null=True, related_name='%(class)s_to_TemplateProjects_relation')
@@ -157,19 +160,31 @@ class Project(models.Model):
     production_solution = models.TextField(default='', blank=True)
     comments = models.TextField(default='', blank=True)
 
-    shortlisted_artists = models.ManyToManyField(Artist, default='', blank=True, related_name='%(class)s_shortlistedArtist')
-    assigned_artists = models.ManyToManyField(
-        Artist, default='', blank=True, related_name='%(class)s_AssignedArtist')
+    shortlisted_artists = models.ManyToManyField(Artist, default='', blank=True, 
+    related_name='%(class)s_shortlistedArtist')
+    assigned_artists = models.ManyToManyField(Artist, default='', blank=True, 
+    related_name='%(class)s_AssignedArtist')
     showcase_demos = models.ManyToManyField(Work, default='', blank=True)
 
-    project_demos = models.ManyToManyField(
-        ProjectDemo, default='', blank=True, related_name='%(class)s_ProjectDemo')
-
+    project_demos = models.ManyToManyField( ProjectDemo, default='', blank=True, 
+    related_name='%(class)s_ProjectDemo')
     post_project_client_feedback = models.TextField(default='', blank=True)
     project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
-
     contract_status = models.BooleanField(default=False, blank=True)
-    # project tracking stuff here
+
+    #  project fee fields
+    solution_fee = models .FloatField(default=0, blank=True)
+    production_advance = models.FloatField(default=0, blank=True)
+    negotiated_advance = models.FloatField(default=0, blank=True)
+    final_advance = models.FloatField(default=0, blank=True)
+    advance_status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_ADVANCE_STATUS)
+
+    assigned_artist_payouts = models.ManyToManyField(Artist,blank=True,
+     default='',related_name='assigned_artist_payout')
+    artist_payout_status = models.CharField(max_length=100, default='', choices=ARTIST_PAYOUT_STATUS)
+    final_fee_settlement_status = models.BooleanField(default=False, blank=True)
+    post_project_client_total_payout = models.FloatField(default=0, blank=True)
+    project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
 
     def __str__(self):
         return str(self.project_template.name) + " - " + self.stage + " - " + str(self.id)
@@ -177,36 +192,25 @@ class Project(models.Model):
     
 class ProjectFee(models.Model):
     project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, default='', blank=True, null=True, related_name='ProjectFee_to_Project_relation')
-
-    client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, default='', blank=True, null=True,  related_name='ProjectFee_to_client_relation')
-
+        Project, on_delete=models.CASCADE, default='', blank=True, null=True,
+         related_name='ProjectFee_to_Project_relation')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, default='', 
+    blank=True, null=True,  related_name='ProjectFee_to_client_relation')
     solution_fee = models .FloatField(default=0, blank=True)
-
     production_advance = models.FloatField(default=0, blank=True)
     negotiated_advance = models.FloatField(default=0, blank=True)
     final_advance = models.FloatField(default=0, blank=True)
-
-    advance_status = models.CharField(
-        max_length=100, default='', blank=True, choices=PROJECT_ADVANCE_STATUS)
-
-    assigned_artist_payouts = models.ManyToManyField(
-        Artist, default='')
-    artist_payout_status = models.CharField(
-        max_length=100, default='', choices=ARTIST_PAYOUT_STATUS)
-
-    final_fee_settlement_status = models.BooleanField(
-        default=False, blank=True
-    )
-
-    post_project_client_total_payout = models.FloatField(
-        default=0, blank=True)
-
-    project_fee_Status = models.CharField(
-        max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
+    advance_status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_ADVANCE_STATUS)
+    assigned_artist_payouts = models.ManyToManyField(Artist, default='')
+    artist_payout_status = models.CharField(max_length=100, default='', choices=ARTIST_PAYOUT_STATUS)
+    final_fee_settlement_status = models.BooleanField(default=False, blank=True)
+    post_project_client_total_payout = models.FloatField(default=0, blank=True)
+    project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
 
 
+    def __str__(self):
+        return str(self.project.title) or str(self.id)
+    
 class ArtistRequest(models.Model):
     skill = models.ManyToManyField(
         Skill, default='', blank=True, related_name='%(class)s_Skill')
