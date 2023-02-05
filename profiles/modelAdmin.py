@@ -91,29 +91,36 @@ class ProjectDemoAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    filter_horizontal = ('shortlisted_artists',
-                         'assigned_artists', 'showcase_demos', 'project_demos')
+    list_filter = ('client',)
+    filter_horizontal = ('shortlisted_artists','assigned_artists', 
+    'showcase_demos', 'project_demos','assigned_artist_payouts')
 
-    fieldSets = [
-        ("Brief", {'fields': [
-            'client', 'stage', 'brief', 'production_solution', 'comments'
+    fieldsets = (
+         ("Project Details", {
+            'fields': ['title','client', ('stage','project_template')
         ]}),
-        ("Status", {'fields': [
-            'shortlisted_artists', 'assigned_artists', 'showcase_demos', 'project_demos'
+         ("Brief", {
+            'fields': ['brief', 'production_solution', 'comments','artist_discussion_updates'
+        ]}),
+        ("Artist details", {'fields': [
+            'shortlisted_artists', 'assigned_artists'
+        ]}),
+        ("Project Demos", {'fields': [
+            'showcase_demos', 'project_demos'
         ]}),
         ('Feedback', {
             'fields': [
-                'post_project_client_feedback', 'project_fee_Status', 'contract_status'
+                'post_project_client_feedback', 'contract_status'
             ]
         }),
         ("project Fees",{
             'fields':[
-                'solution_fee','production_advance','negotiated_advance','final_advance',
-                'advance_status','assigned_artist_payouts','artist_payout_status','final_fee_settlement_status',
+               'assigned_artist_payouts',('solution_fee','production_advance'),('negotiated_advance','final_advance'),
+                ('advance_status','artist_payout_status'),'final_fee_settlement_status',
                 'post_project_client_total_payout','project_fee_Status'
             ]
         })
-    ]
+    )
 
 
 class ProjectFeeAdmin(admin.ModelAdmin):
