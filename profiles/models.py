@@ -185,6 +185,7 @@ class Project(models.Model):
     final_fee_settlement_status = models.BooleanField(default=False, blank=True)
     post_project_client_total_payout = models.FloatField(default=0, blank=True)
     project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
+    artist_discussion_updates = models.TextField(default="",null=True,blank=True)
 
     def __str__(self):
         return str(self.project_template.name) + " - " + self.stage + " - " + str(self.id)
