@@ -398,6 +398,9 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
     queryset = ArtistRequest.objects.all()
 
 
+
+
+# ----------------------- all projects api -----------------------------
 class AllProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ProjectSerializerMini
@@ -410,10 +413,32 @@ class AllProjectViewSet(viewsets.ModelViewSet):
             return Project.objects.exclude(stage="DreamProject")
         return None
 
+# ----------------------- all projects api end -----------------------------
 
+# --------------------- update the project title api ---------------------------
+class ProjectTitleViewSet(APIView):
+    permission_classes = (permissions.AllowAny,) 
+    
+    def patch(self,request,id = None):
+        try:
+            if request.data['title'] in ['',None]:
+                return Response({'error':'title not be empty'},status=status.HTTP_400_BAD_REQUEST)
+            project = get_object_or_404(Project,id = id)
+            project_serializer = ProjectSerializerMini(instance=project,data={'title':request.data['title']})
+            if project_serializer.is_valid():
+                project_serializer.save()
+                return Response({'project':project_serializer.data},status=status.HTTP_200_OK)
+            return Response(project_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error':'something went wrongs.','message':str(e)},status=status.HTTP_400_BAD_REQUEST)
+# --------------------- update the project title api end ---------------------------
+
+
+# ---------------------------- demo project -----------------------------------------
 class DemoView(APIView):
     permission_classes = (IsAuthenticated,ArtistManagerPermisson,)
 
     def get(self,request):
         return Response({'message':'for permission check'},status=status.HTTP_200_OK)
 
+# ---------------------------- demo project end -----------------------------------------
