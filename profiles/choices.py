@@ -4,7 +4,6 @@ ROLE_TYPE = (
     ('Artist Manager','Artist Manager'),
     ('Product Manager','Product Manager')
 )
-
 # Base
 SKILLS = (
     ('Writer', 'Writer'),
@@ -76,12 +75,14 @@ PROJECT_FEE_STATUS = (
 
 
 PROJECT_ADVANCE_STATUS = (
+    ('Pending','Pending'),
     ('In Progress', 'In Progress'),
     ('Done', 'Done')
 )
 
 
 ARTIST_PAYOUT_STATUS = (
+    ('Pending','Pending'),
     ('In Progress', 'In Progress'),
     ('Done', 'Done')
 
