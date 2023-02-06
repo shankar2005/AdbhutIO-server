@@ -169,22 +169,22 @@ class Project(models.Model):
     project_demos = models.ManyToManyField( ProjectDemo, default='', blank=True, 
     related_name='%(class)s_ProjectDemo')
     post_project_client_feedback = models.TextField(default='', blank=True)
-    project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
     contract_status = models.BooleanField(default=False, blank=True)
 
     #  project fee fields
-    solution_fee = models .FloatField(default=0, blank=True)
+    solution_fee = models.FloatField(default=0, blank=True)
     production_advance = models.FloatField(default=0, blank=True)
     negotiated_advance = models.FloatField(default=0, blank=True)
     final_advance = models.FloatField(default=0, blank=True)
-    advance_status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_ADVANCE_STATUS)
-
-    assigned_artist_payouts = models.ManyToManyField(Artist,blank=True,
-     default='',related_name='assigned_artist_payout')
-    artist_payout_status = models.CharField(max_length=100, default='', choices=ARTIST_PAYOUT_STATUS)
-    final_fee_settlement_status = models.BooleanField(default=False, blank=True)
+    assigned_artist_payouts = models.FloatField(default=0,blank=True,null=True)
     post_project_client_total_payout = models.FloatField(default=0, blank=True)
-    project_fee_Status = models.CharField(max_length=100, default='', blank=True, choices=PROJECT_FEE_STATUS)
+
+    # assigned_artist_payouts = models.ManyToManyField(Artist,blank=True,
+    #  default='',related_name='assigned_artist_payout')
+    advance_status = models.CharField(max_length=100,default='Pending', blank=True,choices=PROJECT_ADVANCE_STATUS)
+    artist_payout_status = models.CharField(max_length=100,default='In Progress',choices=ARTIST_PAYOUT_STATUS)
+    project_fee_Status = models.CharField(max_length=100,default='Unpaid', blank=True,choices=PROJECT_FEE_STATUS)
+    final_fee_settlement_status = models.BooleanField(default=False, blank=True)
     artist_discussion_updates = models.TextField(default="",null=True,blank=True)
 
     def __str__(self):
