@@ -244,7 +244,15 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    project_serializer = ProjectSerializer(instance=project,data = request.data)
+                    data = request.data
+                    if data['assigned_artist_payouts'] > 0:
+                        if project.solution_fee == 0 and project.production_advance == 0:
+                            project.assigned_artist_payouts = data['assigned_artist_payouts']
+                            project.solution_fee = float(data['assigned_artist_payouts'])*2.5
+                            project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
+                            project.save()
+                            del data['assigned_artist_payouts']
+                    project_serializer = ProjectSerializer(instance=project,data = data)
                     if project_serializer.is_valid():
                         project_serializer.save()
                         return Response(project_serializer.data,status=status.HTTP_200_OK)
@@ -269,6 +277,14 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
+                    data = request.data
+                    if data['assigned_artist_payouts'] > 0:
+                        if project.solution_fee == 0 and project.production_advance == 0:
+                            project.assigned_artist_payouts = data['assigned_artist_payouts']
+                            project.solution_fee = float(data['assigned_artist_payouts'])*2.5
+                            project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
+                            project.save()
+                            del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = request.data)
                     if project_serializer.is_valid():
                         project_serializer.save()
