@@ -68,11 +68,13 @@ class ProjectSerializerMini(serializers.ModelSerializer):
         ]
 
 
+
+#-------------------- project serializer ---------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
     client_details = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
-    assigned_artist_payouts_details = serializers.SerializerMethodField()
+    shortlisted_artists_details = serializers.SerializerMethodField()  
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -83,22 +85,22 @@ class ProjectSerializer(serializers.ModelSerializer):
         if obj.client is not None:
             return {'id':obj.client.id,'name':obj.client.name,'email':obj.client.name}
 
+    def get_shortlisted_artists_details(self,obj):
+        return [{'id':artist.id,'name':artist.name} for artist in obj.shortlisted_artists.all()]
+
     def get_name(self, obj):
         return obj.title or None
-
-    def get_assigned_artist_payouts_details(self,obj):
-        return [{'id':artist.id,'name':artist.name} for artist in obj.assigned_artist_payouts.all()]
 
     class Meta:
         model = Project
         fields = [
             'pk','name','title','client','client_details','stage','brief','template','shortlisted_artists',
-            'assigned_artists','production_solution','project_template','post_project_client_feedback',
-            'project_fee_Status','contract_status','solution_fee','production_advance','negotiated_advance',
-            'final_advance','advance_status','assigned_artist_payouts','assigned_artist_payouts_details','artist_payout_status','final_fee_settlement_status',
+            'shortlisted_artists_details','assigned_artists','production_solution','project_template','post_project_client_feedback',
+            'contract_status','solution_fee','production_advance','negotiated_advance','final_advance',
+            'advance_status','assigned_artist_payouts','artist_payout_status','final_fee_settlement_status',
             'post_project_client_total_payout','project_fee_Status','artist_discussion_updates'
         ]
-
+#------------------------------------- project serializer end ---------------------------------------
 
 class TemplateProjectsSerializer(serializers.ModelSerializer):
     def get_skills(self, obj):
