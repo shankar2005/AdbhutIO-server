@@ -93,7 +93,7 @@ class ProjectDemoAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_filter = ('client',)
     filter_horizontal = ('shortlisted_artists','assigned_artists', 
-    'showcase_demos', 'project_demos','assigned_artist_payouts')
+    'showcase_demos', 'project_demos')
 
     fieldsets = (
          ("Project Details", {
