@@ -82,10 +82,9 @@ PROJECT_ADVANCE_STATUS = (
 
 
 ARTIST_PAYOUT_STATUS = (
-    ('Pending','Pending'),
     ('In Progress', 'In Progress'),
-    ('Done', 'Done')
-
+    ('Advance Payment Done', 'Advance Payment Done'),
+    ('Full Payment Done', 'Full Payment Done')
 )
 
 HIRING_STATUS = (
