@@ -75,6 +75,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     client_details = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     shortlisted_artists_details = serializers.SerializerMethodField()  
+    assigned_artists_details = serializers.SerializerMethodField()  
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -87,6 +88,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_shortlisted_artists_details(self,obj):
         return [{'id':artist.id,'name':artist.name} for artist in obj.shortlisted_artists.all()]
+    
+    def get_assigned_artists_details(self,obj):
+        return [{'id':artist.id,'name':artist.name} for artist in obj.assigned_artists.all()]
 
     def get_name(self, obj):
         return obj.title or None
@@ -94,8 +98,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'pk','name','title','client','client_details','stage','brief','template','shortlisted_artists',
-            'shortlisted_artists_details','assigned_artists','production_solution','project_template','post_project_client_feedback',
+            'pk','name','title','client','client_details','stage','brief','template','shortlisted_artists_details',
+            'assigned_artists_details','production_solution','project_template','post_project_client_feedback',
             'contract_status','solution_fee','production_advance','negotiated_advance','final_advance',
             'advance_status','assigned_artist_payouts','artist_payout_status','final_fee_settlement_status',
             'post_project_client_total_payout','project_fee_Status','artist_discussion_updates'
