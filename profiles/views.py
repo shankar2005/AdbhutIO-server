@@ -450,6 +450,28 @@ class ProjectTitleViewSet(APIView):
 # --------------------- update the project title api end ---------------------------
 
 
+# ------------------------------- project assign api ------------------------------
+class ProjectAssignArtistViewSet(APIView):
+    permission_classes  = (permissions.IsAuthenticated,)
+
+    def patch(self,request,id = None):
+        try:
+            assign_artists = request.data['assign_artists']
+            remove_artists = request.data['remove_artists']
+            project = get_object_or_404(Project,id = id)
+            for artist in remove_artists:
+                project.assigned_artists.remove(artist)
+            for artist in assign_artists:
+                project.assigned_artists.add(artist)
+            project.save()
+            return Response({'project':ProjectSerializer(project,many=False).data,
+                            'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+# ------------------------------- project assign api ------------------------------
+
+
 # ---------------------------- demo project -----------------------------------------
 class DemoView(APIView):
     permission_classes = (IsAuthenticated,ArtistManagerPermisson,)
