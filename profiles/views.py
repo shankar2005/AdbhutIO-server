@@ -471,26 +471,39 @@ class ProjectAssignArtistActionViewSet(APIView):
             return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 
-#-------------------------------- shortlisted artist action api -------------------------------
-class ProjectShortlistedArtistActionViewSet(APIView):
+#-------------------------------- shortlisted artist api -------------------------------
+class ProjectShortlistedArtistViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def patch(self,request,projectId = None):
+    def patch(self,request,projectId = None,artistId = None):
         try:
             project = get_object_or_404(Project,id = projectId)
-            add_artists = request.data['add_artists']
-            remove_artists = request.data['remove_artists']
-            for artistId in add_artists:
-                project.shortlisted_artists.add(artistId)
-            for artistId in remove_artists:
-                project.shortlisted_artists.remove(artistId)
+            artist = get_object_or_404(Artist,id = artistId)
+            project.shortlisted_artists.add(artist)
             project.save()
             return Response({'project':ProjectSerializer(project,many=False).data,
                             'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
 
-#-------------------------------- shortlisted artist action api -------------------------------
+#-------------------------------- shortlisted artist api -------------------------------
+
+# ---------------------------------- remove shortlisted artist api ----------------------------
+class ProjectShortlistedArtistRemoveViewSet(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def patch(self,request,projectId = None,artistId = None):
+        try:
+            project = get_object_or_404(Project,id = projectId)
+            artist = get_object_or_404(Artist,id = artistId)
+            project.shortlisted_artists.remove(artist)
+            project.save()
+            return Response({'project':ProjectSerializer(project,many=False).data,
+                            'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+#--------------------------------remove shortlisted artist api -------------------------------
 
 # ------------------------------ assign artist ---------------------------------
 class ProjectAssignArtistViewSet(APIView):
