@@ -14,8 +14,10 @@ urlpatterns = [
         name='assign_artist'),
     path('api/v1/unassign_artist/<int:projectId>/<int:artistId>/',ProjectUnAssginArtistViewSet.as_view(),
         name='unassign_artist'),
-    path('api/v1/shortlisted_artist_action/<int:projectId>/',ProjectShortlistedArtistActionViewSet.as_view(),
-        name='shortlisted_artist_action'),
+    path('api/v1/shortlist_artist/<int:projectId>/<int:artistId>/',ProjectShortlistedArtistViewSet.as_view(),
+        name='shortlist_artist'),
+    path('api/v1/decline_artist/<int:projectId>/<int:artistId>/',ProjectShortlistedArtistRemoveViewSet.as_view(),
+        name='decline_artist'),
 
     # demo
     path('api/v1/demo/',DemoView.as_view(),name="demo"),
