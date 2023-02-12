@@ -99,7 +99,7 @@ class ProjectAdmin(admin.ModelAdmin):
             'fields': [('slug','title'),'client', ('stage','project_template')
         ]}),
          ("Brief", {
-            'fields': ['brief', 'production_solution', 'comments','artist_discussion_updates'
+            'fields': ['brief','reference_links','production_solution', 'comments','artist_discussion_updates'
         ]}),
         ("Artist details", {'fields': [
             'shortlisted_artists', 'assigned_artists'

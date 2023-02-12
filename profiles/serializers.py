@@ -90,7 +90,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'pk','name','title','client','client_details','stage','brief','template','shortlisted_artists_details',
+            'pk','name','title','client','client_details','stage','brief','reference_links','template','shortlisted_artists_details',
             'assigned_artists_details','production_solution','project_template','post_project_client_feedback',
             'contract_status','solution_fee','production_advance','negotiated_advance','final_advance',
             'advance_status','assigned_artist_payouts','artist_payout_status','final_fee_settlement_status',
