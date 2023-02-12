@@ -27,8 +27,9 @@ def saveNameLocationForProfilePic(self, filename):
 class TemplateProjects(models.Model):
     name = models.CharField(max_length=100, default='')
     details = models.TextField(default='', blank=True)
-    skills = models.ManyToManyField(
-        Skill, default='', blank=True, related_name='%(class)s_Skill')
+    skills = models.ManyToManyField(Skill, default='', blank=True, related_name='%(class)s_Skill')
+    weblink = models.URLField(max_length=100, default='', blank=True)
+    file = models.FileField(upload_to='work_files', default='', blank=True)
 
     def __str__(self):
         return self.name
@@ -141,14 +142,14 @@ class ProjectDemo (models.Model):
         'Project', on_delete=models.CASCADE, default='', blank=True, null=True,   related_name='%(class)s_Project')
 
     comment = models.TextField(default='', blank=True)
-    status = models.CharField(
-        max_length=100, default='', blank=True,       choices=PROJECT_DEMO_STATUS)
+    status = models.CharField(max_length=100, default='', blank=True,choices=PROJECT_DEMO_STATUS)
 
     def __str__(self):
         return self.artist.name + "--" + self.project.name + "--" + " Demo"
 
 
 class Project(models.Model):
+    slug = models.SlugField(null=True,blank=True)
     title = models.CharField(max_length=500,null=True,blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, default='',
      blank=True, null=True,   related_name='%(class)s_Artist')

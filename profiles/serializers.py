@@ -32,15 +32,7 @@ class WorkFeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Work
         fields = [
-            'weblink',
-            'file',
-            'demo_type',
-            'owner_name',
-            'owner_id',
-            'details',
-            'name',
-            'skills',
-            'pk'
+            'weblink','file','demo_type','owner_name','owner_id','details','name','skills','pk'
         ]
 
 
@@ -114,10 +106,7 @@ class TemplateProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateProjects
         fields = [
-            'name',
-            'details',
-            'skills',
-            'pk'
+            'pk','name','details','skills','weblink','file'
         ]
 
 # ===================== project serializers end ===================================
