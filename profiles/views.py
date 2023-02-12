@@ -246,6 +246,12 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                             project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
                             project.save()
                             del data['assigned_artist_payouts']
+                    elif data['assigned_artist_payouts'] == 0:
+                            project.assigned_artist_payouts = 0.0
+                            project.solution_fee = 0.0
+                            project.production_advance = 0.0
+                            project.save()
+                            del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = data)
                     if project_serializer.is_valid():
                         project_serializer.save()

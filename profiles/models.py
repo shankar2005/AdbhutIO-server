@@ -160,6 +160,7 @@ class Project(models.Model):
     brief = models.TextField(default='', blank=True)
     production_solution = models.TextField(default='', blank=True)
     comments = models.TextField(default='', blank=True)
+    reference_links = models.TextField(default='', blank=True)
 
     shortlisted_artists = models.ManyToManyField(Artist, default='', blank=True, 
     related_name='%(class)s_shortlistedArtist')
