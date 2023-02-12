@@ -19,6 +19,8 @@ urlpatterns = [
     path('api/v1/decline_artist/<int:projectId>/<int:artistId>/',ProjectShortlistedArtistRemoveViewSet.as_view(),
         name='decline_artist'),
 
+    # create project
+    path('api/v1/create_new_project/',CreateNewProject.as_view(),name='create_new_project'),
     # demo
     path('api/v1/demo/',DemoView.as_view(),name="demo"),
 ]
