@@ -1,4 +1,3 @@
-
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import routers, serializers, viewsets, generics
@@ -8,9 +7,9 @@ from django_filters import Filter
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 from rest_framework.pagination import PageNumberPagination
-import json
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
+import json
 
 # custom permissions
 from .customPermission import ArtistManagerPermisson,CustomPermissionForClientAndPM,ProductManagerPermission
@@ -285,6 +284,12 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                             project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
                             project.save()
                             del data['assigned_artist_payouts']
+                    elif data['assigned_artist_payouts'] == 0:
+                            project.assigned_artist_payouts = 0.0
+                            project.solution_fee = 0.0
+                            project.production_advance = 0.0
+                            project.save()
+                            del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = request.data)
                     if project_serializer.is_valid():
                         project_serializer.save()
@@ -301,6 +306,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
 
 
 # ====================== delete project api ==============================
+
 class ProjectDeleteViewSet(APIView):
     permission_classes = (permissions.AllowAny,)
     def delete(self,request,pk,format=None):
@@ -316,6 +322,7 @@ class ProjectDeleteViewSet(APIView):
 
 
 # ================== artist manager API's =======================
+
 class ArtistViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistProfileSerializer
