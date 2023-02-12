@@ -97,7 +97,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     fieldsets = (
          ("Project Details", {
-            'fields': ['title','client', ('stage','project_template')
+            'fields': [('slug','title'),'client', ('stage','project_template')
         ]}),
          ("Brief", {
             'fields': ['brief', 'production_solution', 'comments','artist_discussion_updates'

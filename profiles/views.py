@@ -101,7 +101,8 @@ class CreateProjectView(APIView):
                 new_project.shortlisted_artists.add(Artist.objects.get(pk=artist))
 
             new_project.save()
-            return Response({'success': 'Project created successfully'}, status=status.HTTP_200_OK)
+            return Response({'success': 'Project created successfully','projectId':new_project.id},
+             status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
@@ -134,26 +135,21 @@ class CreateProjectView(APIView):
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
-    max_page_size = 100
+    max_page_size = 1000
 
 
 class WorkFeedViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     serializer_class = WorkFeedSerializer
-    filter_backends = [DjangoFilterBackend,
-                       filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['demo_type',
-                        'owner', 'show_in_top_feed', 'owner__skill', 'owner__skill__genres', 'owner__location']
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['demo_type','owner', 'show_in_top_feed', 'owner__skill', 
+    'owner__skill__genres', 'owner__location']
 
-    search_fields = ['name', 'owner__name',
-                     'owner__skill__name', 'owner__skill__genres__name']
+    search_fields = ['name', 'owner__name','owner__skill__name', 'owner__skill__genres__name']
     ordering_fields = '__all__'
 
     def get_queryset(self):
-
-        work = Work.objects.filter(
-            show_in_top_feed=True).order_by('show_in_top_feed')
-
+        work = Work.objects.filter(show_in_top_feed=True).order_by('show_in_top_feed')
         return work
 
 
@@ -166,8 +162,7 @@ class GetRecommendationsViewSet(viewsets.ModelViewSet):
     pagination_class = RecommendedResultsSetPagination
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = WorkFeedSerializer
-    filter_backends = [DjangoFilterBackend,
-                       filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['demo_type',
                         'owner', 'show_in_top_feed', 'owner__skill', 'owner__skill__genres', 'owner__location']
 
@@ -177,7 +172,6 @@ class GetRecommendationsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         work = Work.objects.filter(owner__in=Client.objects.get(user=self.request.user).recommended_artists.all()).order_by('show_in_top_feed')
-
         return work
 
 
@@ -548,7 +542,9 @@ class ProjectUnAssginArtistViewSet(APIView):
 # ---------------------------- demo project -----------------------------------------
 class DemoView(APIView):
     permission_classes = (IsAuthenticated,ArtistManagerPermisson,)
+
     def get(self,request):
-        return Response({'message':'for permission check'},status=status.HTTP_200_OK)
+        work = WorkFeedSerializer(Work.objects.all(),many=True)
+        return Response({'works':work.data,'message':'for permission check'},status=status.HTTP_200_OK)
 
 # ---------------------------- demo project end -----------------------------------------
