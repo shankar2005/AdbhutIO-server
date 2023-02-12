@@ -552,6 +552,24 @@ class ProjectUnAssginArtistViewSet(APIView):
 # ------------------------------- project assign api ------------------------------
 
 
+# -------------------------- create new Porject --------------------------------------
+class CreateNewProject(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self,request):
+        try:
+            data = request.data
+            client = get_object_or_404(Client,user = request.user)
+            data['client'] = client.id
+            project_serializer = ProjectSerializer(data = data)
+            if project_serializer.is_valid():
+                project_serializer.save()
+                return Response(project_serializer.data,status=status.HTTP_201_CREATED)
+            return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+
 # ---------------------------- demo project -----------------------------------------
 class DemoView(APIView):
     permission_classes = (IsAuthenticated,ArtistManagerPermisson,)
@@ -561,3 +579,4 @@ class DemoView(APIView):
         return Response({'works':work.data,'message':'for permission check'},status=status.HTTP_200_OK)
 
 # ---------------------------- demo project end -----------------------------------------
+

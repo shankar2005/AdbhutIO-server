@@ -91,11 +91,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = [
             'pk','name','title','client','client_details','stage','brief','reference_links','template','shortlisted_artists_details',
-            'assigned_artists_details','production_solution','project_template','post_project_client_feedback',
+            'shortlisted_artists','assigned_artists_details','production_solution','project_template','post_project_client_feedback',
             'contract_status','solution_fee','production_advance','negotiated_advance','final_advance',
             'advance_status','assigned_artist_payouts','artist_payout_status','final_fee_settlement_status',
             'post_project_client_total_payout','project_fee_Status','artist_discussion_updates'
         ]
+        extra_kwargs = {'shortlisted_artists' : {'write_only':True}}
 #------------------------------------- project serializer end ---------------------------------------
 
 class TemplateProjectsSerializer(serializers.ModelSerializer):
