@@ -6,8 +6,7 @@ class TemplateProjectsAdmin(admin.ModelAdmin):
     filter_horizontal = ('skills',)
     fieldsets = [
         ("Work", {'fields': [
-            "name",  'details', "skills"
-
+            "name",  'details', "skills","weblink","file"
         ]})
     ]
 
