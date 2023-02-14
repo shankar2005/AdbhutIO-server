@@ -44,7 +44,9 @@ class ProjectSerializerMini(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
 
     def get_template(self, obj):
-        return [obj.project_template.id,  obj.project_template.name]
+        if obj.project_template is not None:
+            return [obj.project_template.id,  obj.project_template.name]
+        return None
 
     def get_name(self, obj):
         return obj.title or None
@@ -52,13 +54,8 @@ class ProjectSerializerMini(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'pk',
-            'title',
-            'name',
-            'stage',
-            'template',
+            'pk','title','name','stage','template',
         ]
-
 
 
 #-------------------- project serializer ---------------------------------------
@@ -77,6 +74,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_client_details(self,obj):
         if obj.client is not None:
             return {'id':obj.client.id,'name':obj.client.name,'email':obj.client.name}
+        return None
 
     def get_shortlisted_artists_details(self,obj):
         return [{'id':artist.id,'name':artist.name} for artist in obj.shortlisted_artists.all()]
