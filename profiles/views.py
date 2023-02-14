@@ -111,17 +111,14 @@ class CreateProjectView(APIView):
         try:
             message = request.data['message']
             project_id = request.data['project_id']
-
-
-            if not Project.objects.filter(id = project_id).exists():
-                return Response({'error':'please send the proper project id'},status=status.HTTP_400_BAD_REQUEST)
-            
             project = get_object_or_404(Project,id = project_id)
-            brief = project.brief[:-1]
-            brief += f",{json.dumps(message)}]"
-            project.brief = brief
+            if project.brief in ["",None]:
+                project.brief = f"[{json.dumps(message)}]"
+            else:
+                brief = project.brief[:-1]
+                brief += f",{json.dumps(message)}]"
+                project.brief = brief
             project.save()
-
             project_serializer = ProjectSerializer(instance=project,many = False)
             return Response({'project':project_serializer.data,'success':'Project is updated!'},
             status=status.HTTP_200_OK)
