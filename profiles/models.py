@@ -190,7 +190,7 @@ class Project(models.Model):
     artist_discussion_updates = models.TextField(default="",null=True,blank=True)
 
     def __str__(self):
-        return str(self.project_template.name) + " - " + self.stage + " - " + str(self.id)
+        return str(self.project_template and self.project_template.name) + " - " + str(self.stage) + " - " + str(self.id)
 
     
 class ProjectFee(models.Model):
