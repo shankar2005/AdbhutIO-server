@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import AnonymousUser
 import json
 
+
 # custom permissions
 from .customPermission import ArtistManagerPermisson,CustomPermissionForClientAndPM,ProductManagerPermission
 
@@ -21,6 +22,8 @@ from .serializers import *
 from .models import *
 
 
+
+# ------------------------------ chat flow api ----------------------------------------------------
 class chatflowSkills(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -47,10 +50,7 @@ class chatflowSkills(APIView):
                     if [skill.name, skill.id] not in skills:
                         skills.append([skill.name, skill.id])
 
-            print(skills)
-
             if product in [0, '0', None, '']:
-
                 for project in TemplateProjects.objects.all():
                     for skill in project.skills.all():
                         if [skill.name, skill.id] in skills:
@@ -63,12 +63,11 @@ class chatflowSkills(APIView):
 
             return Response({'skills': skills, 'projects': possible_projects}, status=status.HTTP_200_OK)
         except Exception as e:
-            print(e)
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# create project api
+# --------------------------- create project api from chat flow ----------------------------------------------
 class CreateProjectView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -103,7 +102,6 @@ class CreateProjectView(APIView):
             return Response({'success': 'Project created successfully','projectId':new_project.id},
              status=status.HTTP_200_OK)
         except Exception as e:
-            print(e)
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -112,7 +110,7 @@ class CreateProjectView(APIView):
             message = request.data['message']
             project_id = request.data['project_id']
             project = get_object_or_404(Project,id = project_id)
-            if project.brief in ["",None]:
+            if project.brief in ["",None,"[]"]:
                 project.brief = f"[{json.dumps(message)}]"
             else:
                 brief = project.brief[:-1]
@@ -128,12 +126,20 @@ class CreateProjectView(APIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+# -------------------- standard pagination classes -------------------------------
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
+class RecommendedResultsSetPagination(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
+
+# ------------------------------------ work feed api ---------------------------------
 class WorkFeedViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     serializer_class = WorkFeedSerializer
@@ -149,11 +155,7 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
         return work
 
 
-class RecommendedResultsSetPagination(PageNumberPagination):
-    page_size = 3
-    page_size_query_param = 'page_size'
-    max_page_size = 100
-
+#------------------------------- RecommendedResults api ------------------------------------
 class GetRecommendationsViewSet(viewsets.ModelViewSet):
     pagination_class = RecommendedResultsSetPagination
     permission_classes = (permissions.IsAuthenticated,)
@@ -171,6 +173,7 @@ class GetRecommendationsViewSet(viewsets.ModelViewSet):
         return work
 
 
+# -------------------------- template projects url -----------------------------
 class TemplateProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = TemplateProjectsSerializer
@@ -192,6 +195,24 @@ class GetDreamProjectViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Project.objects.filter(stage='DreamProject')
+
+# ------------------------------------ project calculation ------------------------
+def PorjectCalculation(project,data):
+    if data['assigned_artist_payouts'] > 0:
+        if project.solution_fee == 0 and project.production_advance == 0:
+            project.assigned_artist_payouts = data['assigned_artist_payouts']
+            project.solution_fee = float(data['assigned_artist_payouts'])*2.5
+            project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
+            project.save()
+            return True
+    elif data['assigned_artist_payouts'] == 0:
+        print(data['assigned_artist_payouts'])
+        project.assigned_artist_payouts = 0.0
+        project.solution_fee = 0.0
+        project.production_advance = 0.0
+        project.save()
+        return True
+    return False
 
 
 class EditProjectViewSet(viewsets.ModelViewSet):
@@ -225,29 +246,21 @@ class EditProjectViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None):
         try:
             project = get_object_or_404(Project,pk=pk)
+            data = request.data
             if project.stage == 'DreamProject':
-                project_serializer = ProjectSerializer(instance=project,data = request.data)
+                calculation = PorjectCalculation(project, data)
+                if calculation:
+                    del data['assigned_artist_payouts']
+                project_serializer = ProjectSerializer(instance=project,data = data)
                 if project_serializer.is_valid():
                     project_serializer.save()
                     return Response(project_serializer.data,status=status.HTTP_200_OK)
-
                 return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    data = request.data
-                    if data['assigned_artist_payouts'] > 0:
-                        if project.solution_fee == 0 and project.production_advance == 0:
-                            project.assigned_artist_payouts = data['assigned_artist_payouts']
-                            project.solution_fee = float(data['assigned_artist_payouts'])*2.5
-                            project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
-                            project.save()
-                            del data['assigned_artist_payouts']
-                    elif data['assigned_artist_payouts'] == 0:
-                            project.assigned_artist_payouts = 0.0
-                            project.solution_fee = 0.0
-                            project.production_advance = 0.0
-                            project.save()
-                            del data['assigned_artist_payouts']
+                    calculation = PorjectCalculation(project, data)
+                    if calculation:
+                        del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = data)
                     if project_serializer.is_valid():
                         project_serializer.save()
@@ -265,28 +278,21 @@ class EditProjectViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, pk=None):
         try:
             project = get_object_or_404(Project,pk=pk)
+            data = request.data
             if project.stage == 'DreamProject':
-                project_serializer = ProjectSerializer(instance=project,data = request.data)
+                calculation = PorjectCalculation(project, data)
+                if calculation:
+                    del data['assigned_artist_payouts']
+                project_serializer = ProjectSerializer(instance=project,data = data)
                 if project_serializer.is_valid():
                     project_serializer.save()
                     return Response(project_serializer.data,status=status.HTTP_200_OK)
                 return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    data = request.data
-                    if data['assigned_artist_payouts'] > 0:
-                        if project.solution_fee == 0 and project.production_advance == 0:
-                            project.assigned_artist_payouts = data['assigned_artist_payouts']
-                            project.solution_fee = float(data['assigned_artist_payouts'])*2.5
-                            project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
-                            project.save()
-                            del data['assigned_artist_payouts']
-                    elif data['assigned_artist_payouts'] == 0:
-                            project.assigned_artist_payouts = 0.0
-                            project.solution_fee = 0.0
-                            project.production_advance = 0.0
-                            project.save()
-                            del data['assigned_artist_payouts']
+                    calculation = PorjectCalculation(project, data)
+                    if calculation:
+                        del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = request.data)
                     if project_serializer.is_valid():
                         project_serializer.save()

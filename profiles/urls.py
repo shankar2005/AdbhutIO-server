@@ -6,6 +6,8 @@ app_name = 'profiles'
 urlpatterns = [
     # ==================== artist manager urls ===========================
     path('api/v1/artist_action/',ArtistActionviewSet.as_view(),name='artist_action'),
+
+    # ---------------------------- project urls ----------------------------------------------
     path('api/v1/delete_project/<int:pk>/',ProjectDeleteViewSet.as_view(),name='delete_project'),
     path('api/v1/update_title/<int:id>/',ProjectTitleViewSet.as_view(),name='update_title'),
     path('api/v1/assign_artist_action/<int:projectId>/',ProjectAssignArtistActionViewSet.as_view(),
@@ -21,6 +23,7 @@ urlpatterns = [
 
     # create project
     path('api/v1/create_new_project/',CreateNewProject.as_view(),name='create_new_project'),
+    
     # demo
     path('api/v1/demo/',DemoView.as_view(),name="demo"),
 ]

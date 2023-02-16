@@ -4,10 +4,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-t=u8335!zp&!=+$*qxx4ko6+=vhek90^aqr)c)f(r%esa2k096'
 
@@ -27,6 +23,10 @@ CORS_ALLOW_CREDENTIALS = True
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 
     'profiles',
     'misc',
@@ -34,21 +34,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
 
-
     # 'django_extensions',
     'tinymce',
     'rest_framework.authtoken',
     'corsheaders',
     'colorfield',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-
-    'django.contrib.staticfiles',
     'rest_auth',
     'rest_auth.registration',
     'storages',
-
 ]
 
 MIDDLEWARE = [
@@ -174,16 +167,11 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
 
-    """
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    ),"""
     'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
 }
 
 
 AUTHENTICATION_BACKENDS = [
-
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
 
@@ -192,8 +180,10 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = "AKIARY2G35G2RQ5B45MI"
-AWS_SECRET_ACCESS_KEY = "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"
-AWS_STORAGE_BUCKET_NAME = "smartbotbucket"
-AWS_QUERYSTRING_AUTH = False
+# cloud storage
+
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# AWS_ACCESS_KEY_ID = "AKIARY2G35G2RQ5B45MI"
+# AWS_SECRET_ACCESS_KEY = "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"
+# AWS_STORAGE_BUCKET_NAME = "smartbotbucket"
+# AWS_QUERYSTRING_AUTH = False
