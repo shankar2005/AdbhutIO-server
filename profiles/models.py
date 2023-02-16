@@ -13,9 +13,6 @@ class Role(models.Model):
     def __str__(self):
         return str(self.user) + " - " + self.role
 
-
-    
-
 def savenameLocationForAggreement(self, filename):
     return f'userdata/{self.name}_files/aggreement--{filename}'
 
