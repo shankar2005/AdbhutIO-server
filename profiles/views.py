@@ -439,7 +439,7 @@ class AllProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         role = Role.objects.get(user = self.request.user).role
         if role == 'Client':
-            return Project.objects.filter(client__user=self.request.user, stage='Lead')
+            return Project.objects.filter(client__user=self.request.user)
         elif role == 'Product Manager':
             return Project.objects.exclude(stage="DreamProject")
         return None
