@@ -248,9 +248,10 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             project = get_object_or_404(Project,pk=pk)
             data = request.data
             if project.stage == 'DreamProject':
-                calculation = PorjectCalculation(project, data)
-                if calculation:
-                    del data['assigned_artist_payouts']
+                if "assigned_artist_payouts" in data:
+                    calculation = PorjectCalculation(project, data)
+                    if calculation:
+                        del data['assigned_artist_payouts']
                 project_serializer = ProjectSerializer(instance=project,data = data)
                 if project_serializer.is_valid():
                     project_serializer.save()
@@ -258,9 +259,10 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    calculation = PorjectCalculation(project, data)
-                    if calculation:
-                        del data['assigned_artist_payouts']
+                    if "assigned_artist_payouts" in data:
+                        calculation = PorjectCalculation(project, data)
+                        if calculation:
+                            del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = data)
                     if project_serializer.is_valid():
                         project_serializer.save()
@@ -272,6 +274,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             return Response({'error':'user is not logged in or project is not dream project'},
                         status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            print(e)
             return Response({'error': 'user is not logged in or project is not dream project', 
                              'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
     
@@ -280,9 +283,10 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             project = get_object_or_404(Project,pk=pk)
             data = request.data
             if project.stage == 'DreamProject':
-                calculation = PorjectCalculation(project, data)
-                if calculation:
-                    del data['assigned_artist_payouts']
+                if "assigned_artist_payouts" in data:
+                    calculation = PorjectCalculation(project, data)
+                    if calculation:
+                        del data['assigned_artist_payouts']
                 project_serializer = ProjectSerializer(instance=project,data = data)
                 if project_serializer.is_valid():
                     project_serializer.save()
@@ -290,9 +294,10 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    calculation = PorjectCalculation(project, data)
-                    if calculation:
-                        del data['assigned_artist_payouts']
+                    if "assigned_artist_payouts" in data:
+                        calculation = PorjectCalculation(project, data)
+                        if calculation:
+                            del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = request.data)
                     if project_serializer.is_valid():
                         project_serializer.save()
@@ -582,4 +587,3 @@ class DemoView(APIView):
         return Response({'works':work.data,'message':'for permission check'},status=status.HTTP_200_OK)
 
 # ---------------------------- demo project end -----------------------------------------
-
