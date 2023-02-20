@@ -146,6 +146,7 @@ class ProjectDemo (models.Model):
 
 
 class Project(models.Model):
+    name = models.CharField(max_length=255,null=True)
     slug = models.SlugField(null=True,blank=True)
     title = models.CharField(max_length=500,null=True,blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, default='',
