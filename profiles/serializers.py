@@ -68,7 +68,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_template(self, obj):
         if obj.project_template is not None:
-            return [obj.project_template.id,  obj.project_template.name]
+            return [obj.project_template.id,  obj.project_template.name,obj.get_template.weblink]
         return None
     
     def get_client_details(self,obj):
