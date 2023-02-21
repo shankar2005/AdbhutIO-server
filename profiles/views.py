@@ -247,11 +247,23 @@ class EditProjectViewSet(viewsets.ModelViewSet):
         try:
             project = get_object_or_404(Project,pk=pk)
             data = request.data
+            if "project_demo" in data:
+                data['project_demo']['project'] = project.id
+                data['project_demo']['status'] = 'Selected'
+                projectDemo_serializer = ProjectDemoSerializer(data = data['project_demo'])
+                if projectDemo_serializer.is_valid():
+                    projectDemo_serializer.save()
+                    project_demo = get_object_or_404(ProjectDemo,id = projectDemo_serializer.data['id'])
+                    project.project_demos.add(project_demo)
+                    project.save()
+                    del data['project_demo']
+                else:
+                    return Response(projectDemo_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+            if "assigned_artist_payouts" in data:
+                calculation = PorjectCalculation(project, data)
+                if calculation:
+                    del data['assigned_artist_payouts']
             if project.stage == 'DreamProject':
-                if "assigned_artist_payouts" in data:
-                    calculation = PorjectCalculation(project, data)
-                    if calculation:
-                        del data['assigned_artist_payouts']
                 project_serializer = ProjectSerializer(instance=project,data = data)
                 if project_serializer.is_valid():
                     project_serializer.save()
@@ -259,10 +271,6 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    if "assigned_artist_payouts" in data:
-                        calculation = PorjectCalculation(project, data)
-                        if calculation:
-                            del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = data)
                     if project_serializer.is_valid():
                         project_serializer.save()
@@ -282,28 +290,35 @@ class EditProjectViewSet(viewsets.ModelViewSet):
         try:
             project = get_object_or_404(Project,pk=pk)
             data = request.data
+            if "project_demo" in data:
+                data['project_demo']['project'] = project.id
+                data['project_demo']['status'] = 'Selected'
+                projectDemo_serializer = ProjectDemoSerializer(data = data['project_demo'])
+                if projectDemo_serializer.is_valid():
+                    projectDemo_serializer.save()
+                    project_demo = get_object_or_404(ProjectDemo,id = projectDemo_serializer.data['id'])
+                    project.project_demos.add(project_demo)
+                    project.save()
+                    del data['project_demo']
+                else:
+                    return Response(projectDemo_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+            if "assigned_artist_payouts" in data:
+                calculation = PorjectCalculation(project, data)
+                if calculation:
+                    del data['assigned_artist_payouts']
             if project.stage == 'DreamProject':
-                if "assigned_artist_payouts" in data:
-                    calculation = PorjectCalculation(project, data)
-                    if calculation:
-                        del data['assigned_artist_payouts']
                 project_serializer = ProjectSerializer(instance=project,data = data)
                 if project_serializer.is_valid():
                     project_serializer.save()
                     return Response(project_serializer.data,status=status.HTTP_200_OK)
-                return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+                return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
             elif not request.user.is_anonymous:
                 if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    if "assigned_artist_payouts" in data:
-                        calculation = PorjectCalculation(project, data)
-                        if calculation:
-                            del data['assigned_artist_payouts']
                     project_serializer = ProjectSerializer(instance=project,data = request.data)
                     if project_serializer.is_valid():
                         project_serializer.save()
                         return Response(project_serializer.data,status=status.HTTP_200_OK)
-
-                    return Response(project_serializer.error_messages,status=status.HTTP_200_OK)
+                    return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
                 return Response({'error':"you don't have permission to update"},status=status.HTTP_400_BAD_REQUEST)
 
             return Response({'error':'user is not logged in or project is not dream project'},
@@ -439,7 +454,7 @@ class AllProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         role = Role.objects.get(user = self.request.user).role
         if role == 'Client':
-            return Project.objects.filter(client__user=self.request.user)
+            return Project.objects.filter(client__user=self.request.user).exclude(stage="DreamProject")
         elif role == 'Product Manager':
             return Project.objects.exclude(stage="DreamProject")
         return None
