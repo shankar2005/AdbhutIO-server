@@ -142,7 +142,7 @@ class ProjectDemo (models.Model):
     status = models.CharField(max_length=100, default='', blank=True,choices=PROJECT_DEMO_STATUS)
 
     def __str__(self):
-        return self.artist.name + "--" + self.project.name + "--" + " Demo"
+        return str(self.artist.name) + "--" + str(self.project.title) + "--" + " Demo"
 
 
 class Project(models.Model):

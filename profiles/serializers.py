@@ -57,6 +57,12 @@ class ProjectSerializerMini(serializers.ModelSerializer):
             'pk','title','name','stage','template',
         ]
 
+# ------------------------- project Demo Serializer ----------------------------
+class ProjectDemoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectDemo
+        fields = ['id','artist','demo_work','project','comment','status']
+
 
 #-------------------- project serializer ---------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
@@ -80,7 +86,16 @@ class ProjectSerializer(serializers.ModelSerializer):
         return [{'id':artist.id,'name':artist.name} for artist in obj.shortlisted_artists.all()]
     
     def get_assigned_artists_details(self,obj):
-        return [{'id':artist.id,'name':artist.name} for artist in obj.assigned_artists.all()]
+        artists = []
+        for artist in obj.assigned_artists.all():
+            artist_detail = {'id':artist.id,'name':artist.name}
+            artist_detail['project_demos'] =  [{
+                'demo_work':WorkFeedSerializer(project_demo.demo_work,many = False).data,
+                'comment':project_demo.comment,
+                'status':project_demo.status
+                } for project_demo in obj.project_demos.filter(artist = artist)]
+            artists.append(artist_detail)
+        return artists
 
     def get_name(self, obj):
         return obj.title or None
@@ -90,11 +105,11 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = [
             'pk','name','title','client','client_details','stage','brief','reference_links','template','shortlisted_artists_details',
             'shortlisted_artists','assigned_artists_details','production_solution','project_template','post_project_client_feedback',
-            'contract_status','solution_fee','production_advance','negotiated_advance','final_advance',
+            'project_demos','contract_status','solution_fee','production_advance','negotiated_advance','final_advance',
             'advance_status','assigned_artist_payouts','artist_payout_status','final_fee_settlement_status',
             'post_project_client_total_payout','project_fee_Status','artist_discussion_updates'
         ]
-        extra_kwargs = {'shortlisted_artists' : {'write_only':True}}
+        extra_kwargs = {'shortlisted_artists' : {'write_only':True},'project_demos':{'write_only':True}}
 #------------------------------------- project serializer end ---------------------------------------
 
 class TemplateProjectsSerializer(serializers.ModelSerializer):
