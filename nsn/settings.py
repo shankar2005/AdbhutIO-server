@@ -180,8 +180,10 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
-# cloud storage
 
+OPENAI_API_KEY = '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'
+
+# cloud storage
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # AWS_ACCESS_KEY_ID = "AKIARY2G35G2RQ5B45MI"
 # AWS_SECRET_ACCESS_KEY = "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"
