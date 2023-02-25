@@ -181,7 +181,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = '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'
 
 # cloud storage
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
