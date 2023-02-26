@@ -12,7 +12,7 @@ from django.contrib.auth.models import AnonymousUser
 import json
 
 # import the api key
-from django.conf import settings
+from decouple import config
 import openai
 
 
@@ -114,7 +114,7 @@ class CreateProjectView(APIView):
             message = request.data['message']
             project_id = request.data['project_id']
             model_id = "text-ada-001"
-            openai.api_key = settings.OPENAI_API_KEY
+            openai.api_key = config('OPENAI_API_KEY')
             project = get_object_or_404(Project,id = project_id)
             if project.brief in ["",None,"[]"]:
                 project.brief = f"[{json.dumps(message)}]"
@@ -141,7 +141,6 @@ class CreateProjectView(APIView):
             project_serializer = ProjectSerializer(instance=project,many = False)
             return Response({'project':project_serializer.data,'success':'Project is updated!'},
             status=status.HTTP_200_OK)
-
         except Exception as e:
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -627,24 +626,25 @@ class DemoView(APIView):
 # chatgpt integration
 class OpenAIViewSet(APIView):
     def post(self,request):
-        data = request.data
-        project = get_object_or_404(Project,id = data['project_id'])
-        model_id = "text-ada-001"
-        openai.api_key = settings.OPENAI_API_KEY
-        print(settings.OPENAI_API_KEY)
-        completion = openai.Completion.create(
-            prompt= project.brief,
-            max_tokens=1024,
-            n=1,
-            stop=None,
-            temperature=0.7,
-            model=model_id,
-        )
-        print(completion)
-        ans = completion.choices[0].text.strip()
-        NewMessage = {
-            'msgId':1,
-            'bot':ans,
-        }
-
-        return Response({'response':ans,'brief':project.brief},status= status.HTTP_200_OK)
+        try:
+            data = request.data
+            project = get_object_or_404(Project,id = data['project_id'])
+            model_id = "text-ada-001"
+            openai.api_key = config('OPENAI_API_KEY')
+            print(config('OPENAI_API_KEY'))
+            completion = openai.Completion.create(
+                prompt= project.brief,
+                max_tokens=1024,
+                n=1,
+                stop=None,
+                temperature=0.7,
+                model=model_id,
+            )
+            ans = completion.choices[0].text.strip()
+            NewMessage = {
+                'msgId':1,
+                'bot':ans,
+            }
+            return Response({'response':ans,'brief':project.brief},status= status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)

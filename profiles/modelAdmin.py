@@ -1,8 +1,9 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
 
 
 
-class TemplateProjectsAdmin(admin.ModelAdmin):
+class TemplateProjectsAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     filter_horizontal = ('skills',)
     fieldsets = [
         ("Work", {'fields': [
@@ -11,7 +12,7 @@ class TemplateProjectsAdmin(admin.ModelAdmin):
     ]
 
 
-class WorkAdmin(admin.ModelAdmin):
+class WorkAdmin(ImportExportModelAdmin,admin.ModelAdmin):
 
     fieldsets = [
         ("Work", {'fields': [
@@ -22,7 +23,7 @@ class WorkAdmin(admin.ModelAdmin):
     ]
 
 
-class ClientAdmin(admin.ModelAdmin):
+class ClientAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     filter_horizontal = ('projects', 'recommended_artists')
     fieldsets = [
         ("Contact", {'fields': [
@@ -39,7 +40,7 @@ class ClientAdmin(admin.ModelAdmin):
     ]
 
 
-class ArtistAdmin(admin.ModelAdmin):
+class ArtistAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     filter_horizontal = ('skill', 'genre', 'languages', 'works_links')
 
     fieldsets = [
@@ -71,7 +72,7 @@ class ArtistAdmin(admin.ModelAdmin):
     ]
 
 
-class ArtistFeedbackAdmin(admin.ModelAdmin):
+class ArtistFeedbackAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     fieldsets = [
         ("Feedback", {'fields': [
             "artist", "pre_project_feedbace", "on_project_feedback", "post_project_feedback"
@@ -79,7 +80,7 @@ class ArtistFeedbackAdmin(admin.ModelAdmin):
     ]
 
 
-class ProjectDemoAdmin(admin.ModelAdmin):
+class ProjectDemoAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     fieldsets = [
         ("Project", {'fields': [
             'artist', 'demo_work', 'project']}),
@@ -89,7 +90,7 @@ class ProjectDemoAdmin(admin.ModelAdmin):
     ]
 
 
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     list_filter = ('client',)
     filter_horizontal = ('shortlisted_artists','assigned_artists', 
     'showcase_demos', 'project_demos')
@@ -122,7 +123,7 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
 
-class ProjectFeeAdmin(admin.ModelAdmin):
+class ProjectFeeAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     fieldsets = [
         ("Project", {'fields': [
             'project', 'client', 'solution_fee'
@@ -140,7 +141,7 @@ class ProjectFeeAdmin(admin.ModelAdmin):
     ]
 
 
-class ArtistRequestAdmin(admin.ModelAdmin):
+class ArtistRequestAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     filter_horizontal = ('skill', 'genre', 'languages')
     fieldsets = [
         ("Brief", {'fields': [
@@ -152,4 +153,12 @@ class ArtistRequestAdmin(admin.ModelAdmin):
             'target', 'comments',  'hiring_status'
         ]})
 
+    ]
+
+class RoleAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+    list_filter = ('role',)
+    fieldsets = [
+        ("Role", {'fields': [
+            "user",  'role',
+        ]})
     ]
