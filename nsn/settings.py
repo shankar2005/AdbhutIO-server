@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_auth',
     'rest_auth.registration',
     'storages',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -179,9 +180,6 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 
 ]
-
-
-OPENAI_API_KEY = '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'
 
 # cloud storage
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
