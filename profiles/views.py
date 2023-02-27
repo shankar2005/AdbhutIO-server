@@ -117,7 +117,7 @@ class CreateProjectView(APIView):
             openai.api_key = config('OPENAI_API_KEY')
             project = get_object_or_404(Project,id = project_id)
             new_message = {
-                'message':message
+                'user':message
             }
             messageID = 1
             if project.brief in ["",None,"[]"]:
