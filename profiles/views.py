@@ -116,23 +116,19 @@ class CreateProjectView(APIView):
             model_id = "text-ada-001"
             openai.api_key = config('OPENAI_API_KEY')
             project = get_object_or_404(Project,id = project_id)
-            new_message = {
-                'user':message
-            }
-            messageID = 1
             if project.brief in ["",None,"[]"]:
-                new_message['msgID'] = messageID
-                project.brief = f"[{json.dumps(new_message)}]"
+                project.brief = f"[{json.dumps(message)}]"
             else:
-                json_object = project.brief.replace("'",'"')
-                json_object = json.loads(project.brief)
-                messageID = int(json_object[-1]['msgID']) + 1
-                new_message['msgID'] = messageID 
                 brief = project.brief[:-1]
-                brief += f",{json.dumps(new_message)}]"
+                brief += f",{json.dumps(message)}]"
                 project.brief = brief
+            message_content = ""
+            if 'message' in message:
+                message_content = message['message']
+            elif 'user' in message:
+                message_content = message['user']
             completion = openai.Completion.create(
-                prompt= message,
+                prompt= message_content,
                 max_tokens=1024,
                 n=1,
                 stop=None,
@@ -141,7 +137,7 @@ class CreateProjectView(APIView):
             )
             ans = completion.choices[0].text.strip()
             NewMessage = {
-                'msgID':messageID + 1,
+                'msgID':int(message['msgID']) + 1,
                 'bot':ans,
             }
             brief = project.brief[:-1]
