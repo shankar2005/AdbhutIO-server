@@ -116,7 +116,7 @@ class Artist(models.Model):
         upload_to=savenameLocationForAggreement, default='', blank=True)
 
     def __str__(self):
-        return self.name
+        return self.name + " " + str(self.id)
 
 
 class ArtistFeedback (models.Model):

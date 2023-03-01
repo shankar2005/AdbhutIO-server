@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import routers, serializers, viewsets, generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from django.http import JsonResponse
 from django_filters import Filter
 from rest_framework.views import APIView
 from rest_framework import permissions, status
@@ -34,9 +35,14 @@ class chatflowSkills(APIView):
     def post(self, request):
         try:
             data = request.data
+            print(data)
             artists = data['artists']
             product = data['product']
 
+            # ----------Testing--- ------------
+            print(artists)
+            print(product)
+            #----------------------------
             skills = []
             possible_projects = []
             # print intersecting skills of artists
@@ -109,17 +115,23 @@ class CreateProjectView(APIView):
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def patch(self,request,*args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         try:
+            # for testing (non logged in user| only message is passed in chatbox)
+            if 'project_id' not in request.data:
+                message = request.data['message']
+                return openai_response(message)
+
+            # ===================================================
+
             message = request.data['message']
             project_id = request.data['project_id']
-            model_id = "text-ada-001"
-            openai.api_key = config('OPENAI_API_KEY')
             project = get_object_or_404(Project,id = project_id)
             new_message = {
                 'user':message
             }
             messageID = 1
+
             if project.brief in ["",None,"[]"]:
                 new_message['msgID'] = messageID
                 project.brief = f"[{json.dumps(new_message)}]"
@@ -131,6 +143,9 @@ class CreateProjectView(APIView):
                 brief = project.brief[:-1]
                 brief += f",{json.dumps(new_message)}]"
                 project.brief = brief
+
+            model_id = "text-ada-001"
+            openai.api_key = config('OPENAI_API_KEY')
             completion = openai.Completion.create(
                 prompt= message,
                 max_tokens=1024,
@@ -474,8 +489,6 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
     queryset = ArtistRequest.objects.all()
 
 
-
-
 # ----------------------- all projects api -----------------------------
 class AllProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
@@ -635,15 +648,14 @@ class DemoView(APIView):
 
 # chatgpt integration
 class OpenAIViewSet(APIView):
-    def post(self,request):
+
+    def post(self, request):
         try:
-            data = request.data
-            project = get_object_or_404(Project,id = data['project_id'])
+            message = request.data['message']
             model_id = "text-ada-001"
             openai.api_key = config('OPENAI_API_KEY')
-            print(config('OPENAI_API_KEY'))
             completion = openai.Completion.create(
-                prompt= project.brief,
+                prompt= message,
                 max_tokens=1024,
                 n=1,
                 stop=None,
@@ -651,10 +663,11 @@ class OpenAIViewSet(APIView):
                 model=model_id,
             )
             ans = completion.choices[0].text.strip()
-            NewMessage = {
-                'msgId':1,
-                'bot':ans,
-            }
-            return Response({'response':ans,'brief':project.brief},status= status.HTTP_200_OK)
+            return JsonResponse({'response':ans}, safe=False) #, status= status.HTTP_200_OK)
+
         except Exception as e:
+            print("bad request happen")
             return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+           
+
+        
