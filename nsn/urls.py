@@ -26,10 +26,10 @@ router.register('edit_project', EditProjectViewSet, basename='edit_project')
 
 
 # ==================== product manager urls ==========================
-router.register('artist_feedback_action', ArtistFeedBackViewSet,basename='artist_feedback')
-router.register('project_fee_actions', ProjectFeeViewSet,basename='project_fee')
-router.register('artist_request_action', ArtistRequestViewSet,basename='artist_request')
-router.register('all_projects', AllProjectViewSet,basename='all_projects')
+router.register('artist_feedback_action', ArtistFeedBackViewSet, basename='artist_feedback')
+router.register('project_fee_actions', ProjectFeeViewSet, basename='project_fee')
+router.register('artist_request_action', ArtistRequestViewSet, basename='artist_request')
+router.register('all_projects', AllProjectViewSet, basename='all_projects')
 
 
 urlpatterns = [
