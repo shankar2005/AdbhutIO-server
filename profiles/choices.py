@@ -1,8 +1,8 @@
 # Description: This file contains the choices for the models in the nsn app
 ROLE_TYPE = (
-    ('Client','Client'),
-    ('Artist Manager','Artist Manager'),
-    ('Product Manager','Product Manager')
+    ('Client', 'Client'),
+    ('Artist Manager', 'Artist Manager'),
+    ('Product Manager', 'Product Manager')
 )
 # Base
 SKILLS = (
@@ -52,7 +52,7 @@ CLIENT_PAYOUT_STATUS = (
 
 PROJECT_DEMO_STATUS = (
     ('Selected', 'Selected'),
-    ('Shortlisted',   'Shortlisted'),
+    ('Shortlisted', 'Shortlisted'),
     ('Rejected', 'Rejected'),
 )
 
@@ -60,7 +60,7 @@ PROJECT_DEMO_STATUS = (
 PROJECT_STAGE = (
     ('DreamProject', 'DreamProject'),
     ('Lead', 'Lead'),
-    ('In Progress',   'In Progress'),
+    ('In Progress', 'In Progress'),
     ('Halt', 'Halt'),
     ('Finish', 'Finish')
 
@@ -75,7 +75,7 @@ PROJECT_FEE_STATUS = (
 
 
 PROJECT_ADVANCE_STATUS = (
-    ('Pending','Pending'),
+    ('Pending', 'Pending'),
     ('In Progress', 'In Progress'),
     ('Done', 'Done')
 )
@@ -97,7 +97,7 @@ BUDGET_RANGE = (
     ('<10k', 'Less Than 10,000'),
     ('10k-20k', '10K - 20k'),
     ('20K - 40k', '20k-40k'),
-    ('>40k',   'Above 40K'),
+    ('>40k', 'Above 40K'),
 )
 
 

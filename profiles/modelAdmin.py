@@ -2,29 +2,28 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
 
-
-class TemplateProjectsAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class TemplateProjectsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     filter_horizontal = ('skills',)
     fieldsets = [
         ("Work", {'fields': [
-            "name",  'details', "skills","weblink","file"
+            "name", 'details', "skills", "weblink", "file"
         ]})
     ]
 
 
-class WorkAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class WorkAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     fieldsets = [
         ("Work", {'fields': [
-            "owner",  'show_in_top_feed',
-             'demo_type',
-             ("weblink","file"), 
-             "is_demo", "from_client", "is_active",
+            "owner", 'show_in_top_feed',
+            'demo_type',
+            ("weblink", "file"),
+            "is_demo", "from_client", "is_active",
         ]})
     ]
 
 
-class ClientAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class ClientAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     filter_horizontal = ('projects', 'recommended_artists')
     fieldsets = [
         ("Contact", {'fields': [
@@ -41,7 +40,7 @@ class ClientAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     ]
 
 
-class ArtistAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     filter_horizontal = ('skill', 'genre', 'languages', 'works_links')
 
     fieldsets = [
@@ -73,7 +72,7 @@ class ArtistAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     ]
 
 
-class ArtistFeedbackAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class ArtistFeedbackAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fieldsets = [
         ("Feedback", {'fields': [
             "artist", "pre_project_feedbace", "on_project_feedback", "post_project_feedback"
@@ -81,7 +80,7 @@ class ArtistFeedbackAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     ]
 
 
-class ProjectDemoAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class ProjectDemoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fieldsets = [
         ("Project", {'fields': [
             'artist', 'demo_work', 'project']}),
@@ -91,18 +90,18 @@ class ProjectDemoAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     ]
 
 
-class ProjectAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class ProjectAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ('client',)
-    filter_horizontal = ('shortlisted_artists','assigned_artists', 
-    'showcase_demos', 'project_demos')
+    filter_horizontal = ('shortlisted_artists', 'assigned_artists',
+                         'showcase_demos', 'project_demos')
 
     fieldsets = (
-         ("Project Details", {
-            'fields': [('name','slug','title'),'client', ('stage','project_template')
-        ]}),
-         ("Brief", {
-            'fields': ['brief','reference_links','production_solution', 'comments','artist_discussion_updates'
-        ]}),
+        ("Project Details", {
+            'fields': [('name', 'slug', 'title'), 'client', ('stage', 'project_template')
+                       ]}),
+        ("Brief", {
+            'fields': ['brief', 'reference_links', 'production_solution', 'comments', 'artist_discussion_updates'
+                       ]}),
         ("Artist details", {'fields': [
             'shortlisted_artists', 'assigned_artists'
         ]}),
@@ -114,17 +113,17 @@ class ProjectAdmin(ImportExportModelAdmin,admin.ModelAdmin):
                 'post_project_client_feedback', 'contract_status'
             ]
         }),
-        ("project Fees",{
-            'fields':[
-               'assigned_artist_payouts',('solution_fee','production_advance'),('negotiated_advance','final_advance'),
-                ('advance_status','artist_payout_status'),'final_fee_settlement_status',
-                'post_project_client_total_payout','project_fee_Status'
+        ("project Fees", {
+            'fields': [
+                'assigned_artist_payouts', ('solution_fee', 'production_advance'), ('negotiated_advance', 'final_advance'),
+                ('advance_status', 'artist_payout_status'), 'final_fee_settlement_status',
+                'post_project_client_total_payout', 'project_fee_Status'
             ]
         })
     )
 
 
-class ProjectFeeAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class ProjectFeeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fieldsets = [
         ("Project", {'fields': [
             'project', 'client', 'solution_fee'
@@ -136,30 +135,31 @@ class ProjectFeeAdmin(ImportExportModelAdmin,admin.ModelAdmin):
         ('status', {
             'fields': [
                 'advance_status', 'assigned_artist_payouts', 'artist_payout_status',
-                'final_fee_settlement_status',   'project_fee_Status'
+                'final_fee_settlement_status', 'project_fee_Status'
             ]})
 
     ]
 
 
-class ArtistRequestAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+class ArtistRequestAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     filter_horizontal = ('skill', 'genre', 'languages')
     fieldsets = [
         ("Brief", {'fields': [
-            'skill', 'location', 'genre',  'languages'
+            'skill', 'location', 'genre', 'languages'
         ]}),
         ("Details", {'fields': [
             'other_performin_arts', 'budget_idea', 'budget_range', 'project',
             'production_hiring', 'service_hiring', 'shortlisted_artists', 'rejected_artists',
-            'target', 'comments',  'hiring_status'
+            'target', 'comments', 'hiring_status'
         ]})
 
     ]
 
-class RoleAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+
+class RoleAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     list_filter = ('role',)
     fieldsets = [
         ("Role", {'fields': [
-            "user",  'role',
+            "user", 'role',
         ]})
     ]

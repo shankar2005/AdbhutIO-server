@@ -13,7 +13,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-#ALLOWED_HOSTS = ['localhost']
+# ALLOWED_HOSTS = ['localhost']
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django_filters',
 
     # 'django_extensions',
+    'drf_spectacular',
     'tinymce',
     'rest_framework.authtoken',
     'corsheaders',
@@ -59,13 +60,13 @@ MIDDLEWARE = [
 ]
 
 # cors headers
-CORS_ALLOW_HEADERS = ('content-disposition', 
+CORS_ALLOW_HEADERS = ('content-disposition',
                       'accept-encoding',
-                      'content-type', 
-                      'accept', 
-                      'origin', 
-                      'authorization', 
-                      'authentication', 
+                      'content-type',
+                      'accept',
+                      'origin',
+                      'authorization',
+                      'authentication',
                       'Access-Control-Allow-Origin',
                       'enctype')
 
@@ -180,6 +181,19 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 
 ]
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Adbhut backend API',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
 
 # cloud storage
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

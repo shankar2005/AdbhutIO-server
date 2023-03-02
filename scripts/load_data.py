@@ -1,9 +1,11 @@
 # load data to django from a csv
 
 import csv
+
 from django.core.management.base import BaseCommand
-from profiles.models import Artist,  Work
+
 from misc.models import *
+from profiles.models import Artist, Work
 
 
 def run():
@@ -23,7 +25,7 @@ def run():
             language = row[2].split(',')
             location = row[3]
             name = row[6]
-            #profile = row[7]
+            # profile = row[7]
             bestWork = row[8]
             work2 = row[9]
             work3 = row[10]
@@ -73,7 +75,7 @@ def run():
             artist.location = location
 
             bestWork = Work.objects.create(
-                owner=artist, weblink=bestWork,  show_in_top_feed=True)
+                owner=artist, weblink=bestWork, show_in_top_feed=True)
             work2 = Work.objects.create(
                 owner=artist, weblink=work2)
             work3 = Work.objects.create(

@@ -13,4 +13,4 @@ def processChatbotData(data):
                 'data'
             ]}
 
-    return json.dumps({"nodes": newNode,  "edges": edges})
+    return json.dumps({"nodes": newNode, "edges": edges})

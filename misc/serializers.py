@@ -1,11 +1,13 @@
 from dataclasses import field
-from rest_framework import serializers
-from .models import *
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 
+from rest_framework import serializers
+
+from .models import *
 
 # Serializers define the API representation.
+
 
 class SkillSerializer(serializers.ModelSerializer):
 
@@ -39,6 +41,7 @@ class GenreSerializer(serializers.ModelSerializer):
             'name',
             'pk'
         ]
+
 
 class LanguageSerializers(serializers.ModelSerializer):
     class Meta:
