@@ -20,6 +20,7 @@ from .models import ChatGPTMessage
 # custom permissions
 from .customPermission import ArtistManagerPermisson,CustomPermissionForClientAndPM,ProductManagerPermission
 
+import os
 # serializers
 from .serializers import *
 
@@ -35,13 +36,12 @@ class chatflowSkills(APIView):
     def post(self, request):
         try:
             data = request.data
-            print(data)
             artists = data['artists']
             product = data['product']
 
             # ----------Testing--- ------------
-            print(artists)
-            print(product)
+            # print(artists)
+            # print(product)
             #----------------------------
             skills = []
             possible_projects = []
@@ -133,15 +133,20 @@ class CreateProjectView(APIView):
                 message_content = message['message']
             elif 'user' in message:
                 message_content = message['user']
+            # print(f'prompt -> {ChatGPTMessage.objects.last().message} {message_content}')
             completion = openai.Completion.create(
-                prompt= f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
+                prompt= f'{ChatGPTMessage.objects.last().message} {message_content}',
                 max_tokens=100,
                 n=1,
                 stop=None,
                 temperature=0.7,
                 model=model_id,
             )
+
             ans = completion.choices[0].text.strip()
+
+            if ans is "":
+                ans = "I don't understand. What did you say? Try with another message."
             NewMessage = {
                 'msgID':int(message['msgID']) + 1,
                 'bot':ans,
@@ -639,21 +644,27 @@ class OpenAIViewSet(APIView):
     def post(self, request):
         try:
             message = request.data['message']
+
             model_id = "text-ada-001"
             openai.api_key = config('OPENAI_API_KEY')
+
             completion = openai.Completion.create(
-                prompt= message,
-                max_tokens=1024,
+                prompt= f'{ChatGPTMessage.objects.last().message} {message}',
+                max_tokens=100,
                 n=1,
                 stop=None,
                 temperature=0.7,
                 model=model_id,
             )
             ans = completion.choices[0].text.strip()
+
+            if ans is "":
+                ans = "I don't understand. What did you say? Try with another message."
+                
             return JsonResponse({'response':ans}, safe=False) #, status= status.HTTP_200_OK)
 
         except Exception as e:
-            print("bad request happen")
+            print(e)
             return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
            
 
