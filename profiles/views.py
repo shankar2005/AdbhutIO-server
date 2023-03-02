@@ -134,8 +134,6 @@ class CreateProjectView(APIView):
             elif 'user' in message:
                 message_content = message['user']
             completion = openai.Completion.create(
-                prompt= message_content,
-                max_tokens=1024,
                 prompt= f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
                 max_tokens=100,
                 n=1,

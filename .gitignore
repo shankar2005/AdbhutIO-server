@@ -23,6 +23,10 @@ db.sqlite3
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
