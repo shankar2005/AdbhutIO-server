@@ -4,7 +4,7 @@
 *.pyc
 __pycache__
 db.sqlite3
-
+*.sqlite3
 # Backup files # 
 *.bak 
 
@@ -53,6 +53,9 @@ wheels/
 *.egg 
 *.manifest 
 *.spec 
+
+# sqlite file
+*.sqlite3
 
 # Installer logs 
 pip-log.txt 
