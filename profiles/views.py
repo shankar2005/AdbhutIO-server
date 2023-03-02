@@ -15,7 +15,7 @@ import json
 # import the api key
 from decouple import config
 import openai
-# from .models import ChatGPTMessage
+from .models import ChatGPTMessage
 
 # custom permissions
 from .customPermission import ArtistManagerPermisson,CustomPermissionForClientAndPM,ProductManagerPermission
@@ -115,31 +115,28 @@ class CreateProjectView(APIView):
             return Response({'error': 'Something went wrong', 'error_message': str(e)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self,request,*args, **kwargs):
         try:
-            # for testing (non logged in user| only message is passed in chatbox)
-            if 'project_id' not in request.data:
-                message = request.data['message']
-                return openai_response(message)
-
-            # ===================================================
-
             message = request.data['message']
             project_id = request.data['project_id']
+            model_id = "text-ada-001"
+            openai.api_key = config('OPENAI_API_KEY')
             project = get_object_or_404(Project,id = project_id)
-            new_message = {
-                'user':message
-            }
-            messageID = 1
-
             if project.brief in ["",None,"[]"]:
                 project.brief = f"[{json.dumps(message)}]"
             else:
                 brief = project.brief[:-1]
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
+            message_content = ""
+            if 'message' in message:
+                message_content = message['message']
+            elif 'user' in message:
+                message_content = message['user']
             completion = openai.Completion.create(
-                prompt= "How are you",                          # f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
+                prompt= message_content,
+                max_tokens=1024,
+                prompt= f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
                 max_tokens=100,
                 n=1,
                 stop=None,

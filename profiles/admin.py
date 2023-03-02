@@ -16,4 +16,4 @@ admin.site.register(ArtistRequest, ArtistRequestAdmin)
 admin.site.register(TemplateProjects, TemplateProjectsAdmin)
 
 admin.site.register(Manager)
-# admin.site.register(ChatGPTMessage)
+admin.site.register(ChatGPTMessage)
