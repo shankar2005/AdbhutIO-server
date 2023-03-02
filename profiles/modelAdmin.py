@@ -16,7 +16,8 @@ class WorkAdmin(ImportExportModelAdmin,admin.ModelAdmin):
 
     fieldsets = [
         ("Work", {'fields': [
-            "owner",  ('show_in_top_feed', 'demo_type'),
+            "owner",  'show_in_top_feed',
+             'demo_type',
              ("weblink","file"), 
              "is_demo", "from_client", "is_active",
         ]})
