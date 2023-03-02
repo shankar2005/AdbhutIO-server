@@ -15,7 +15,7 @@ import json
 # import the api key
 from decouple import config
 import openai
-from .models import ChatGPTMessage
+# from .models import ChatGPTMessage
 
 # custom permissions
 from .customPermission import ArtistManagerPermisson,CustomPermissionForClientAndPM,ProductManagerPermission
@@ -139,7 +139,7 @@ class CreateProjectView(APIView):
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
             completion = openai.Completion.create(
-                prompt= f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
+                prompt= "How are you",                          # f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
                 max_tokens=100,
                 n=1,
                 stop=None,
