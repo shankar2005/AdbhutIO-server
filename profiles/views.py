@@ -14,6 +14,7 @@ import json
 
 # import the api key
 from decouple import config
+# openAI package
 import openai
 from .models import ChatGPTMessage
 
