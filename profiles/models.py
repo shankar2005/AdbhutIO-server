@@ -251,8 +251,8 @@ class Manager (models.Model):
     def __str__(self):
         return self.name
 
-class ChatGPTMessage(models.Model):
-    message = models.TextField(default="")
+# class ChatGPTMessage(models.Model):
+#     message = models.TextField(default="")
 
-    def __str__(self):
-        return 'chatGPT message'
+#     def __str__(self):
+#         return 'chatGPT message'
