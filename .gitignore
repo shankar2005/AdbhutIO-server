@@ -11,6 +11,11 @@ db.sqlite3
 # AWS User-specific
 .idea/**/aws.xml
 
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+
+
 # Generated files
 .idea/**/contentModel.xml
 
@@ -105,7 +110,7 @@ venv.bak/
 
 # mkdocs documentation 
 /site 
-
+*.sqlite3
 # mypy 
 .mypy_cache/ 
 

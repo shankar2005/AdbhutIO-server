@@ -1,0 +1,3478 @@
+openapi: 3.0.3
+info:
+  title: Adbhut backend API
+  version: 1.0.0
+  description: Your project description
+paths:
+  /api/v1/all_projects/:
+    get:
+      operationId: api_v1_all_projects_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    post:
+      operationId: api_v1_all_projects_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+  /api/v1/all_projects/{id}/:
+    get:
+      operationId: api_v1_all_projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    put:
+      operationId: api_v1_all_projects_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    patch:
+      operationId: api_v1_all_projects_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    delete:
+      operationId: api_v1_all_projects_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/artist_action/:
+    get:
+      operationId: api_v1_artist_action_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistAction'
+          description: ''
+    post:
+      operationId: api_v1_artist_action_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistAction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistAction'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistAction'
+          description: ''
+    put:
+      operationId: api_v1_artist_action_update
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistAction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistAction'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistAction'
+          description: ''
+  /api/v1/artist_feedback_action/:
+    get:
+      operationId: api_v1_artist_feedback_action_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArtistFeedback'
+          description: ''
+    post:
+      operationId: api_v1_artist_feedback_action_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistFeedback'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistFeedback'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistFeedback'
+          description: ''
+  /api/v1/artist_feedback_action/{id}/:
+    get:
+      operationId: api_v1_artist_feedback_action_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist feedback.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistFeedback'
+          description: ''
+    put:
+      operationId: api_v1_artist_feedback_action_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist feedback.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistFeedback'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistFeedback'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistFeedback'
+          description: ''
+    patch:
+      operationId: api_v1_artist_feedback_action_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist feedback.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistFeedback'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistFeedback'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistFeedback'
+          description: ''
+    delete:
+      operationId: api_v1_artist_feedback_action_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist feedback.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/artist_request_action/:
+    get:
+      operationId: api_v1_artist_request_action_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArtistRequestSerializers'
+          description: ''
+    post:
+      operationId: api_v1_artist_request_action_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistRequestSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistRequestSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistRequestSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistRequestSerializers'
+          description: ''
+  /api/v1/artist_request_action/{id}/:
+    get:
+      operationId: api_v1_artist_request_action_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist request.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistRequestSerializers'
+          description: ''
+    put:
+      operationId: api_v1_artist_request_action_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist request.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistRequestSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistRequestSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistRequestSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistRequestSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_artist_request_action_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist request.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistRequestSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistRequestSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistRequestSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistRequestSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_artist_request_action_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist request.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/assign_artist/{projectId}/{artistId}/:
+    patch:
+      operationId: api_v1_assign_artist_partial_update
+      parameters:
+      - in: path
+        name: artistId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/assign_artist_action/{projectId}/:
+    patch:
+      operationId: api_v1_assign_artist_action_partial_update
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/login/:
+    post:
+      operationId: api_v1_auth_login_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/v1/auth/register/:
+    post:
+      operationId: api_v1_auth_register_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/user_details/:
+    get:
+      operationId: api_v1_auth_user_details_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/verify/:
+    post:
+      operationId: api_v1_auth_verify_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/chatflow_skills/:
+    post:
+      operationId: api_v1_chatflow_skills_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/create_new_project/:
+    post:
+      operationId: api_v1_create_new_project_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/create_project/:
+    post:
+      operationId: api_v1_create_project_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: api_v1_create_project_partial_update
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/decline_artist/{projectId}/{artistId}/:
+    patch:
+      operationId: api_v1_decline_artist_partial_update
+      parameters:
+      - in: path
+        name: artistId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/delete_project/{id}/:
+    delete:
+      operationId: api_v1_delete_project_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/demo/:
+    get:
+      operationId: api_v1_demo_retrieve
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/edit_project/:
+    get:
+      operationId: api_v1_edit_project_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+          description: ''
+    post:
+      operationId: api_v1_edit_project_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Project'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Project'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/v1/edit_project/{id}/:
+    get:
+      operationId: api_v1_edit_project_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    put:
+      operationId: api_v1_edit_project_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Project'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Project'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    patch:
+      operationId: api_v1_edit_project_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProject'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    delete:
+      operationId: api_v1_edit_project_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_artist/:
+    get:
+      operationId: api_v1_get_artist_list
+      parameters:
+      - in: query
+        name: languages
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
+        name: location
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: skill
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArtistProfile'
+          description: ''
+    post:
+      operationId: api_v1_get_artist_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistProfile'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistProfile'
+          description: ''
+  /api/v1/get_artist/{id}/:
+    get:
+      operationId: api_v1_get_artist_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistProfile'
+          description: ''
+    put:
+      operationId: api_v1_get_artist_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArtistProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ArtistProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ArtistProfile'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistProfile'
+          description: ''
+    patch:
+      operationId: api_v1_get_artist_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedArtistProfile'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistProfile'
+          description: ''
+    delete:
+      operationId: api_v1_get_artist_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_content_products/:
+    get:
+      operationId: api_v1_get_content_products_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemplateProjects'
+          description: ''
+    post:
+      operationId: api_v1_get_content_products_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateProjects'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TemplateProjects'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TemplateProjects'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateProjects'
+          description: ''
+  /api/v1/get_content_products/{id}/:
+    get:
+      operationId: api_v1_get_content_products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this template projects.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateProjects'
+          description: ''
+    put:
+      operationId: api_v1_get_content_products_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this template projects.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateProjects'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TemplateProjects'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TemplateProjects'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateProjects'
+          description: ''
+    patch:
+      operationId: api_v1_get_content_products_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this template projects.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTemplateProjects'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTemplateProjects'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTemplateProjects'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateProjects'
+          description: ''
+    delete:
+      operationId: api_v1_get_content_products_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this template projects.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_dreamproject/:
+    get:
+      operationId: api_v1_get_dreamproject_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    post:
+      operationId: api_v1_get_dreamproject_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+  /api/v1/get_dreamproject/{id}/:
+    get:
+      operationId: api_v1_get_dreamproject_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    put:
+      operationId: api_v1_get_dreamproject_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    patch:
+      operationId: api_v1_get_dreamproject_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    delete:
+      operationId: api_v1_get_dreamproject_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_feed/:
+    get:
+      operationId: api_v1_get_feed_list
+      parameters:
+      - in: query
+        name: demo_type
+        schema:
+          type: string
+          enum:
+          - Image
+          - Instagram Link
+          - Other Document
+          - Soundcloud Link
+          - Video
+          - Youtube Link
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: owner
+        schema:
+          type: integer
+      - in: query
+        name: owner__location
+        schema:
+          type: integer
+      - in: query
+        name: owner__skill
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
+        name: owner__skill__genres
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: show_in_top_feed
+        schema:
+          type: boolean
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWorkFeedList'
+          description: ''
+    post:
+      operationId: api_v1_get_feed_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+  /api/v1/get_feed/{id}/:
+    get:
+      operationId: api_v1_get_feed_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this work.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+    put:
+      operationId: api_v1_get_feed_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this work.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+    patch:
+      operationId: api_v1_get_feed_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this work.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkFeed'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkFeed'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkFeed'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+    delete:
+      operationId: api_v1_get_feed_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this work.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_languages/:
+    get:
+      operationId: api_v1_get_languages_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LanguageSerializers'
+          description: ''
+    post:
+      operationId: api_v1_get_languages_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LanguageSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LanguageSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LanguageSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LanguageSerializers'
+          description: ''
+  /api/v1/get_languages/{id}/:
+    get:
+      operationId: api_v1_get_languages_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LanguageSerializers'
+          description: ''
+    put:
+      operationId: api_v1_get_languages_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LanguageSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LanguageSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LanguageSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LanguageSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_get_languages_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLanguageSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLanguageSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLanguageSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LanguageSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_get_languages_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_location/:
+    get:
+      operationId: api_v1_get_location_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+          description: ''
+    post:
+      operationId: api_v1_get_location_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Location'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Location'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+  /api/v1/get_location/{id}/:
+    get:
+      operationId: api_v1_get_location_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+    put:
+      operationId: api_v1_get_location_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Location'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Location'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+    patch:
+      operationId: api_v1_get_location_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLocation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLocation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLocation'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+          description: ''
+    delete:
+      operationId: api_v1_get_location_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this location.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_my_projects/:
+    get:
+      operationId: api_v1_get_my_projects_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    post:
+      operationId: api_v1_get_my_projects_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+  /api/v1/get_my_projects/{id}/:
+    get:
+      operationId: api_v1_get_my_projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    put:
+      operationId: api_v1_get_my_projects_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    patch:
+      operationId: api_v1_get_my_projects_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectSerializerMini'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSerializerMini'
+          description: ''
+    delete:
+      operationId: api_v1_get_my_projects_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_recommendations/:
+    get:
+      operationId: api_v1_get_recommendations_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWorkFeedList'
+          description: ''
+    post:
+      operationId: api_v1_get_recommendations_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+  /api/v1/get_recommendations/{id}/:
+    get:
+      operationId: api_v1_get_recommendations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+    put:
+      operationId: api_v1_get_recommendations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WorkFeed'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+    patch:
+      operationId: api_v1_get_recommendations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkFeed'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkFeed'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedWorkFeed'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkFeed'
+          description: ''
+    delete:
+      operationId: api_v1_get_recommendations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/get_skill/:
+    get:
+      operationId: api_v1_get_skill_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
+          description: ''
+    post:
+      operationId: api_v1_get_skill_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Skill'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Skill'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Skill'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+          description: ''
+  /api/v1/get_skill/{id}/:
+    get:
+      operationId: api_v1_get_skill_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this skill.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+          description: ''
+    put:
+      operationId: api_v1_get_skill_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this skill.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Skill'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Skill'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Skill'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+          description: ''
+    patch:
+      operationId: api_v1_get_skill_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this skill.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSkill'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSkill'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSkill'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+          description: ''
+    delete:
+      operationId: api_v1_get_skill_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this skill.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/openai/:
+    post:
+      operationId: api_v1_openai_create
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/project_fee_actions/:
+    get:
+      operationId: api_v1_project_fee_actions_list
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectFeeSerializers'
+          description: ''
+    post:
+      operationId: api_v1_project_fee_actions_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectFeeSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectFeeSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectFeeSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFeeSerializers'
+          description: ''
+  /api/v1/project_fee_actions/{id}/:
+    get:
+      operationId: api_v1_project_fee_actions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project fee.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFeeSerializers'
+          description: ''
+    put:
+      operationId: api_v1_project_fee_actions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project fee.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectFeeSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectFeeSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectFeeSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFeeSerializers'
+          description: ''
+    patch:
+      operationId: api_v1_project_fee_actions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project fee.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectFeeSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectFeeSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectFeeSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFeeSerializers'
+          description: ''
+    delete:
+      operationId: api_v1_project_fee_actions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project fee.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/shortlist_artist/{projectId}/{artistId}/:
+    patch:
+      operationId: api_v1_shortlist_artist_partial_update
+      parameters:
+      - in: path
+        name: artistId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/unassign_artist/{projectId}/{artistId}/:
+    patch:
+      operationId: api_v1_unassign_artist_partial_update
+      parameters:
+      - in: path
+        name: artistId
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/update_title/{id}/:
+    patch:
+      operationId: api_v1_update_title_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    AdvanceStatusEnum:
+      enum:
+      - Pending
+      - In Progress
+      - Done
+      type: string
+    ArtistAction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        profile_pic:
+          type: string
+          format: uri
+        location:
+          type: integer
+          nullable: true
+        age:
+          type: integer
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        phone:
+          type: integer
+        skill:
+          type: array
+          items:
+            type: integer
+        genre:
+          type: array
+          items:
+            type: integer
+        languages:
+          type: array
+          items:
+            type: integer
+        works_links:
+          type: array
+          items:
+            type: integer
+        social_links:
+          type: string
+          maxLength: 200
+        has_manager:
+          type: boolean
+        manager:
+          type: integer
+          nullable: true
+        budget_idea:
+          type: string
+        am_notes:
+          type: string
+        professional_rating:
+          type: integer
+        attitude_rating:
+          type: integer
+      required:
+      - id
+    ArtistFeedback:
+      type: object
+      properties:
+        artist:
+          type: integer
+          nullable: true
+        artist_details:
+          type: string
+          readOnly: true
+        pre_project_feedbace:
+          type: string
+        on_project_feedback:
+          type: string
+        post_project_feedback:
+          type: string
+      required:
+      - artist_details
+    ArtistPayoutStatusEnum:
+      enum:
+      - In Progress
+      - Advance Payment Done
+      - Full Payment Done
+      type: string
+    ArtistProfile:
+      type: object
+      properties:
+        artistID:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        profile_pic:
+          type: string
+          format: uri
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        phone:
+          type: integer
+        skills:
+          type: string
+          readOnly: true
+        location:
+          type: integer
+          nullable: true
+        language:
+          type: string
+          readOnly: true
+        location_name:
+          type: string
+          readOnly: true
+        budget_range:
+          oneOf:
+          - $ref: '#/components/schemas/BudgetRangeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        social:
+          type: string
+          readOnly: true
+        has_manager:
+          type: boolean
+        manager:
+          type: string
+          readOnly: true
+        workLinks:
+          type: string
+          readOnly: true
+      required:
+      - artistID
+      - language
+      - location_name
+      - manager
+      - skills
+      - social
+      - workLinks
+    ArtistRequestSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        skill:
+          type: array
+          items:
+            type: integer
+        skills_details:
+          type: string
+          readOnly: true
+        location:
+          type: integer
+          nullable: true
+        location_details:
+          type: string
+          readOnly: true
+        genre:
+          type: array
+          items:
+            type: integer
+        genre_details:
+          type: string
+          readOnly: true
+        languages:
+          type: array
+          items:
+            type: integer
+        languages_details:
+          type: string
+          readOnly: true
+        other_performin_arts:
+          type: string
+        budget_idea:
+          type: string
+        project:
+          type: integer
+          nullable: true
+        project_details:
+          type: string
+          readOnly: true
+        production_hiring:
+          type: integer
+        shortlisted_artists:
+          type: array
+          items:
+            type: integer
+        shortlisted_artists_details:
+          type: string
+          readOnly: true
+        rejected_artists:
+          type: array
+          items:
+            type: integer
+        rejected_artists_details:
+          type: string
+          readOnly: true
+      required:
+      - genre_details
+      - id
+      - languages_details
+      - location_details
+      - project_details
+      - rejected_artists_details
+      - shortlisted_artists_details
+      - skills_details
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - password
+      - token
+      - username
+    BlankEnum:
+      enum:
+      - ''
+    BudgetRangeEnum:
+      enum:
+      - <10k
+      - 10k-20k
+      - 20K - 40k
+      - '>40k'
+      type: string
+    DemoTypeEnum:
+      enum:
+      - Instagram Link
+      - Youtube Link
+      - Soundcloud Link
+      - Image
+      - Video
+      - Other Document
+      type: string
+    LanguageSerializers:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 100
+      required:
+      - pk
+    Location:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+      required:
+      - pk
+    PaginatedWorkFeedList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkFeed'
+    PatchedArtistFeedback:
+      type: object
+      properties:
+        artist:
+          type: integer
+          nullable: true
+        artist_details:
+          type: string
+          readOnly: true
+        pre_project_feedbace:
+          type: string
+        on_project_feedback:
+          type: string
+        post_project_feedback:
+          type: string
+    PatchedArtistProfile:
+      type: object
+      properties:
+        artistID:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        profile_pic:
+          type: string
+          format: uri
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        phone:
+          type: integer
+        skills:
+          type: string
+          readOnly: true
+        location:
+          type: integer
+          nullable: true
+        language:
+          type: string
+          readOnly: true
+        location_name:
+          type: string
+          readOnly: true
+        budget_range:
+          oneOf:
+          - $ref: '#/components/schemas/BudgetRangeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        social:
+          type: string
+          readOnly: true
+        has_manager:
+          type: boolean
+        manager:
+          type: string
+          readOnly: true
+        workLinks:
+          type: string
+          readOnly: true
+    PatchedArtistRequestSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        skill:
+          type: array
+          items:
+            type: integer
+        skills_details:
+          type: string
+          readOnly: true
+        location:
+          type: integer
+          nullable: true
+        location_details:
+          type: string
+          readOnly: true
+        genre:
+          type: array
+          items:
+            type: integer
+        genre_details:
+          type: string
+          readOnly: true
+        languages:
+          type: array
+          items:
+            type: integer
+        languages_details:
+          type: string
+          readOnly: true
+        other_performin_arts:
+          type: string
+        budget_idea:
+          type: string
+        project:
+          type: integer
+          nullable: true
+        project_details:
+          type: string
+          readOnly: true
+        production_hiring:
+          type: integer
+        shortlisted_artists:
+          type: array
+          items:
+            type: integer
+        shortlisted_artists_details:
+          type: string
+          readOnly: true
+        rejected_artists:
+          type: array
+          items:
+            type: integer
+        rejected_artists_details:
+          type: string
+          readOnly: true
+    PatchedLanguageSerializers:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 100
+    PatchedLocation:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+    PatchedProject:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          nullable: true
+          readOnly: true
+        title:
+          type: string
+          nullable: true
+          maxLength: 500
+        client:
+          type: integer
+          nullable: true
+        client_details:
+          type: string
+          readOnly: true
+        stage:
+          oneOf:
+          - $ref: '#/components/schemas/StageEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        brief:
+          type: string
+        reference_links:
+          type: string
+        template:
+          type: string
+          readOnly: true
+        shortlisted_artists_details:
+          type: string
+          readOnly: true
+        shortlisted_artists:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        assigned_artists_details:
+          type: string
+          readOnly: true
+        production_solution:
+          type: string
+        project_template:
+          type: integer
+          nullable: true
+        post_project_client_feedback:
+          type: string
+        project_demos:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        contract_status:
+          type: boolean
+        solution_fee:
+          type: number
+          format: double
+        production_advance:
+          type: number
+          format: double
+        negotiated_advance:
+          type: number
+          format: double
+        final_advance:
+          type: number
+          format: double
+        advance_status:
+          oneOf:
+          - $ref: '#/components/schemas/AdvanceStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        assigned_artist_payouts:
+          type: number
+          format: double
+          nullable: true
+        artist_payout_status:
+          $ref: '#/components/schemas/ArtistPayoutStatusEnum'
+        final_fee_settlement_status:
+          type: boolean
+        post_project_client_total_payout:
+          type: number
+          format: double
+        project_fee_Status:
+          oneOf:
+          - $ref: '#/components/schemas/ProjectFeeStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        artist_discussion_updates:
+          type: string
+          nullable: true
+    PatchedProjectFeeSerializers:
+      type: object
+      properties:
+        project:
+          type: integer
+          nullable: true
+        client:
+          type: integer
+          nullable: true
+        project_details:
+          type: string
+          readOnly: true
+        solution_fee:
+          type: number
+          format: double
+        production_advance:
+          type: number
+          format: double
+        negotiated_advance:
+          type: number
+          format: double
+        advance_status:
+          oneOf:
+          - $ref: '#/components/schemas/AdvanceStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        final_advance:
+          type: number
+          format: double
+        project_fee_Status:
+          oneOf:
+          - $ref: '#/components/schemas/ProjectFeeStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        assigned_artist_payouts:
+          type: array
+          items:
+            type: integer
+        assigned_artist_payouts_details:
+          type: string
+          readOnly: true
+        artist_payout_status:
+          $ref: '#/components/schemas/ArtistPayoutStatusEnum'
+        final_fee_settlement_status:
+          type: boolean
+        post_project_client_total_payout:
+          type: number
+          format: double
+    PatchedProjectSerializerMini:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        title:
+          type: string
+          nullable: true
+          maxLength: 500
+        name:
+          type: string
+          nullable: true
+          readOnly: true
+        stage:
+          oneOf:
+          - $ref: '#/components/schemas/StageEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        template:
+          type: string
+          readOnly: true
+    PatchedSkill:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        genre:
+          type: string
+          readOnly: true
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+    PatchedTemplateProjects:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 100
+        details:
+          type: string
+        skills:
+          type: string
+          readOnly: true
+        weblink:
+          type: string
+          format: uri
+          maxLength: 100
+        file:
+          type: string
+          format: uri
+    PatchedWorkFeed:
+      type: object
+      properties:
+        weblink:
+          type: string
+          format: uri
+          maxLength: 100
+        file:
+          type: string
+          format: uri
+        demo_type:
+          oneOf:
+          - $ref: '#/components/schemas/DemoTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        owner_name:
+          type: string
+          readOnly: true
+        owner_id:
+          type: string
+          readOnly: true
+        details:
+          type: string
+        name:
+          type: string
+          maxLength: 100
+        skills:
+          type: string
+          readOnly: true
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+    Project:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          nullable: true
+          readOnly: true
+        title:
+          type: string
+          nullable: true
+          maxLength: 500
+        client:
+          type: integer
+          nullable: true
+        client_details:
+          type: string
+          readOnly: true
+        stage:
+          oneOf:
+          - $ref: '#/components/schemas/StageEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        brief:
+          type: string
+        reference_links:
+          type: string
+        template:
+          type: string
+          readOnly: true
+        shortlisted_artists_details:
+          type: string
+          readOnly: true
+        shortlisted_artists:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        assigned_artists_details:
+          type: string
+          readOnly: true
+        production_solution:
+          type: string
+        project_template:
+          type: integer
+          nullable: true
+        post_project_client_feedback:
+          type: string
+        project_demos:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        contract_status:
+          type: boolean
+        solution_fee:
+          type: number
+          format: double
+        production_advance:
+          type: number
+          format: double
+        negotiated_advance:
+          type: number
+          format: double
+        final_advance:
+          type: number
+          format: double
+        advance_status:
+          oneOf:
+          - $ref: '#/components/schemas/AdvanceStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        assigned_artist_payouts:
+          type: number
+          format: double
+          nullable: true
+        artist_payout_status:
+          $ref: '#/components/schemas/ArtistPayoutStatusEnum'
+        final_fee_settlement_status:
+          type: boolean
+        post_project_client_total_payout:
+          type: number
+          format: double
+        project_fee_Status:
+          oneOf:
+          - $ref: '#/components/schemas/ProjectFeeStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        artist_discussion_updates:
+          type: string
+          nullable: true
+      required:
+      - assigned_artists_details
+      - client_details
+      - name
+      - pk
+      - shortlisted_artists_details
+      - template
+    ProjectFeeSerializers:
+      type: object
+      properties:
+        project:
+          type: integer
+          nullable: true
+        client:
+          type: integer
+          nullable: true
+        project_details:
+          type: string
+          readOnly: true
+        solution_fee:
+          type: number
+          format: double
+        production_advance:
+          type: number
+          format: double
+        negotiated_advance:
+          type: number
+          format: double
+        advance_status:
+          oneOf:
+          - $ref: '#/components/schemas/AdvanceStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        final_advance:
+          type: number
+          format: double
+        project_fee_Status:
+          oneOf:
+          - $ref: '#/components/schemas/ProjectFeeStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        assigned_artist_payouts:
+          type: array
+          items:
+            type: integer
+        assigned_artist_payouts_details:
+          type: string
+          readOnly: true
+        artist_payout_status:
+          $ref: '#/components/schemas/ArtistPayoutStatusEnum'
+        final_fee_settlement_status:
+          type: boolean
+        post_project_client_total_payout:
+          type: number
+          format: double
+      required:
+      - assigned_artist_payouts_details
+      - project_details
+    ProjectFeeStatusEnum:
+      enum:
+      - Unpaid
+      - Partially Paid
+      - Paid
+      type: string
+    ProjectSerializerMini:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        title:
+          type: string
+          nullable: true
+          maxLength: 500
+        name:
+          type: string
+          nullable: true
+          readOnly: true
+        stage:
+          oneOf:
+          - $ref: '#/components/schemas/StageEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        template:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - template
+    Skill:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        genre:
+          type: string
+          readOnly: true
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+      required:
+      - genre
+      - pk
+    StageEnum:
+      enum:
+      - DreamProject
+      - Lead
+      - In Progress
+      - Halt
+      - Finish
+      type: string
+    TemplateProjects:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 100
+        details:
+          type: string
+        skills:
+          type: string
+          readOnly: true
+        weblink:
+          type: string
+          format: uri
+          maxLength: 100
+        file:
+          type: string
+          format: uri
+      required:
+      - pk
+      - skills
+    WorkFeed:
+      type: object
+      properties:
+        weblink:
+          type: string
+          format: uri
+          maxLength: 100
+        file:
+          type: string
+          format: uri
+        demo_type:
+          oneOf:
+          - $ref: '#/components/schemas/DemoTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        owner_name:
+          type: string
+          readOnly: true
+        owner_id:
+          type: string
+          readOnly: true
+        details:
+          type: string
+        name:
+          type: string
+          maxLength: 100
+        skills:
+          type: string
+          readOnly: true
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+      required:
+      - owner_id
+      - owner_name
+      - pk
+      - skills
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
