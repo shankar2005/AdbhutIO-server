@@ -13,16 +13,17 @@ class ClientSerializer(serializers.ModelSerializer):
     user_details = serializers.SerializerMethodField()
 
     def get_user_details(self, obj):
-        return {'username': obj.user.username}
+        return {"username": obj.user.username}
 
     class Meta:
         model = Client
-        fields = ['name', 'email', 'user_details']
+        fields = ["name", "email", "user_details"]
 
 
 class WorkFeedSerializer(serializers.ModelSerializer):
     def get_skills(self, obj):
         return [skill.name for skill in obj.owner.skill.all()]
+
     owner_name = serializers.SerializerMethodField()
     owner_id = serializers.SerializerMethodField()
     skills = serializers.SerializerMethodField()
@@ -36,14 +37,22 @@ class WorkFeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Work
         fields = [
-            'weblink', 'file', 'demo_type', 'owner_name', 'owner_id', 'details', 'name', 'skills', 'pk'
+            "weblink",
+            "file",
+            "demo_type",
+            "owner_name",
+            "owner_id",
+            "details",
+            "name",
+            "skills",
+            "pk",
         ]
 
 
 # ===================== project serializers ===================================
 
-class ProjectSerializerMini(serializers.ModelSerializer):
 
+class ProjectSerializerMini(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
 
@@ -58,8 +67,13 @@ class ProjectSerializerMini(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'pk', 'title', 'name', 'stage', 'template',
+            "pk",
+            "title",
+            "name",
+            "stage",
+            "template",
         ]
+
 
 # ------------------------- project Demo Serializer ----------------------------
 
@@ -67,7 +81,7 @@ class ProjectSerializerMini(serializers.ModelSerializer):
 class ProjectDemoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDemo
-        fields = ['id', 'artist', 'demo_work', 'project', 'comment', 'status']
+        fields = ["id", "artist", "demo_work", "project", "comment", "status"]
 
 
 # -------------------- project serializer ---------------------------------------
@@ -85,21 +99,33 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_client_details(self, obj):
         if obj.client is not None:
-            return {'id': obj.client.id, 'name': obj.client.name, 'email': obj.client.name}
+            return {
+                "id": obj.client.id,
+                "name": obj.client.name,
+                "email": obj.client.name,
+            }
         return None
 
     def get_shortlisted_artists_details(self, obj):
-        return [{'id': artist.id, 'name': artist.name} for artist in obj.shortlisted_artists.all()]
+        return [
+            {"id": artist.id, "name": artist.name}
+            for artist in obj.shortlisted_artists.all()
+        ]
 
     def get_assigned_artists_details(self, obj):
         artists = []
         for artist in obj.assigned_artists.all():
-            artist_detail = {'id': artist.id, 'name': artist.name}
-            artist_detail['project_demos'] = [{
-                'demo_work': WorkFeedSerializer(project_demo.demo_work, many=False).data,
-                'comment': project_demo.comment,
-                'status': project_demo.status
-            } for project_demo in obj.project_demos.filter(artist=artist)]
+            artist_detail = {"id": artist.id, "name": artist.name}
+            artist_detail["project_demos"] = [
+                {
+                    "demo_work": WorkFeedSerializer(
+                        project_demo.demo_work, many=False
+                    ).data,
+                    "comment": project_demo.comment,
+                    "status": project_demo.status,
+                }
+                for project_demo in obj.project_demos.filter(artist=artist)
+            ]
             artists.append(artist_detail)
         return artists
 
@@ -109,31 +135,60 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'pk', 'name', 'title', 'client', 'client_details', 'stage', 'brief', 'reference_links', 'template', 'shortlisted_artists_details',
-            'shortlisted_artists', 'assigned_artists_details', 'production_solution', 'project_template', 'post_project_client_feedback',
-            'project_demos', 'contract_status', 'solution_fee', 'production_advance', 'negotiated_advance', 'final_advance',
-            'advance_status', 'assigned_artist_payouts', 'artist_payout_status', 'final_fee_settlement_status',
-            'post_project_client_total_payout', 'project_fee_Status', 'artist_discussion_updates'
+            "pk",
+            "name",
+            "title",
+            "client",
+            "client_details",
+            "stage",
+            "brief",
+            "reference_links",
+            "template",
+            "shortlisted_artists_details",
+            "shortlisted_artists",
+            "assigned_artists_details",
+            "production_solution",
+            "project_template",
+            "post_project_client_feedback",
+            "project_demos",
+            "contract_status",
+            "solution_fee",
+            "production_advance",
+            "negotiated_advance",
+            "final_advance",
+            "advance_status",
+            "assigned_artist_payouts",
+            "artist_payout_status",
+            "final_fee_settlement_status",
+            "post_project_client_total_payout",
+            "project_fee_Status",
+            "artist_discussion_updates",
         ]
-        extra_kwargs = {'shortlisted_artists' : {'write_only': True}, 'project_demos': {'write_only': True}}
+        extra_kwargs = {
+            "shortlisted_artists": {"write_only": True},
+            "project_demos": {"write_only": True},
+        }
+
+
 # ------------------------------------- project serializer end ---------------------------------------
 
 
 class TemplateProjectsSerializer(serializers.ModelSerializer):
     def get_skills(self, obj):
         return [skill.name for skill in obj.skills.all()]
+
     skills = serializers.SerializerMethodField()
 
     class Meta:
         model = TemplateProjects
-        fields = [
-            'pk', 'name', 'details', 'skills', 'weblink', 'file'
-        ]
+        fields = ["pk", "name", "details", "skills", "weblink", "file"]
+
 
 # ===================== project serializers end ===================================
 
 
 # ====================== artist manager serializers ===========================
+
 
 def social_link_filter(self, obj):
     q = {}
@@ -165,6 +220,7 @@ def social_link_filter(self, obj):
 
     return q
 
+
 # update the artist
 
 
@@ -177,7 +233,11 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 
     def get_manager(self, obj):
         if obj.has_manager and obj.manager:
-            return {'name': obj.manager.name, 'email': obj.manager.email, 'phone': obj.manager.phone}
+            return {
+                "name": obj.manager.name,
+                "email": obj.manager.email,
+                "phone": obj.manager.phone,
+            }
         else:
             return []
 
@@ -188,7 +248,9 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         return obj.pk
 
     def get_workLinks(self, obj):
-        return [[work.weblink, work.demo_type, work.id] for work in obj.works_links.all()]
+        return [
+            [work.weblink, work.demo_type, work.id] for work in obj.works_links.all()
+        ]
 
     def get_location_name(self, obj):
         if obj.location is not None:
@@ -205,9 +267,22 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Artist
-        fields = ["artistID", "name", "profile_pic", "email", "phone", "skills", "location", "language", "location_name",
-                  'budget_range', 'social', 'has_manager', "manager", "workLinks"
-                  ]
+        fields = [
+            "artistID",
+            "name",
+            "profile_pic",
+            "email",
+            "phone",
+            "skills",
+            "location",
+            "language",
+            "location_name",
+            "budget_range",
+            "social",
+            "has_manager",
+            "manager",
+            "workLinks",
+        ]
 
 
 class ArtistFilterSerializer(serializers.ModelSerializer):
@@ -227,7 +302,11 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
 
     def get_manager(self, obj):
         if obj.has_manager and obj.manager:
-            return {'name': obj.manager.name, 'email': obj.manager.email, 'phone': obj.manager.phone}
+            return {
+                "name": obj.manager.name,
+                "email": obj.manager.email,
+                "phone": obj.manager.phone,
+            }
         else:
             return []
 
@@ -235,33 +314,70 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
         return [language.name for language in obj.languages.all()]
 
     def get_works_links(self, obj):
-        return [[work.weblink, work.demo_type, work.id] for work in obj.works_links.all()]
+        return [
+            [work.weblink, work.demo_type, work.id] for work in obj.works_links.all()
+        ]
 
     def get_location(self, obj):
         if obj.location is not None:
-            return {'id': obj.location.id, 'name': obj.location.name}
+            return {"id": obj.location.id, "name": obj.location.name}
         return None
 
     def get_genre(self, obj):
-        return [{'id': gen.id, 'name': gen.name} for gen in obj.genre.all()]
+        return [{"id": gen.id, "name": gen.name} for gen in obj.genre.all()]
 
     class Meta:
         model = Artist
-        fields = ['id', 'name', 'age', 'email', 'phone', 'skills', 'location', 'genre', 'languages', 'works_links', 'social_links',
-                  'has_manager', 'manager', 'budget_idea', 'am_notes', 'professional_rating', 'attitude_rating']
+        fields = [
+            "id",
+            "name",
+            "age",
+            "email",
+            "phone",
+            "skills",
+            "location",
+            "genre",
+            "languages",
+            "works_links",
+            "social_links",
+            "has_manager",
+            "manager",
+            "budget_idea",
+            "am_notes",
+            "professional_rating",
+            "attitude_rating",
+        ]
 
 
 class ManagerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manager
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ArtistActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
-        fields = ["id", "name", "profile_pic", "location", "age", "email", "phone", "skill", "genre", "languages", "works_links", "social_links",
-                  "has_manager", "manager", "budget_idea", "am_notes", "professional_rating", "attitude_rating"]
+        fields = [
+            "id",
+            "name",
+            "profile_pic",
+            "location",
+            "age",
+            "email",
+            "phone",
+            "skill",
+            "genre",
+            "languages",
+            "works_links",
+            "social_links",
+            "has_manager",
+            "manager",
+            "budget_idea",
+            "am_notes",
+            "professional_rating",
+            "attitude_rating",
+        ]
 
 
 # ====================== product manager serializers ===========================
@@ -270,12 +386,18 @@ class ArtistFeedbackSerializer(serializers.ModelSerializer):
 
     def get_artist_details(self, obj):
         if obj.artist is not None:
-            return {'id': obj.artist.id, 'name': obj.artist.name}
+            return {"id": obj.artist.id, "name": obj.artist.name}
         return None
 
     class Meta:
         model = ArtistFeedback
-        fields = ['artist', 'artist_details', 'pre_project_feedbace', 'on_project_feedback', 'post_project_feedback']
+        fields = [
+            "artist",
+            "artist_details",
+            "pre_project_feedbace",
+            "on_project_feedback",
+            "post_project_feedback",
+        ]
 
 
 class ProjectFeeSerializers(serializers.ModelSerializer):
@@ -284,17 +406,38 @@ class ProjectFeeSerializers(serializers.ModelSerializer):
 
     def get_project_details(self, obj):
         if obj.project is not None:
-            return {'id': obj.project.id, 'project': str(obj.project), 'brief': obj.project.brief}
+            return {
+                "id": obj.project.id,
+                "project": str(obj.project),
+                "brief": obj.project.brief,
+            }
         return None
 
     def get_assigned_artist_payouts_details(self, obj):
-        return [{'id': artist.id, 'name': artist.name} for artist in obj.assigned_artist_payouts.all()]
+        return [
+            {"id": artist.id, "name": artist.name}
+            for artist in obj.assigned_artist_payouts.all()
+        ]
 
     class Meta:
         model = ProjectFee
-        fields = ['project', 'client', 'project_details', 'solution_fee', 'production_advance', 'negotiated_advance',
-                  'advance_status', 'final_advance', 'project_fee_Status', 'assigned_artist_payouts', 'assigned_artist_payouts_details',
-                  'artist_payout_status', 'final_fee_settlement_status', 'post_project_client_total_payout', 'project_fee_Status']
+        fields = [
+            "project",
+            "client",
+            "project_details",
+            "solution_fee",
+            "production_advance",
+            "negotiated_advance",
+            "advance_status",
+            "final_advance",
+            "project_fee_Status",
+            "assigned_artist_payouts",
+            "assigned_artist_payouts_details",
+            "artist_payout_status",
+            "final_fee_settlement_status",
+            "post_project_client_total_payout",
+            "project_fee_Status",
+        ]
 
 
 class ArtistRequestSerializers(serializers.ModelSerializer):
@@ -311,28 +454,55 @@ class ArtistRequestSerializers(serializers.ModelSerializer):
 
     def get_location_details(self, obj):
         if obj.location is not None:
-            return {'id': obj.location.id, 'name': obj.location.name}
+            return {"id": obj.location.id, "name": obj.location.name}
         return None
 
     def get_genre_details(self, obj):
-        return [{'id': gen.id, 'name': gen.name} for gen in obj.genre.all()]
+        return [{"id": gen.id, "name": gen.name} for gen in obj.genre.all()]
 
     def get_languages_details(self, obj):
         return [language.name for language in obj.languages.all()]
 
     def get_project_details(self, obj):
         if obj.project is not None:
-            return {'id': obj.project.id, 'project': str(obj.project), 'brief': obj.project.brief}
+            return {
+                "id": obj.project.id,
+                "project": str(obj.project),
+                "brief": obj.project.brief,
+            }
         return None
 
     def get_shortlisted_artists_details(self, obj):
-        return [{'id': artist.id, 'name': artist.name} for artist in obj.shortlisted_artists.all()]
+        return [
+            {"id": artist.id, "name": artist.name}
+            for artist in obj.shortlisted_artists.all()
+        ]
 
     def get_rejected_artists_details(self, obj):
-        return [{'id': artist.id, 'name': artist.name} for artist in obj.rejected_artists.all()]
+        return [
+            {"id": artist.id, "name": artist.name}
+            for artist in obj.rejected_artists.all()
+        ]
 
     class Meta:
         model = ArtistRequest
-        fields = ['id', 'skill', 'skills_details', 'location', 'location_details', 'genre', 'genre_details',
-                  'languages', 'languages_details', 'other_performin_arts', 'budget_idea', 'project', 'project_details', 'production_hiring',
-                  'shortlisted_artists', 'shortlisted_artists_details', 'rejected_artists', 'rejected_artists_details']
+        fields = [
+            "id",
+            "skill",
+            "skills_details",
+            "location",
+            "location_details",
+            "genre",
+            "genre_details",
+            "languages",
+            "languages_details",
+            "other_performin_arts",
+            "budget_idea",
+            "project",
+            "project_details",
+            "production_hiring",
+            "shortlisted_artists",
+            "shortlisted_artists_details",
+            "rejected_artists",
+            "rejected_artists_details",
+        ]
