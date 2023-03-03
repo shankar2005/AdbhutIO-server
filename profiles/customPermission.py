@@ -1,10 +1,12 @@
 from rest_framework.permissions import BasePermission
+
 from .models import Role
+
 
 class ArtistManagerPermisson(BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        if Role.objects.get(user = user).role == 'Artist Manager':
+        if Role.objects.get(user=user).role == "Artist Manager":
             return True
         return False
 
@@ -12,7 +14,7 @@ class ArtistManagerPermisson(BasePermission):
 class ProductManagerPermission(BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        if Role.objects.get(user = user).role == 'Product Manager':
+        if Role.objects.get(user=user).role == "Product Manager":
             return True
         return False
 
@@ -20,7 +22,6 @@ class ProductManagerPermission(BasePermission):
 class CustomPermissionForClientAndPM(BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        if Role.objects.get(user = user).role in ['Product Manager','Client'] : 
+        if Role.objects.get(user=user).role in ["Product Manager", "Client"]:
             return True
         return False
-

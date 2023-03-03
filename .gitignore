@@ -5,14 +5,25 @@
 __pycache__
 db.sqlite3
 *.sqlite3
-# Backup files # 
-*.bak 
+# Backup files #
+*.bak
 
 # AWS User-specific
 .idea/**/aws.xml
 
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+
+
 # Generated files
 .idea/**/contentModel.xml
+
+# Migrations
+
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
@@ -35,96 +46,99 @@ db.sqlite3
 *.iws
 
 
-# Python # 
-*.py[cod] 
-*$py.class 
+# Python #
+*.py[cod]
+*$py.class
 
-# Distribution / packaging 
-.Python build/ 
-develop-eggs/ 
-dist/ 
-downloads/ 
-eggs/ 
-.eggs/ 
-lib/ 
-lib64/ 
-parts/ 
-sdist/ 
-var/ 
-wheels/ 
-*.egg-info/ 
-.installed.cfg 
-*.egg 
-*.manifest 
-*.spec 
+# Distribution / packaging
+.Python build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
 
 # sqlite file
 *.sqlite3
 
-# Installer logs 
-pip-log.txt 
-pip-delete-this-directory.txt 
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Unit test / coverage reports 
-htmlcov/ 
-.tox/ 
-.coverage 
-.coverage.* 
-.cache 
-.pytest_cache/ 
-nosetests.xml 
-coverage.xml 
-*.cover 
-.hypothesis/ 
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
 
-# Jupyter Notebook 
-.ipynb_checkpoints 
+# Jupyter Notebook
+.ipynb_checkpoints
 
-# pyenv 
-.python-version 
+# pyenv
+.python-version
 
-# celery 
-celerybeat-schedule.* 
+# celery
+celerybeat-schedule.*
 
-# SageMath parsed files 
-*.sage.py 
+# schema file
+schema.yml
 
-# Environments 
-.env 
-.venv 
-env/ 
-venv/ 
-ENV/ 
-env.bak/ 
-venv.bak/ 
+# SageMath parsed files
+*.sage.py
 
-# mkdocs documentation 
-/site 
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# mypy 
-.mypy_cache/ 
+# mkdocs documentation
+/site
+*.sqlite3
+# mypy
+.mypy_cache/
 
-# Sublime Text # 
-*.tmlanguage.cache 
-*.tmPreferences.cache 
-*.stTheme.cache 
-*.sublime-workspace 
-*.sublime-project 
+# Sublime Text #
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
 
-# sftp configuration file 
-sftp-config.json 
+# sftp configuration file
+sftp-config.json
 
-# Package control specific files Package 
-Control.last-run 
-Control.ca-list 
-Control.ca-bundle 
-Control.system-ca-bundle 
-GitHub.sublime-settings 
+# Package control specific files Package
+Control.last-run
+Control.ca-list
+Control.ca-bundle
+Control.system-ca-bundle
+GitHub.sublime-settings
 
-# Visual Studio Code # 
-.vscode/* 
-!.vscode/settings.json 
-!.vscode/tasks.json 
-!.vscode/launch.json 
-!.vscode/extensions.json 
+# Visual Studio Code #
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 .history

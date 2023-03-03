@@ -1,32 +1,44 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import routers, serializers, viewsets, generics
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
-from django.http import JsonResponse
-from django_filters import Filter
-from rest_framework.views import APIView
-from rest_framework import permissions, status
-from rest_framework.pagination import PageNumberPagination
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import AnonymousUser
 import json
+
+# openAI package
+import openai
 
 # import the api key
 from decouple import config
-import openai
-from .models import ChatGPTMessage
+from django.contrib.auth.models import AnonymousUser
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django_filters import Filter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import (
+    filters,
+    generics,
+    permissions,
+    routers,
+    serializers,
+    status,
+    viewsets,
+)
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 # custom permissions
-from .customPermission import ArtistManagerPermisson,CustomPermissionForClientAndPM,ProductManagerPermission
-
-import os
-# serializers
-from .serializers import *
+from .customPermission import (
+    ArtistManagerPermisson,
+    CustomPermissionForClientAndPM,
+    ProductManagerPermission,
+)
 
 # models
 from .models import *
+from .models import ChatGPTMessage
 
+# serializers
+from .serializers import *
+
+from drf_spectacular.utils import extend_schema
 
 
 # ------------------------------ chat flow api ----------------------------------------------------
@@ -36,45 +48,73 @@ class chatflowSkills(APIView):
     def post(self, request):
         try:
             data = request.data
-            artists = data['artists']
-            product = data['product']
+            print(data)
+            artists = data["artists"]
+            product = data["product"]
 
             # ----------Testing--- ------------
-            # print(artists)
-            # print(product)
-            #----------------------------
+            print(artists)
+            print(product)
+            # ----------------------------
             skills = []
             possible_projects = []
             # print intersecting skills of artists
-            if artists in [0, '0', None, '']:
-                if product in [0, '0', None, '']:
-                    return Response({'skills': [], 'projects': []}, status=status.HTTP_200_OK)
+            if artists in [0, "0", None, ""]:
+                if product in [0, "0", None, ""]:
+                    return Response(
+                        {"skills": [], "projects": []}, status=status.HTTP_200_OK
+                    )
                 else:
-                    return Response({'skills': [
-                        [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()],
-                         'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')},
-                          status=status.HTTP_200_OK)
-            for artist in artists.split(','):
+                    return Response(
+                        {
+                            "skills": [
+                                [skill.name, skill.id]
+                                for skill in TemplateProjects.objects.get(
+                                    id=int(product)
+                                ).skills.all()
+                            ],
+                            "projects": TemplateProjects.objects.filter(
+                                pk=product
+                            ).values_list("name", "id"),
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+            for artist in artists.split(","):
                 artist_skills = Artist.objects.get(pk=artist).skill.all()
                 for skill in artist_skills:
                     if [skill.name, skill.id] not in skills:
                         skills.append([skill.name, skill.id])
 
-            if product in [0, '0', None, '']:
+            if product in [0, "0", None, ""]:
                 for project in TemplateProjects.objects.all():
                     for skill in project.skills.all():
                         if [skill.name, skill.id] in skills:
-                            possible_projects.append(
-                                [project.name, project.id])
+                            possible_projects.append([project.name, project.id])
             else:
-                return Response({'skills': [
-                    [skill.name, skill.id] for skill in TemplateProjects.objects.get(id=int(product)).skills.all()],
-                     'projects': TemplateProjects.objects.filter(pk=product).values_list('name', 'id')}, status=status.HTTP_200_OK)
+                return Response(
+                    {
+                        "skills": [
+                            [skill.name, skill.id]
+                            for skill in TemplateProjects.objects.get(
+                                id=int(product)
+                            ).skills.all()
+                        ],
+                        "projects": TemplateProjects.objects.filter(
+                            pk=product
+                        ).values_list("name", "id"),
+                    },
+                    status=status.HTTP_200_OK,
+                )
 
-            return Response({'skills': skills, 'projects': possible_projects}, status=status.HTTP_200_OK)
+            return Response(
+                {"skills": skills, "projects": possible_projects},
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'error': 'Something went wrong', 'error_message': str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": "Something went wrong", "error_message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
 
 # --------------------------- create project api from chat flow ----------------------------------------------
@@ -84,58 +124,80 @@ class CreateProjectView(APIView):
     def post(self, request):
         try:
             data = request.data
-            artists = data['shortlisted_artists']
-            product = data['product']
-            brief = data['brief']
-            stage = data['stage']
+            artists = data["shortlisted_artists"]
+            product = data["product"]
+            brief = data["brief"]
+            stage = data["stage"]
 
-            if artists in [0, '0', None, '']:
-                return Response({'error': 'Please select an artist'}, status=status.HTTP_200_OK)
-            if product in [0, '0', None, '']:
-                return Response({'error': 'Please select a product'}, status=status.HTTP_200_OK)
-            if brief in [0, '0', None, '']:
-                return Response({'error': 'Please send a brief message '}, status=status.HTTP_200_OK)
+            if artists in [0, "0", None, ""]:
+                return Response(
+                    {"error": "Please select an artist"}, status=status.HTTP_200_OK
+                )
+            if product in [0, "0", None, ""]:
+                return Response(
+                    {"error": "Please select a product"}, status=status.HTTP_200_OK
+                )
+            if brief in [0, "0", None, ""]:
+                return Response(
+                    {"error": "Please send a brief message "}, status=status.HTTP_200_OK
+                )
 
             # create project
             project = TemplateProjects.objects.get(pk=product)
             new_project = Project.objects.create(
                 stage=stage,
-                brief=brief, 
-                project_template=project, 
-                client=Client.objects.get(user=request.user))
+                brief=brief,
+                project_template=project,
+                client=Client.objects.get(user=request.user),
+            )
 
             # add artists
             for artist in artists:
                 new_project.shortlisted_artists.add(Artist.objects.get(pk=artist))
 
             new_project.save()
-            return Response({'success': 'Project created successfully','projectId':new_project.id},
-             status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "success": "Project created successfully",
+                    "projectId": new_project.id,
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'error': 'Something went wrong', 'error_message': str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": "Something went wrong", "error_message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
-    def patch(self,request,*args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         try:
-            message = request.data['message']
-            project_id = request.data['project_id']
-            model_id = "text-ada-001"
-            openai.api_key = config('OPENAI_API_KEY')
-            project = get_object_or_404(Project,id = project_id)
-            if project.brief in ["",None,"[]"]:
+            # for testing (non logged in user| only message is passed in chatbox)
+            if "project_id" not in request.data:
+                message = request.data["message"]
+                return openai_response(message)
+
+            # ===================================================
+
+            message = request.data["message"]
+            project_id = request.data["project_id"]
+            project = get_object_or_404(Project, id=project_id)
+            new_message = {"user": message}
+            messageID = 1
+
+            if project.brief in ["", None, "[]"]:
                 project.brief = f"[{json.dumps(message)}]"
             else:
                 brief = project.brief[:-1]
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
             message_content = ""
-            if 'message' in message:
-                message_content = message['message']
-            elif 'user' in message:
-                message_content = message['user']
+            if "message" in message:
+                message_content = message["message"]
+            elif "user" in message:
+                message_content = message["user"]
             # print(f'prompt -> {ChatGPTMessage.objects.last().message} {message_content}')
             completion = openai.Completion.create(
-                prompt= f'{ChatGPTMessage.objects.last().message} {message_content}',
+                prompt=f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
                 max_tokens=100,
                 n=1,
                 stop=None,
@@ -148,31 +210,35 @@ class CreateProjectView(APIView):
             if ans is "":
                 ans = "I don't understand. What did you say? Try with another message."
             NewMessage = {
-                'msgID':int(message['msgID']) + 1,
-                'bot':ans,
+                "msgID": int(message["msgID"]) + 1,
+                "bot": ans,
             }
             brief = project.brief[:-1]
             brief += f",{json.dumps(NewMessage)}]"
             project.brief = brief
             project.save()
-            project_serializer = ProjectSerializer(instance=project,many = False)
-            return Response({'project':project_serializer.data,'success':'Project is updated!'},
-            status=status.HTTP_200_OK)
+            project_serializer = ProjectSerializer(instance=project, many=False)
+            return Response(
+                {"project": project_serializer.data, "success": "Project is updated!"},
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'error': 'Something went wrong', 'error_message': str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            return Response(
+                {"error": "Something went wrong", "error_message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
 
 # -------------------- standard pagination classes -------------------------------
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 1000
+
 
 class RecommendedResultsSetPagination(PageNumberPagination):
     page_size = 3
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 100
 
 
@@ -180,33 +246,66 @@ class RecommendedResultsSetPagination(PageNumberPagination):
 class WorkFeedViewSet(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
     serializer_class = WorkFeedSerializer
-    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['demo_type','owner', 'show_in_top_feed', 'owner__skill', 
-    'owner__skill__genres', 'owner__location']
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = [
+        "demo_type",
+        "owner",
+        "show_in_top_feed",
+        "owner__skill",
+        "owner__skill__genres",
+        "owner__location",
+    ]
 
-    search_fields = ['name', 'owner__name','owner__skill__name', 'owner__skill__genres__name']
-    ordering_fields = '__all__'
+    search_fields = [
+        "name",
+        "owner__name",
+        "owner__skill__name",
+        "owner__skill__genres__name",
+    ]
+    ordering_fields = "__all__"
 
     def get_queryset(self):
-        work = Work.objects.filter(show_in_top_feed=True).order_by('show_in_top_feed')
+        work = Work.objects.filter(show_in_top_feed=True).order_by("show_in_top_feed")
         return work
 
 
-#------------------------------- RecommendedResults api ------------------------------------
+# ------------------------------- RecommendedResults api ------------------------------------
 class GetRecommendationsViewSet(viewsets.ModelViewSet):
     pagination_class = RecommendedResultsSetPagination
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = WorkFeedSerializer
-    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['demo_type',
-                        'owner', 'show_in_top_feed', 'owner__skill', 'owner__skill__genres', 'owner__location']
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = [
+        "demo_type",
+        "owner",
+        "show_in_top_feed",
+        "owner__skill",
+        "owner__skill__genres",
+        "owner__location",
+    ]
 
-    search_fields = ['name', 'owner__name',
-                     'owner__skill__name', 'owner__skill__genres__name']
-    ordering_fields = '__all__'
+    search_fields = [
+        "name",
+        "owner__name",
+        "owner__skill__name",
+        "owner__skill__genres__name",
+    ]
+    ordering_fields = "__all__"
 
     def get_queryset(self):
-        work = Work.objects.filter(owner__in=Client.objects.get(user=self.request.user).recommended_artists.all()).order_by('show_in_top_feed')
+        work = Work.objects.filter(
+            owner__in=Client.objects.get(
+                user=self.request.user
+            ).recommended_artists.all()
+        ).order_by("show_in_top_feed")
         return work
 
 
@@ -224,26 +323,31 @@ class MyProjectsViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        return Project.objects.filter(client__user=self.request.user, stage='Lead')
+        return Project.objects.filter(client__user=self.request.user, stage="Lead")
 
 
 class GetDreamProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        return Project.objects.filter(stage='DreamProject')
+        return Project.objects.filter(stage="DreamProject")
+
 
 # ------------------------------------ project calculation ------------------------
-def PorjectCalculation(project,data):
-    if data['assigned_artist_payouts'] > 0:
+
+
+def PorjectCalculation(project, data):
+    if data["assigned_artist_payouts"] > 0:
         if project.solution_fee == 0 and project.production_advance == 0:
-            project.assigned_artist_payouts = data['assigned_artist_payouts']
-            project.solution_fee = float(data['assigned_artist_payouts'])*2.5
-            project.production_advance = ((float(data['assigned_artist_payouts'])*2.5)/100)*30
+            project.assigned_artist_payouts = data["assigned_artist_payouts"]
+            project.solution_fee = float(data["assigned_artist_payouts"]) * 2.5
+            project.production_advance = (
+                (float(data["assigned_artist_payouts"]) * 2.5) / 100
+            ) * 30
             project.save()
             return True
-    elif data['assigned_artist_payouts'] == 0:
-        print(data['assigned_artist_payouts'])
+    elif data["assigned_artist_payouts"] == 0:
+        print(data["assigned_artist_payouts"])
         project.assigned_artist_payouts = 0.0
         project.solution_fee = 0.0
         project.production_advance = 0.0
@@ -259,207 +363,334 @@ class EditProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
             if not self.request.user.is_anonymous:
-                return Project.objects.exclude(stage='DreamProject')
-            return Project.objects.filter(stage='DreamProject')
+                return Project.objects.exclude(stage="DreamProject")
+            return Project.objects.filter(stage="DreamProject")
         except Exception as e:
             return None
 
     def retrieve(self, request, pk=None):
         try:
-            project = get_object_or_404(Project,pk=pk)
-            if project.stage == 'DreamProject':
-                return Response(self.serializer_class(project).data,status=status.HTTP_200_OK)
+            project = get_object_or_404(Project, pk=pk)
+            if project.stage == "DreamProject":
+                return Response(
+                    self.serializer_class(project).data, status=status.HTTP_200_OK
+                )
             elif not request.user.is_anonymous:
-                if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    return Response(self.serializer_class(project).data,status=status.HTTP_200_OK)
-                return Response({'error':"you don't have permission to update"},
-                status=status.HTTP_400_BAD_REQUEST)
-            return Response({'error':'user is not logged in or project is not dream project'},
-                            status=status.HTTP_404_NOT_FOUND)
+                if Role.objects.get(user=request.user).role in [
+                    "Client",
+                    "Product Manager",
+                ]:
+                    return Response(
+                        self.serializer_class(project).data, status=status.HTTP_200_OK
+                    )
+                return Response(
+                    {"error": "you don't have permission to update"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            return Response(
+                {"error": "user is not logged in or project is not dream project"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
-            return Response({'error': 'Something went wrong', 'error_message': str(e)},
-                            status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"error": "Something went wrong", "error_message": str(e)},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
     def update(self, request, pk=None):
         try:
-            project = get_object_or_404(Project,pk=pk)
+            project = get_object_or_404(Project, pk=pk)
             data = request.data
             if "project_demo" in data:
-                data['project_demo']['project'] = project.id
-                data['project_demo']['status'] = 'Selected'
-                projectDemo_serializer = ProjectDemoSerializer(data = data['project_demo'])
+                data["project_demo"]["project"] = project.id
+                data["project_demo"]["status"] = "Selected"
+                projectDemo_serializer = ProjectDemoSerializer(
+                    data=data["project_demo"]
+                )
                 if projectDemo_serializer.is_valid():
                     projectDemo_serializer.save()
-                    project_demo = get_object_or_404(ProjectDemo,id = projectDemo_serializer.data['id'])
+                    project_demo = get_object_or_404(
+                        ProjectDemo, id=projectDemo_serializer.data["id"]
+                    )
                     project.project_demos.add(project_demo)
                     project.save()
-                    del data['project_demo']
+                    del data["project_demo"]
                 else:
-                    return Response(projectDemo_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        projectDemo_serializer.error_messages,
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
             if "assigned_artist_payouts" in data:
                 calculation = PorjectCalculation(project, data)
                 if calculation:
-                    del data['assigned_artist_payouts']
-            if project.stage == 'DreamProject':
-                project_serializer = ProjectSerializer(instance=project,data = data)
+                    del data["assigned_artist_payouts"]
+            if project.stage == "DreamProject":
+                project_serializer = ProjectSerializer(instance=project, data=data)
                 if project_serializer.is_valid():
                     project_serializer.save()
-                    return Response(project_serializer.data,status=status.HTTP_200_OK)
-                return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+                    return Response(project_serializer.data, status=status.HTTP_200_OK)
+                return Response(
+                    project_serializer.error_messages,
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             elif not request.user.is_anonymous:
-                if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    project_serializer = ProjectSerializer(instance=project,data = data)
+                if Role.objects.get(user=request.user).role in [
+                    "Client",
+                    "Product Manager",
+                ]:
+                    project_serializer = ProjectSerializer(instance=project, data=data)
                     if project_serializer.is_valid():
                         project_serializer.save()
-                        return Response(project_serializer.data,status=status.HTTP_200_OK)
-                    return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+                        return Response(
+                            project_serializer.data, status=status.HTTP_200_OK
+                        )
+                    return Response(
+                        project_serializer.error_messages,
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
 
-                return Response({'error':"you don't have permission to update"},
-                status=status.HTTP_400_BAD_REQUEST)
-            return Response({'error':'user is not logged in or project is not dream project'},
-                        status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "you don't have permission to update"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            return Response(
+                {"error": "user is not logged in or project is not dream project"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
             print(e)
-            return Response({'error': 'user is not logged in or project is not dream project', 
-                             'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
-    
+            return Response(
+                {
+                    "error": "user is not logged in or project is not dream project",
+                    "error_message": str(e),
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
     def partial_update(self, request, pk=None):
         try:
-            project = get_object_or_404(Project,pk=pk)
+            project = get_object_or_404(Project, pk=pk)
             data = request.data
             if "project_demo" in data:
-                data['project_demo']['project'] = project.id
-                data['project_demo']['status'] = 'Selected'
-                projectDemo_serializer = ProjectDemoSerializer(data = data['project_demo'])
+                data["project_demo"]["project"] = project.id
+                data["project_demo"]["status"] = "Selected"
+                projectDemo_serializer = ProjectDemoSerializer(
+                    data=data["project_demo"]
+                )
                 if projectDemo_serializer.is_valid():
                     projectDemo_serializer.save()
-                    project_demo = get_object_or_404(ProjectDemo,id = projectDemo_serializer.data['id'])
+                    project_demo = get_object_or_404(
+                        ProjectDemo, id=projectDemo_serializer.data["id"]
+                    )
                     project.project_demos.add(project_demo)
                     project.save()
-                    del data['project_demo']
+                    del data["project_demo"]
                 else:
-                    return Response(projectDemo_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        projectDemo_serializer.error_messages,
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
             if "assigned_artist_payouts" in data:
                 calculation = PorjectCalculation(project, data)
                 if calculation:
-                    del data['assigned_artist_payouts']
-            if project.stage == 'DreamProject':
-                project_serializer = ProjectSerializer(instance=project,data = data)
+                    del data["assigned_artist_payouts"]
+            if project.stage == "DreamProject":
+                project_serializer = ProjectSerializer(instance=project, data=data)
                 if project_serializer.is_valid():
                     project_serializer.save()
-                    return Response(project_serializer.data,status=status.HTTP_200_OK)
-                return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+                    return Response(project_serializer.data, status=status.HTTP_200_OK)
+                return Response(
+                    project_serializer.error_messages,
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             elif not request.user.is_anonymous:
-                if Role.objects.get(user = request.user).role in ['Client','Product Manager']:
-                    project_serializer = ProjectSerializer(instance=project,data = request.data)
+                if Role.objects.get(user=request.user).role in [
+                    "Client",
+                    "Product Manager",
+                ]:
+                    project_serializer = ProjectSerializer(
+                        instance=project, data=request.data
+                    )
                     if project_serializer.is_valid():
                         project_serializer.save()
-                        return Response(project_serializer.data,status=status.HTTP_200_OK)
-                    return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
-                return Response({'error':"you don't have permission to update"},status=status.HTTP_400_BAD_REQUEST)
+                        return Response(
+                            project_serializer.data, status=status.HTTP_200_OK
+                        )
+                    return Response(
+                        project_serializer.error_messages,
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                return Response(
+                    {"error": "you don't have permission to update"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-            return Response({'error':'user is not logged in or project is not dream project'},
-                        status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "user is not logged in or project is not dream project"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
-            return Response({'error': 'user is not logged in or project is not dream project', 
-                             'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {
+                    "error": "user is not logged in or project is not dream project",
+                    "error_message": str(e),
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
 
 # ====================== delete project api ==============================
 
+
 class ProjectDeleteViewSet(APIView):
     permission_classes = (permissions.AllowAny,)
-    def delete(self,request,pk,format=None):
+
+    def delete(self, request, pk, format=None):
         try:
-            if not Project.objects.filter(id = pk).exists():
-                return Response({'error':'project Not Found'},status=status.HTTP_404_NOT_FOUND)
-            project = get_object_or_404(Project,id = pk)
+            if not Project.objects.filter(id=pk).exists():
+                return Response(
+                    {"error": "project Not Found"}, status=status.HTTP_404_NOT_FOUND
+                )
+            project = get_object_or_404(Project, id=pk)
             project.delete()
-            return Response({'message':'project is deleted'},status=status.HTTP_200_OK)
+            return Response(
+                {"message": "project is deleted"}, status=status.HTTP_200_OK
+            )
         except Exception as e:
-            return Response({'error': 'something went wrong', 
-                             'error_message': str(e)},status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"error": "something went wrong", "error_message": str(e)},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
 
 # ================== artist manager API's =======================
+
 
 class ArtistViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistProfileSerializer
 
-    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['skill', 'languages', 'location']
-    skill = Filter(name="skill", lookup_type='in')
-    language = Filter(name="languages", lookup_type='in')
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ["skill", "languages", "location"]
+    skill = Filter(name="skill", lookup_type="in")
+    language = Filter(name="languages", lookup_type="in")
 
-    search_fields = ['name', 'location__name','skill__name', 'languages__name']
-    ordering_fields = '__all__'
+    search_fields = ["name", "location__name", "skill__name", "languages__name"]
+    ordering_fields = "__all__"
 
     def get_queryset(self):
         profile = Artist.objects.filter()
         return profile
 
+
 # ====================== artist action ===================================
+
+
 class ArtistActionviewSet(APIView):
     permission_classes = (permissions.AllowAny,)
-    filter_backends = [DjangoFilterBackend,filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['skill', 'languages', 'location']
-    skill = Filter(name="skill", lookup_type='in')
-    language = Filter(name="languages", lookup_type='in')
-    search_fields = ['name', 'location__name','skill__name', 'languages__name']
-    ordering_fields = '__all__'
+    serializer_class = ArtistActionSerializer
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ["skill", "languages", "location"]
+    skill = Filter(name="skill", lookup_type="in")
+    language = Filter(name="languages", lookup_type="in")
+    search_fields = ["name", "location__name", "skill__name", "languages__name"]
+    ordering_fields = "__all__"
 
-    def get(self,request,*args, **kwargs):
+    def get(self, request, *args, **kwargs):
         try:
-            id = request.query_params.get('id', None)
+            id = request.query_params.get("id", None)
             if id is not None:
-                artists = get_object_or_404(Artist,id = id)
-                artist_serializer = ArtistFilterSerializer(artists,many = False)
-                return Response({'artists':artist_serializer.data},status=status.HTTP_200_OK)
+                artists = get_object_or_404(Artist, id=id)
+                artist_serializer = ArtistFilterSerializer(artists, many=False)
+                return Response(
+                    {"artists": artist_serializer.data}, status=status.HTTP_200_OK
+                )
             artists = Artist.objects.all()
-            artist_serializer = ArtistFilterSerializer(artists,many = True)
-            return Response({'artists':artist_serializer.data},status=status.HTTP_200_OK)
+            artist_serializer = ArtistFilterSerializer(artists, many=True)
+            return Response(
+                {"artists": artist_serializer.data}, status=status.HTTP_200_OK
+            )
         except Exception as e:
-            return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "something went's Wrong!", "error_message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-    def post(self,request,*args, **kwargs):
+    def post(self, request, *args, **kwargs):
         try:
             data = request.data
-            if data['has_manager']:
-                manager = Manager.objects.create(name= data['manager']['name'],phone= data['manager']['phone'],
-                email = data['manager']['email'])
-                data['manager'] = manager.id
-            works_links = data['works_links']
-            del data['works_links']
+            if data["has_manager"]:
+                manager = Manager.objects.create(
+                    name=data["manager"]["name"],
+                    phone=data["manager"]["phone"],
+                    email=data["manager"]["email"],
+                )
+                data["manager"] = manager.id
+            works_links = data["works_links"]
+            del data["works_links"]
             works = []
-            artist_serializer = ArtistActionSerializer(data = request.data)
+            artist_serializer = ArtistActionSerializer(data=request.data)
             if artist_serializer.is_valid():
                 artist_serializer.save()
-                artist = Artist.objects.get(id = artist_serializer.data['id'])
+                artist = Artist.objects.get(id=artist_serializer.data["id"])
                 for work_link in works_links:
-                    work = Work.objects.create(owner = artist,demo_type=work_link['demo_type'],
-                    weblink=work_link['weblink'])
+                    work = Work.objects.create(
+                        owner=artist,
+                        demo_type=work_link["demo_type"],
+                        weblink=work_link["weblink"],
+                    )
                     works.append(work.id)
                 artist.works_links.set(works)
-                return Response({'artist':ArtistFilterSerializer(instance=artist,many=False).data,
-                'message':'artist is created'},status=status.HTTP_201_CREATED)
-            return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {
+                        "artist": ArtistFilterSerializer(
+                            instance=artist, many=False
+                        ).data,
+                        "message": "artist is created",
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
+            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(e)
-            return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "something went's Wrong!", "error_message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-    def put(self,request,pk = None):
+    def put(self, request, pk=None):
         try:
             if pk is None:
-                return Response({'error':'artist not found with empty id!'},status=status.HTTP_404_NOT_FOUND)
-            artist = get_object_or_404(Artist,id = pk)
-            artist_serializer = ArtistActionSerializer(instance=artist,data = request.data)
+                return Response(
+                    {"error": "artist not found with empty id!"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            artist = get_object_or_404(Artist, id=pk)
+            artist_serializer = ArtistActionSerializer(
+                instance=artist, data=request.data
+            )
             if artist_serializer.is_valid():
                 artist_serializer.save()
-                new_artist = ArtistFilterSerializer(instance=Artist(id = artist.id),many=False)
-                return Response({'artist':new_artist,'message':'artist is created'},status=status.HTTP_201_CREATED)
+                new_artist = ArtistFilterSerializer(
+                    instance=Artist(id=artist.id), many=False
+                )
+                return Response(
+                    {"artist": new_artist, "message": "artist is created"},
+                    status=status.HTTP_201_CREATED,
+                )
         except Exception as e:
-            return Response({'error': "something went's Wrong!", 'error_message': str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "something went's Wrong!", "error_message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 # ================= product manager API's =======================
@@ -487,124 +718,232 @@ class AllProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        role = Role.objects.get(user = self.request.user).role
-        if role == 'Client':
-            return Project.objects.filter(client__user=self.request.user).exclude(stage="DreamProject")
-        elif role == 'Product Manager':
+        role = Role.objects.get(user=self.request.user).role
+        if role == "Client":
+            return Project.objects.filter(client__user=self.request.user).exclude(
+                stage="DreamProject"
+            )
+        elif role == "Product Manager":
             return Project.objects.exclude(stage="DreamProject")
         return None
+
 
 # ----------------------- all projects api end -----------------------------
 
 # --------------------- update the project title api ---------------------------
+
+
 class ProjectTitleViewSet(APIView):
-    permission_classes = (permissions.AllowAny,) 
-    
-    def patch(self,request,id = None):
+    permission_classes = (permissions.AllowAny,)
+
+    def patch(self, request, id=None):
         try:
-            if request.data['title'] in ['',None]:
-                return Response({'error':'title not be empty'},status=status.HTTP_400_BAD_REQUEST)
-            project = get_object_or_404(Project,id = id)
-            project_serializer = ProjectSerializerMini(instance=project,data={'title':request.data['title']})
+            if request.data["title"] in ["", None]:
+                return Response(
+                    {"error": "title not be empty"}, status=status.HTTP_400_BAD_REQUEST
+                )
+            project = get_object_or_404(Project, id=id)
+            project_serializer = ProjectSerializerMini(
+                instance=project, data={"title": request.data["title"]}
+            )
             if project_serializer.is_valid():
                 project_serializer.save()
-                return Response({'project':project_serializer.data},status=status.HTTP_200_OK)
-            return Response(project_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"project": project_serializer.data}, status=status.HTTP_200_OK
+                )
+            return Response(
+                project_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception as e:
-            return Response({'error':'something went wrongs.','message':str(e)},status=status.HTTP_400_BAD_REQUEST)
-# --------------------- update the project title api end ---------------------------
+            return Response(
+                {"error": "something went wrongs.", "message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
+
+# --------------------- update the project title api end ---------------------------
 
 
 # ------------------------------- project assign api ------------------------------
 class ProjectAssignArtistActionViewSet(APIView):
-    permission_classes  = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,)
 
-    def patch(self,request,projectId = None):
+    def patch(self, request, projectId=None):
         try:
-            project = get_object_or_404(Project,id = projectId)
-            add_artists = request.data['add_artists']
-            remove_artists = request.data['remove_artists']
+            project = get_object_or_404(Project, id=projectId)
+            add_artists = request.data["add_artists"]
+            remove_artists = request.data["remove_artists"]
             for artistId in add_artists:
                 project.assigned_artists.add(artistId)
             for artistId in remove_artists:
                 project.assigned_artists.remove(artistId)
             project.save()
-            return Response({'project':ProjectSerializer(project,many=False).data,
-                            'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "project": ProjectSerializer(project, many=False).data,
+                    "message": "Assign Artist is updated.",
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "something wents wrong!", "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
-#-------------------------------- shortlisted artist api -------------------------------
+# -------------------------------- shortlisted artist api -------------------------------
 class ProjectShortlistedArtistViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def patch(self,request,projectId = None,artistId = None):
+    def patch(self, request, projectId=None, artistId=None):
         try:
-            project = get_object_or_404(Project,id = projectId)
-            artist = get_object_or_404(Artist,id = artistId)
+            project = get_object_or_404(Project, id=projectId)
+            artist = get_object_or_404(Artist, id=artistId)
             project.shortlisted_artists.add(artist)
             project.save()
-            return Response({'project':ProjectSerializer(project,many=False).data,
-                            'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "project": ProjectSerializer(project, many=False).data,
+                    "message": "Assign Artist is updated.",
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "something wents wrong!", "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-#-------------------------------- shortlisted artist api -------------------------------
+
+# -------------------------------- shortlisted artist api -------------------------------
 
 # ---------------------------------- remove shortlisted artist api ----------------------------
+
+
 class ProjectShortlistedArtistRemoveViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def patch(self,request,projectId = None,artistId = None):
+    def patch(self, request, projectId=None, artistId=None):
         try:
-            project = get_object_or_404(Project,id = projectId)
-            artist = get_object_or_404(Artist,id = artistId)
+            project = get_object_or_404(Project, id=projectId)
+            artist = get_object_or_404(Artist, id=artistId)
             project.shortlisted_artists.remove(artist)
             project.save()
-            return Response({'project':ProjectSerializer(project,many=False).data,
-                            'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "project": ProjectSerializer(project, many=False).data,
+                    "message": "Assign Artist is updated.",
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "something wents wrong!", "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-#--------------------------------remove shortlisted artist api -------------------------------
+
+# --------------------------------remove shortlisted artist api -------------------------------
 
 # ------------------------------ assign artist ---------------------------------
+
+
 class ProjectAssignArtistViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def patch(self,request,projectId = None,artistId = None):
+    # @extend_schema(
+    #     request={
+    #         'type': 'object',
+    #         'properties': {
+    #             'projectId': {'type': 'integer'},
+    #             'artistId': {'type': 'integer'},
+    #         },
+    #         'required': ['projectId', 'artistId'],
+    #     },
+    #     responses={
+
+    #         200: {'description': 'Success'},
+    #         400: {'description': 'Bad request'},
+    #     },
+    #     tags=['Projects'],
+    # )
+    def patch(self, request, projectId=None, artistId=None):
         try:
-            project = get_object_or_404(Project,id = projectId)
-            artist = get_object_or_404(Artist,id = artistId)
-            if not project.shortlisted_artists.filter(id = artistId).exists():
-                return Response({'message':'artist is not shortlisted at.'},status=status.HTTP_400_BAD_REQUEST)
+            project = get_object_or_404(Project, id=projectId)
+            artist = get_object_or_404(Artist, id=artistId)
+            if not project.shortlisted_artists.filter(id=artistId).exists():
+                return Response(
+                    {"message": "artist is not shortlisted at."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             project.shortlisted_artists.remove(artist)
             project.assigned_artists.add(artist)
             project.save()
-            return Response({'project':ProjectSerializer(project,many=False).data,
-                            'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "project": ProjectSerializer(project, many=False).data,
+                    "message": "Assign Artist is updated.",
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
-            
+            return Response(
+                {"message": "something wents wrong!", "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
 
 # ------------------------------ unassign artist ---------------------------------
 class ProjectUnAssginArtistViewSet(APIView):
     permission_classes = (permissions.IsAuthenticated,)
-    def patch(self,request,projectId = None,artistId = None):
+
+    # @extend_schema(
+    #     request={
+    #         'type': 'object',
+    #         'properties': {
+    #             'projectId': {'type': 'integer'},
+    #             'artistId': {'type': 'integer'},
+    #         },
+    #         'required': ['projectId', 'artistId'],
+    #     },
+    #     responses={
+    #         status.HTTP_200_OK: {
+    #             'type': 'object',
+    #             'properties': {
+    #                 'project': ProjectSerializer,
+    #                 'message': {'type': 'string'},
+    #             },
+    #         },
+    #         status.HTTP_400_BAD_REQUEST: {'type': 'object', 'properties': {'message': {'type': 'string'}}},
+    #     }
+    # )
+    def patch(self, request, projectId=None, artistId=None):
         try:
-            project = get_object_or_404(Project,id = projectId)
-            artist = get_object_or_404(Artist,id = artistId)
-            if not project.assigned_artists.filter(id = artistId).exists():
-                return Response({'message':'artist is not assigned at.'},status=status.HTTP_400_BAD_REQUEST)
+            project = get_object_or_404(Project, id=projectId)
+            artist = get_object_or_404(Artist, id=artistId)
+
+            if not project.assigned_artists.filter(id=artistId).exists():
+                return Response(
+                    {"message": "artist is not assigned at."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             project.assigned_artists.remove(artist)
             project.shortlisted_artists.add(artist)
             project.save()
-            return Response({'project':ProjectSerializer(project,many=False).data,
-                            'message':'Assign Artist is updated.'},status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "project": ProjectSerializer(project, many=False).data,
+                    "message": "Assign Artist is updated.",
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
-            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "something wents wrong!", "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 # ------------------------------- project assign api ------------------------------
@@ -614,58 +953,93 @@ class ProjectUnAssginArtistViewSet(APIView):
 class CreateNewProject(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self,request):
+    # @extend_schema(
+    #     request=ProjectSerializer,
+    #     responses={
+    #         status.HTTP_201_CREATED: ProjectSerializer,
+    #         status.HTTP_400_BAD_REQUEST: 'string',
+    #     }
+    # )
+    def post(self, request):
         try:
             data = request.data
-            client = get_object_or_404(Client,user = request.user)
-            data['client'] = client.id
-            project_serializer = ProjectSerializer(data = data)
+            client = get_object_or_404(Client, user=request.user)
+            data["client"] = client.id
+            project_serializer = ProjectSerializer(data=data)
             if project_serializer.is_valid():
                 project_serializer.save()
-                return Response(project_serializer.data,status=status.HTTP_201_CREATED)
-            return Response(project_serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+                return Response(project_serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                project_serializer.error_messages, status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception as e:
-            return Response({'message':'something wents wrong!','error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "something wents wrong!", "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
+# adbhutio-server
 # ---------------------------- demo project -----------------------------------------
-class DemoView(APIView):
-    permission_classes = (IsAuthenticated,ArtistManagerPermisson,)
 
-    def get(self,request):
-        work = WorkFeedSerializer(Work.objects.all(),many=True)
-        return Response({'works':work.data,'message':'for permission check'},status=status.HTTP_200_OK)
+
+class DemoView(APIView):
+    permission_classes = (
+        IsAuthenticated,
+        ArtistManagerPermisson,
+    )
+
+    # @extend_schema(
+    #     responses={
+    #         status.HTTP_200_OK: {
+    #             'type': 'object',
+    #             'properties': {
+    #                 'works': {
+    #                     'type': 'array',
+    #                     'items': WorkFeedSerializer,
+    #                 },
+    #                 'message': {'type': 'string'},
+    #             },
+    #         },
+    #     }
+    # )
+    def get(self, request):
+        work = WorkFeedSerializer(Work.objects.all(), many=True)
+        return Response(
+            {"works": work.data, "message": "for permission check"},
+            status=status.HTTP_200_OK,
+        )
+
 
 # ---------------------------- demo project end -----------------------------------------
 
 # chatgpt integration
 class OpenAIViewSet(APIView):
-
     def post(self, request):
         try:
-            message = request.data['message']
+            message = request.data["message"]
+            openai.api_key = config("OPENAI_API_KEY")
 
-            model_id = "text-ada-001"
-            openai.api_key = config('OPENAI_API_KEY')
+            # start_sequence = "\nA:"
+            # restart_sequence = "\n\nQ: "
 
-            completion = openai.Completion.create(
-                prompt= f'{ChatGPTMessage.objects.last().message} {message}',
+            response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"This is Adbhut.io which is a platform to hire artists and produce content. With this, users can produce content including social media posts, graphical and animated content, camera shot videos, music tracks, entire songs, documentaries, short fictional films, reality series, podcasts, campaign websites, and creatively written content. Our business servicing function offers the best-suited Artists with the required skills to get the content project done with the best quality, within the timelines and budgetary requirements.\n\nQ: Who is Founder of Adbhut.io .?\nA: Shankar.\n\nQ: I need help in a chat show?\nA: Okay, we have chat show artist. Tell me more about it.\n\nQ:  Who is founder of adbhut?\nA: The founder of Adbhut.io is Shankar.\n\nQ:  I need produces, video maker?\nA: Yes, we have video makers and producers available. Please provide more details about your project so we can match you with the best suited artist.\n\nQ: who is shankar?\nA: Shankar is the founder of Adbhut.io. He is an experienced entrepreneur and content creator with a passion for creating innovative and engaging content. He has worked with some of the biggest names in the industry and has a wealth of knowledge and experience in the content creation space.\n\nQ:  who are you?\nA: We are Adbhut.io, a platform to hire artists and produce content. We provide the best-suited Artists with the required skills to get the content project done with the best quality, within the timelines and budgetary requirements.\n\nQ:{message} ?",
+                temperature=0,
                 max_tokens=100,
-                n=1,
-                stop=None,
-                temperature=0.7,
-                model=model_id,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0,
+                stop=["\n"],
             )
-            ans = completion.choices[0].text.strip()
-
-            if ans is "":
-                ans = "I don't understand. What did you say? Try with another message."
-                
-            return JsonResponse({'response':ans}, safe=False) #, status= status.HTTP_200_OK)
+            print(response)
+            ans = response.choices[0].text.strip()
+            print(f"ans => {ans}")
+            return JsonResponse(
+                {"response": ans}, safe=False
+            )  # , status= status.HTTP_200_OK)
 
         except Exception as e:
-            print(e)
-            return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
-           
-
-        
+            print("bad request happen")
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
