@@ -139,7 +139,7 @@ class CreateProjectView(APIView):
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
             completion = openai.Completion.create(
-                prompt= f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
+                prompt= message['message'],      # f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
                 max_tokens=100,
                 n=1,
                 stop=None,
