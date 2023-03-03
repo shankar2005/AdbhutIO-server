@@ -169,7 +169,7 @@ class CreateProjectView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self,request,*args, **kwargs):
         try:
             # for testing (non logged in user| only message is passed in chatbox)
             if "project_id" not in request.data:
@@ -190,6 +190,12 @@ class CreateProjectView(APIView):
                 brief = project.brief[:-1]
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
+            message_content = ""
+            if 'message' in message:
+                message_content = message['message']
+            elif 'user' in message:
+                message_content = message['user']
+            # print(f'prompt -> {ChatGPTMessage.objects.last().message} {message_content}')
             completion = openai.Completion.create(
                 prompt=f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
                 max_tokens=100,
@@ -198,7 +204,11 @@ class CreateProjectView(APIView):
                 temperature=0.7,
                 model=model_id,
             )
+
             ans = completion.choices[0].text.strip()
+
+            if ans is "":
+                ans = "I don't understand. What did you say? Try with another message."
             NewMessage = {
                 "msgID": int(message["msgID"]) + 1,
                 "bot": ans,
