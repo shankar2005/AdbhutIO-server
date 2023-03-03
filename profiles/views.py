@@ -1033,7 +1033,6 @@ class OpenAIViewSet(APIView):
             )
             # print(response)
             ans = response.choices[0].text.strip()
-=
 
             print(f"ans => {ans}")
             return JsonResponse(
