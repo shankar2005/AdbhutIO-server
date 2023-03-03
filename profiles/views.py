@@ -1004,23 +1004,28 @@ class DemoView(APIView):
 # ---------------------------- demo project end -----------------------------------------
 
 # chatgpt integration
-
-
 class OpenAIViewSet(APIView):
     def post(self, request):
         try:
             message = request.data["message"]
-            model_id = "text-ada-001"
             openai.api_key = config("OPENAI_API_KEY")
-            completion = openai.Completion.create(
-                prompt=message,
-                max_tokens=1024,
-                n=1,
-                stop=None,
-                temperature=0.7,
-                model=model_id,
+
+            # start_sequence = "\nA:"
+            # restart_sequence = "\n\nQ: "
+
+            response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt=f"This is Adbhut.io which is a platform to hire artists and produce content. With this, users can produce content including social media posts, graphical and animated content, camera shot videos, music tracks, entire songs, documentaries, short fictional films, reality series, podcasts, campaign websites, and creatively written content. Our business servicing function offers the best-suited Artists with the required skills to get the content project done with the best quality, within the timelines and budgetary requirements.\n\nQ: Who is Founder of Adbhut.io .?\nA: Shankar.\n\nQ: I need help in a chat show?\nA: Okay, we have chat show artist. Tell me more about it.\n\nQ:  Who is founder of adbhut?\nA: The founder of Adbhut.io is Shankar.\n\nQ:  I need produces, video maker?\nA: Yes, we have video makers and producers available. Please provide more details about your project so we can match you with the best suited artist.\n\nQ: who is shankar?\nA: Shankar is the founder of Adbhut.io. He is an experienced entrepreneur and content creator with a passion for creating innovative and engaging content. He has worked with some of the biggest names in the industry and has a wealth of knowledge and experience in the content creation space.\n\nQ:  who are you?\nA: We are Adbhut.io, a platform to hire artists and produce content. We provide the best-suited Artists with the required skills to get the content project done with the best quality, within the timelines and budgetary requirements.\n\nQ:{message} ?",
+                temperature=0,
+                max_tokens=100,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0,
+                stop=["\n"],
             )
-            ans = completion.choices[0].text.strip()
+            print(response)
+            ans = response.choices[0].text.strip()
+            print(f"ans => {ans}")
             return JsonResponse(
                 {"response": ans}, safe=False
             )  # , status= status.HTTP_200_OK)
