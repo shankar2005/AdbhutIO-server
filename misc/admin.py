@@ -6,7 +6,7 @@ from .models import *
 
 
 class SkillAdmin(admin.ModelAdmin):
-    filter_horizontal = ('genres',)
+    filter_horizontal = ("genres",)
 
 
 admin.site.register(Skill, SkillAdmin)

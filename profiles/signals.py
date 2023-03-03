@@ -1,4 +1,3 @@
-
 import base64
 import io
 import json
@@ -24,14 +23,13 @@ default_storage = get_storage_class()()
 
 @receiver(post_save, sender=User)
 def post_save_create_client(sender, instance, created, **kwargs):
-
     if created:
         if not Token.objects.filter(user=instance).exists():
             Token.objects.create(user=instance)
 
-        if instance.username[:2] == 'AM':
+        if instance.username[:2] == "AM":
             Role.objects.create(user=instance, role="Artist Manager")
-        elif instance.username[:2] == 'PM':
+        elif instance.username[:2] == "PM":
             Role.objects.create(user=instance, role="Product Manager")
         else:
             Role.objects.create(user=instance, role="Client")
@@ -43,19 +41,25 @@ def post_save_create_client(sender, instance, created, **kwargs):
 
 
 def random_string(count=10):
-    randomString = ''.join(random.choices(string.ascii_letters, k=count))
+    randomString = "".join(random.choices(string.ascii_letters, k=count))
     return randomString
 
 
 @receiver(pre_save, sender=Project)
 def pre_save_update_project(sender, instance, **kwargs):
     if instance.id is None:
-        instance.slug = slugify('nsn-project ' + random_string())
+        instance.slug = slugify("nsn-project " + random_string())
 
 
 @receiver(post_save, sender=Project)
 def post_save_update_project(sender, instance, created, **kwargs):
     if created:
         if instance.title is None:
-            instance.title = str(instance.project_template.name) + " - " + instance.stage + " - " + str(instance.id)
+            instance.title = (
+                str(instance.project_template.name)
+                + " - "
+                + instance.stage
+                + " - "
+                + str(instance.id)
+            )
             instance.save()
