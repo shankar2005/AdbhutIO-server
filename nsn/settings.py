@@ -165,6 +165,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DATETIME_FORMAT": "%m/%d/%Y %H:%M:%S",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 
@@ -175,10 +176,6 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-REST_FRAMEWORK = {
-    # YOUR SETTINGS
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-}
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Adbhut backend API",
