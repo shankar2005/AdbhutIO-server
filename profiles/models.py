@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 from misc.models import *
 
@@ -69,13 +70,39 @@ class Work(models.Model):
         )
 
 
+class SocialProfile(models.Model):
+    name = models.CharField(max_length=30)
+    url = models.URLField()
+    client = models.ForeignKey("Client", on_delete=models.CASCADE)
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=100, default="")
+    url = models.URLField()
+
+    class Meta:
+        verbose_name_plural = "Companies"
+
+    def __str__(self):
+        return self.name
+
+
 class Client(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default="", blank=True)
-    details = models.TextField(default="", blank=True)
+    email = models.EmailField(unique=True, null=True, default="")
+    bio = models.TextField(default="", blank=True)
+
+    # new attributte
+    phone = PhoneNumberField(null=True, blank=True, unique=False)
+    company = models.ForeignKey(
+        "Company", null=True, on_delete=models.SET_NULL, related_name="client"
+    )
+    image = models.ImageField(
+        default="profile_pics\default.jpg", upload_to="profile_pics"
+    )
 
     # Login details
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField(default="", blank=True)
     email_confirmed = models.BooleanField(default=False)
 
     # Eother

@@ -58,7 +58,7 @@ urlpatterns = [
     ),
     # path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path("api/v1/chatflow_skills/", chatflowSkills.as_view()),
-    path("api/v1/auth/login/", csrf_exempt(ObtainAuthToken.as_view())),
+    path("api/v1/auth/login/", EmailLogin.as_view(), name="email_login"),
     path("api/v1/auth/verify/", ValidateToken.as_view()),
     path("api/v1/auth/register/", RegisterUserView.as_view()),
     path("api/v1/auth/user_details/", UserDetailsView.as_view(), name="user_details"),

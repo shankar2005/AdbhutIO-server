@@ -1,5 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
+from .models import Company, SocialProfile
 
 
 class TemplateProjectsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -26,7 +27,24 @@ class WorkAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     ]
 
 
+class CompanyInline(admin.TabularInline):
+    model = Company
+
+
+# class CompanyAdmin(admin.ModelAdmin):
+#     list_display = ('client', 'client')
+
+#     def client(self, obj):
+#         return ",".join([k.name for k in obj.client.all()])
+
+
+class SocialProfileInline(admin.TabularInline):
+    model = SocialProfile
+
+
 class ClientAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    inlines = [SocialProfileInline]
+
     filter_horizontal = ("projects", "recommended_artists")
     fieldsets = [
         (
@@ -34,9 +52,12 @@ class ClientAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             {
                 "fields": [
                     "name",
-                    ("email"),
+                    "email",
                     "user",
-                    "details",
+                    "bio",
+                    "image",
+                    "phone",
+                    "company",
                 ]
             },
         ),
