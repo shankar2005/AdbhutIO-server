@@ -4,11 +4,40 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.contrib.auth import login, authenticate
 from profiles.models import *
 from profiles.serializers import ClientSerializer
-
+from rest_framework.authtoken.views import ObtainAuthToken
+from django.views.decorators.csrf import csrf_exempt
 from .tokens import account_activation_token
+
+
+class EmailLogin(ObtainAuthToken):
+    @csrf_exempt
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        print(f"eddamail => {email}\tpassword=>{password}")
+
+        if email is None or password is None:
+            raise exceptions.AuthenticationFailed(_("Email and password required"))
+
+        if email and password:
+            user = authenticate(request=request, username=email, password=password)
+            print("passed 2")
+
+            if user is not None:
+                login(
+                    request, user, backend="django.contrib.auth.backends.ModelBackend"
+                )
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({"token": token.key})
+
+        return Response({"error": "Invalid email/password"}, status=400)
 
 
 class RegisterUserView(APIView):
@@ -38,59 +67,47 @@ class RegisterUserView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            if User.objects.filter(username=username).exists():
+            # if User.objects.filter(email=email).exists():
+            #     return Response(
+            #         {"error": "Username already exists"},
+            #     )
+
+            if len(password) >= 8:
+                if not User.objects.filter(username=username, email=email).exists():
+                    user = User.objects.create_user(
+                        username=username,
+                        password=password,
+                        email=email,
+                        first_name=first_name,
+                        last_name=last_name,
+                    )
+                    user.save()
+                    subject = "Account Activation"
+                    activate_url = (
+                        "https://api.orangewaves.tech/"
+                        + "activate/"
+                        + str(user.pk)
+                        + "/"
+                        + account_activation_token.make_token(user)
+                        + "/"
+                    )
+                    message = f"""
+                   Hey there{username},
+                   Thank you for signing up for NSNCO,
+                      Please click on the link below to activate your account
+                        {activate_url}
+                    Regards,
+                    Team NsN
+                    """
                 return Response(
-                    {"error": "Username already exists"},
+                    {"message": "User created successfully"},
+                    status=status.HTTP_201_CREATED,
                 )
             else:
-                if len(password) >= 8:
-                    if not User.objects.filter(username=username, email=email).exists():
-                        user = User.objects.create_user(
-                            username=username,
-                            password=password,
-                            email=email,
-                            first_name=first_name,
-                            last_name=last_name,
-                        )
-
-                        user.save()
-                        subject = "Account Activation"
-                        activate_url = (
-                            "https://api.orangewaves.tech/"
-                            + "activate/"
-                            + str(user.pk)
-                            + "/"
-                            + account_activation_token.make_token(user)
-                            + "/"
-                        )
-                        message = f"""
-                       Hey there{username},
-                       Thank you for signing up for NSNCO,
-                          Please click on the link below to activate your account
-                            {activate_url}
-
-                        Regards,
-                        Team NsN
-
-
-                        """
-                        # user.email_user(subject, message)
-
-                        if User.objects.filter(username=username).exists():
-                            return Response(
-                                {"success": "User created successfully"},
-                                status=status.HTTP_201_CREATED,
-                            )
-                    else:
-                        return Response(
-                            {"error": "User already exists"},
-                            status=status.HTTP_400_BAD_REQUEST,
-                        )
-                else:
-                    return Response(
-                        {"error": "Password must be at least 8 characters"},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+                return Response(
+                    {"error": "Password must be at least 8 characters"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         except Exception as e:
             print(e)
             if str(e) == "User has no client.":
@@ -113,7 +130,7 @@ class ValidateToken(APIView):
 
         if Token.objects.filter(key=token).exists():
             token = get_object_or_404(Token, key=token)
-            user = User.objects.get(username=token.user.username)
+            user = User.objects.get(email=token.user.email)
             role = get_object_or_404(Role, user=user)
             user = {
                 "name": user.first_name + " " + user.last_name,

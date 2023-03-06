@@ -10,8 +10,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -37,8 +36,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -58,8 +56,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -89,8 +86,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -120,8 +116,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -140,8 +135,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -151,8 +145,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -177,8 +170,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistAction'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -203,8 +195,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistAction'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -219,8 +210,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -247,8 +237,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistFeedback'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -270,8 +259,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -303,8 +291,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistFeedback'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -336,8 +323,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedArtistFeedback'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -358,8 +344,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -370,8 +355,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -398,8 +382,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistRequestSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -421,8 +404,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -454,8 +436,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistRequestSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -487,8 +468,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedArtistRequestSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -509,8 +489,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -532,8 +511,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -549,8 +527,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -572,8 +549,7 @@ paths:
               $ref: '#/components/schemas/AuthToken'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -587,8 +563,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -599,8 +574,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -610,8 +584,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -622,8 +595,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -634,8 +606,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -645,8 +616,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -656,8 +626,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -679,8 +648,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -696,8 +664,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -708,8 +675,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -719,8 +685,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -747,8 +712,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Project'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -770,8 +734,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -803,8 +766,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Project'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -836,8 +798,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedProject'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -858,8 +819,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -903,8 +863,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -931,8 +890,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistProfile'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -954,8 +912,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -987,8 +944,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ArtistProfile'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1020,8 +976,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedArtistProfile'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1042,8 +997,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -1054,8 +1008,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1082,8 +1035,7 @@ paths:
             schema:
               $ref: '#/components/schemas/TemplateProjects'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -1105,8 +1057,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1138,8 +1089,7 @@ paths:
             schema:
               $ref: '#/components/schemas/TemplateProjects'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1171,8 +1121,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedTemplateProjects'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1193,8 +1142,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -1205,8 +1153,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1233,8 +1180,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -1256,8 +1202,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1289,8 +1234,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1322,8 +1266,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1344,8 +1287,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -1420,8 +1362,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1446,8 +1387,7 @@ paths:
             schema:
               $ref: '#/components/schemas/WorkFeed'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -1469,8 +1409,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1502,8 +1441,7 @@ paths:
             schema:
               $ref: '#/components/schemas/WorkFeed'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1535,8 +1473,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedWorkFeed'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1557,8 +1494,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -1569,8 +1505,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1597,8 +1532,7 @@ paths:
             schema:
               $ref: '#/components/schemas/LanguageSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -1620,8 +1554,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1653,8 +1586,7 @@ paths:
             schema:
               $ref: '#/components/schemas/LanguageSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1686,8 +1618,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedLanguageSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1708,8 +1639,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -1720,8 +1650,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1748,8 +1677,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Location'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -1771,8 +1699,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1804,8 +1731,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Location'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1837,8 +1763,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedLocation'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -1859,8 +1784,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -1871,8 +1795,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1898,8 +1821,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -1919,8 +1841,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1950,8 +1871,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1981,8 +1901,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedProjectSerializerMini'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -2001,8 +1920,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -2037,8 +1955,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -2062,8 +1979,7 @@ paths:
             schema:
               $ref: '#/components/schemas/WorkFeed'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -2083,8 +1999,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -2114,8 +2029,7 @@ paths:
             schema:
               $ref: '#/components/schemas/WorkFeed'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -2145,8 +2059,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedWorkFeed'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -2165,8 +2078,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -2176,8 +2088,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2204,8 +2115,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Skill'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -2227,8 +2137,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2260,8 +2169,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Skill'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2293,8 +2201,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedSkill'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2315,8 +2222,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -2327,8 +2233,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2339,8 +2244,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2367,8 +2271,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectFeeSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '201':
@@ -2390,8 +2293,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2423,8 +2325,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ProjectFeeSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2456,8 +2357,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedProjectFeeSerializers'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -2478,8 +2378,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '204':
@@ -2501,8 +2400,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -2523,8 +2421,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       responses:
         '200':
           description: No response body
@@ -2540,8 +2437,7 @@ paths:
       tags:
       - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - tokenAuth: []
       - {}
       responses:
         '200':
@@ -3469,10 +3365,8 @@ components:
       - pk
       - skills
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
-    cookieAuth:
+    tokenAuth:
       type: apiKey
-      in: cookie
-      name: sessionid
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
