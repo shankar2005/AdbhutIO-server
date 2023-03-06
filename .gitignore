@@ -45,7 +45,8 @@ db.sqlite3
 # File-based project format
 *.iws
 
-
+.vscode
+.vscode/*.json
 # Python #
 *.py[cod]
 *$py.class
