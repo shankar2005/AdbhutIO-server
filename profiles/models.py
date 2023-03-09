@@ -12,14 +12,12 @@ from .choices import *
 
 
 class Role(models.Model):
-    role = models.CharField(
-        max_length=100, default="Client", choices=ROLE_TYPE
-    )
+    role = models.CharField(max_length=100, default="Client", choices=ROLE_TYPE)
 
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.email + " - " +  self.role
+        return self.user.email + " - " + self.role
 
 
 def savenameLocationForAggreement(self, filename):
@@ -132,7 +130,7 @@ class Client(models.Model):
     )
 
     def __str__(self):
-        return self.name  + " c" + str(self.id) + " u" + str(self.user.id)
+        return self.name + " c" + str(self.id) + " u" + str(self.user.id)
 
 
 class Artist(models.Model):
@@ -151,7 +149,9 @@ class Artist(models.Model):
     genre = models.ManyToManyField(Genre, default="", blank=True)
     email = models.EmailField(max_length=100, default="", blank=True)
     phone = models.IntegerField(default=0, blank=True)
-
+    
+    full_time = models.BooleanField(default=False)
+    part_time = models.BooleanField(default=False)
     # Conditional only on  skill = 'Actor'
 
     other_arts = models.CharField(max_length=100, default="", blank=True)
