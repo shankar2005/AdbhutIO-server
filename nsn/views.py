@@ -10,6 +10,9 @@ from profiles.serializers import ClientSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.views.decorators.csrf import csrf_exempt
 from .tokens import account_activation_token
+from phonenumber_field.phonenumber import PhoneNumber
+from django.db import IntegrityError
+
 
 
 class EmailLogin(ObtainAuthToken):
@@ -27,7 +30,7 @@ class EmailLogin(ObtainAuthToken):
             raise exceptions.AuthenticationFailed(_("Email and password required"))
 
         if email and password:
-            user = authenticate(request=request, username=email, password=password)
+            user = authenticate(request=request, email=email, password=password)
             print("passed 2")
 
             if user is not None:
@@ -46,14 +49,17 @@ class RegisterUserView(APIView):
     def post(self, request):
         try:
             data = request.data
-            # first_name = data['firstName'] if data['firstName'] != None else ''
-            # last_name = data['lastName'] if data['lastName'] != None else ''
-            first_name = ""
-            last_name = ""
+
+            name = data["name"] if data["name"]!=None else ''
             email = data["email"]
             password = data["password"]
             password2 = data["password2"]
-            username = data["username"]
+            phone = data["phone"] if data["phone"]!=None else ''
+            company = data["company"] if data["company"]!=None else ''
+            company_url = data["url"] if data["url"] != None else ''
+            username = email
+
+            # print("passed")
 
             if User.objects.filter(email=email).exists():
                 return Response(
@@ -67,32 +73,41 @@ class RegisterUserView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # if User.objects.filter(email=email).exists():
-            #     return Response(
-            #         {"error": "Username already exists"},
-            #     )
 
             if len(password) >= 8:
-                if not User.objects.filter(username=username, email=email).exists():
+                print("passed 1")
+                try:
                     user = User.objects.create_user(
-                        username=username,
+                        first_name = name,
+                        username= username,
                         password=password,
                         email=email,
-                        first_name=first_name,
-                        last_name=last_name,
                     )
-                    user.save()
-                    subject = "Account Activation"
-                    activate_url = (
-                        "https://api.orangewaves.tech/"
-                        + "activate/"
-                        + str(user.pk)
-                        + "/"
-                        + account_activation_token.make_token(user)
-                        + "/"
-                    )
-                    message = f"""
-                   Hey there{username},
+
+                    # print(f"{company} {company_url} {phone}")
+                    client = Client(user=user, email = email) #, email=email, phone=phone, company=company, website=company_url)
+
+                    phone = '"{}"'.format(phone)
+                    client.phone = PhoneNumber.from_string(str(phone))
+                    # print(f"client phone {client.phone}")
+                    client.company = company
+                    client.save()
+
+                except IntegrityError as e:
+                        # handle the case where a user with the same email already exists
+                        print("Error creating client: ", e)
+                    
+                subject = "Account Activation"
+                activate_url = (
+                    "https://api.orangewaves.tech/"
+                    + "activate/"
+                    + str(user.pk)
+                    + "/"
+                    + account_activation_token.make_token(user)
+                    + "/"
+                )
+                message = f"""
+                   Hey there{name},
                    Thank you for signing up for NSNCO,
                       Please click on the link below to activate your account
                         {activate_url}
@@ -100,8 +115,8 @@ class RegisterUserView(APIView):
                     Team NsN
                     """
                 return Response(
-                    {"message": "User created successfully"},
-                    status=status.HTTP_201_CREATED,
+                {"message": "User created successfully"},
+                status=status.HTTP_201_CREATED,
                 )
             else:
                 return Response(
@@ -128,15 +143,24 @@ class ValidateToken(APIView):
         data = request.data
         token = data["token"]
 
+        # print("passed1")
         if Token.objects.filter(key=token).exists():
+            # print("passed2")
+
             token = get_object_or_404(Token, key=token)
+            # print("passed3")
+
             user = User.objects.get(email=token.user.email)
-            role = get_object_or_404(Role, user=user)
+            try:
+                role = Role.objects.get(user=user) #get_object_or_404(Role, user=user)
+            except:
+                role = None
+
+            print("passed4")
             user = {
                 "name": user.first_name + " " + user.last_name,
                 "email": user.email,
-                "username": user.username,
-                "role": role.role,
+                "role": role.role if role else 'Client'
             }
             return Response(
                 {
@@ -173,7 +197,6 @@ class UserDetailsView(APIView):
                 user = {
                     "name": request.user.first_name + " " + request.user.last_name,
                     "email": request.user.email,
-                    "username": request.user.username,
                 }
                 return Response(
                     {"user": user, "role": role.role}, status=status.HTTP_200_OK
@@ -182,7 +205,6 @@ class UserDetailsView(APIView):
                 user = {
                     "name": request.user.first_name + " " + request.user.last_name,
                     "email": request.user.email,
-                    "username": request.user.username,
                 }
                 return Response(
                     {"user": user, "role": role.role}, status=status.HTTP_200_OK
