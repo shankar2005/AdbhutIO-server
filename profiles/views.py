@@ -42,6 +42,35 @@ from drf_spectacular.utils import extend_schema
 
 import os
 
+job_roles = {
+    'Artwork': ['Writer', 'Graphic Designer', '2D animation Artist', '3D Animation Artist'],
+    'Chat Show': ['Anchor', 'Voice Over Artist', 'Actor', 'Influencer', 'Video Producer', 'Video Editor', 'Writer', 'Music Producer', 'Director', '2D animation Artist', '3D Animation Artist'],
+    'Documentary': ['Director', 'Video Producer', 'Video Editor', 'Writer', 'Music Producer', 'Anchor', 'Voice Over Artist', 'Actor', 'Influencer'],
+    'Fiction & Reality': ['Writer', 'Director', 'Video Producer', 'Video Editor', 'Actor', 'Anchor', 'Voice Over Artist', 'Influencer', 'Lyricist', 'Music Producer', 'Vocalist', 'Rapper', '2D animation Artist', '3D Animation Artist'],
+    'Musical': ['Lyricist', 'Music Producer', 'Vocalist', 'Rapper', 'Director', 'Video Producer', 'Video Editor', 'Actor', 'Influencer', '2D animation Artist', '3D Animation Artist'],
+    'Web 3.0 Solutions': ['Website Designer', 'Website Developer', 'Augmented Reality Developer', 'Virtual Reality Developer', 'Game Developer', 'Writer', '2D animation Artist', '3D Animation Artist', 'Graphic Designer']
+}
+
+result_dict = {'Video Producer': 30, 'Graphic Designer': 31, 'Director': 32, 'Singer': 33, 'Music Producer': 34, 'Writer': 36, 'Voice Over Artist': 39, 'Actor': 40, 'Influencer': 41, 'Actress': 42, '2D animation Artist': 43, '3D Animation Artist': 44, 'Anchor': 45, 'Video Editor': 46, 'Website Developer': 47}
+
+
+# method to update or add New Skills, Id (Call only when modified table)
+def chatflowskills():
+    query_set = []
+    skills = Skill.objects.all().values_list("name", "id")
+    for skill in skills:
+        query_set.append(skill)
+    for item in query_set:
+        result_dict[item[0]] = item[1]
+
+
+
+def get_chatflow(product):
+    result = []
+    for skill in job_roles[product]:
+        result.append([skill, result_dict[skill]])
+    print(result)
+    return result
 
 # ------------------------------ chat flow api ----------------------------------------------------
 class chatflowSkills(APIView):
@@ -54,23 +83,19 @@ class chatflowSkills(APIView):
 
             if product in [0, "0", None, ""]:
                 return Response(
-                        {"skills": [], "projects": []}, status=status.HTTP_200_OK
-                    )
+                    {"skills": [], "projects": []}, status=status.HTTP_200_OK
+                )
             else:
+                prod_name = TemplateProjects.objects.get(
+                                id=int(product)
+                            ).name
                 return Response(
-                        {
-                            "skills": [
-                                [skill.name, skill.id]
-                                for skill in TemplateProjects.objects.get(
-                                    id=int(product)
-                                ).skills.all()
-                            ],
-                            "projects": TemplateProjects.objects.get(
-                                pk=product
-                            ).values_list("name", "id"),
-                        },
-                        status=status.HTTP_200_OK,
-                    )
+                    {
+                        "skills": get_chatflow(prod_name),
+                        "projects": [product, prod_name]
+                    },
+                    status=status.HTTP_200_OK,
+                )
 
         except Exception as e:
             return Response(
