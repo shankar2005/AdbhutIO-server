@@ -10,14 +10,14 @@ from .models import *
 
 # client serializer
 class ClientSerializer(serializers.ModelSerializer):
-    user_details = serializers.SerializerMethodField()
+    # user_details = serializers.SerializerMethodField()
 
-    def get_user_details(self, obj):
-        return {"username": obj.user.username}
+    # def get_user_details(self, obj):
+    #     return {"email": obj.user.email}
 
     class Meta:
         model = Client
-        fields = ["name", "email", "user_details"]
+        fields = ["name", "email"]
 
 
 class WorkFeedSerializer(serializers.ModelSerializer):

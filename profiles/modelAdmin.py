@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import Company, SocialProfile
+from .models import  SocialProfile # , Company
 
 
 class TemplateProjectsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -27,8 +27,8 @@ class WorkAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     ]
 
 
-class CompanyInline(admin.TabularInline):
-    model = Company
+# class CompanyInline(admin.TabularInline):
+#     model = Company
 
 
 # class CompanyAdmin(admin.ModelAdmin):
@@ -54,7 +54,7 @@ class ClientAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     "name",
                     "email",
                     "user",
-                    "bio",
+                    # "bio",
                     "image",
                     "phone",
                     "company",

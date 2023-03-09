@@ -21,23 +21,23 @@ from .models import Client, Project, Role
 default_storage = get_storage_class()()
 
 
-@receiver(post_save, sender=User)
-def post_save_create_client(sender, instance, created, **kwargs):
-    if created:
-        if not Token.objects.filter(user=instance).exists():
-            Token.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def post_save_create_client(sender, instance, created, **kwargs):
+#     if created:
+#         if not Token.objects.filter(user=instance).exists():
+#             Token.objects.create(user=instance)
 
-        if instance.username[:2] == "AM":
-            Role.objects.create(user=instance, role="Artist Manager")
-        elif instance.username[:2] == "PM":
-            Role.objects.create(user=instance, role="Product Manager")
-        else:
-            Role.objects.create(user=instance, role="Client")
-            Client.objects.create(
-                user=instance,
-                name=instance.username,
-                email=instance.email,
-            )
+#         if instance.username[:2] == "AM":
+#             Role.objects.create(user=instance, role="Artist Manager")
+#         elif instance.username[:2] == "PM":
+#             Role.objects.create(user=instance, role="Product Manager")
+#         else:
+#             Role.objects.create(user=instance, role="Client")
+#             Client.objects.create(
+#                 user=instance,
+#                 name=instance.username,
+#                 email=instance.email,
+#             )
 
 
 def random_string(count=10):

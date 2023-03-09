@@ -12,13 +12,14 @@ from .choices import *
 
 
 class Role(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(
-        max_length=100, default="Client", blank=True, choices=ROLE_TYPE
+        max_length=100, default="Client", choices=ROLE_TYPE
     )
 
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+
     def __str__(self):
-        return str(self.user) + " - " + self.role
+        return self.user.email + " - " +  self.role
 
 
 def savenameLocationForAggreement(self, filename):
@@ -76,28 +77,28 @@ class SocialProfile(models.Model):
     client = models.ForeignKey("Client", on_delete=models.CASCADE)
 
 
-class Company(models.Model):
-    name = models.CharField(max_length=100, default="")
-    url = models.URLField()
+# class Company(models.Model):
+#     name = models.CharField(max_length=100, default="")
+#     url = models.URLField()
 
-    class Meta:
-        verbose_name_plural = "Companies"
+#     class Meta:
+#         verbose_name_plural = "Companies"
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default="", blank=True)
     email = models.EmailField(unique=True, null=True, default="")
-    bio = models.TextField(default="", blank=True)
+    # bio = models.TextField(default="", blank=True)
 
     # new attributte
+    # role = models.OneToOneField(Role, null=True, on_delete=models.SET_NULL, related_name=)
     phone = PhoneNumberField(null=True, blank=True, unique=False)
-    company = models.ForeignKey(
-        "Company", null=True, on_delete=models.SET_NULL, related_name="client"
-    )
+    company = models.CharField(max_length=50, blank=True, null=True, default="")
+    website = models.URLField(max_length=255, blank=True, null=True)
     image = models.ImageField(
         default="profile_pics\default.jpg", upload_to="profile_pics"
     )
@@ -131,7 +132,7 @@ class Client(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.name  + " c" + str(self.id) + " u" + str(self.user.id)
 
 
 class Artist(models.Model):
