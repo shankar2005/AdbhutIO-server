@@ -50,24 +50,14 @@ class chatflowSkills(APIView):
     def post(self, request):
         try:
             data = request.data
-            print(data)
-            artists = data["artists"]
             product = data["product"]
 
-            # ----------Testing--- ------------
-            print(artists)
-            print(product)
-            # ----------------------------
-            skills = []
-            possible_projects = []
-            # print intersecting skills of artists
-            if artists in [0, "0", None, ""]:
-                if product in [0, "0", None, ""]:
-                    return Response(
+            if product in [0, "0", None, ""]:
+                return Response(
                         {"skills": [], "projects": []}, status=status.HTTP_200_OK
                     )
-                else:
-                    return Response(
+            else:
+                return Response(
                         {
                             "skills": [
                                 [skill.name, skill.id]
@@ -75,43 +65,13 @@ class chatflowSkills(APIView):
                                     id=int(product)
                                 ).skills.all()
                             ],
-                            "projects": TemplateProjects.objects.filter(
+                            "projects": TemplateProjects.objects.get(
                                 pk=product
                             ).values_list("name", "id"),
                         },
                         status=status.HTTP_200_OK,
                     )
-            for artist in artists.split(","):
-                artist_skills = Artist.objects.get(pk=artist).skill.all()
-                for skill in artist_skills:
-                    if [skill.name, skill.id] not in skills:
-                        skills.append([skill.name, skill.id])
 
-            if product in [0, "0", None, ""]:
-                for project in TemplateProjects.objects.all():
-                    for skill in project.skills.all():
-                        if [skill.name, skill.id] in skills:
-                            possible_projects.append([project.name, project.id])
-            else:
-                return Response(
-                    {
-                        "skills": [
-                            [skill.name, skill.id]
-                            for skill in TemplateProjects.objects.get(
-                                id=int(product)
-                            ).skills.all()
-                        ],
-                        "projects": TemplateProjects.objects.filter(
-                            pk=product
-                        ).values_list("name", "id"),
-                    },
-                    status=status.HTTP_200_OK,
-                )
-
-            return Response(
-                {"skills": skills, "projects": possible_projects},
-                status=status.HTTP_200_OK,
-            )
         except Exception as e:
             return Response(
                 {"error": "Something went wrong", "error_message": str(e)},
@@ -1014,6 +974,7 @@ class DemoView(APIView):
 
 
 # ---------------------------- demo project end -----------------------------------------
+
 
 # chatgpt integration
 class OpenAIViewSet(APIView):
