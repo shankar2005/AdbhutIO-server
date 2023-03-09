@@ -14,7 +14,6 @@ from phonenumber_field.phonenumber import PhoneNumber
 from django.db import IntegrityError
 
 
-
 class EmailLogin(ObtainAuthToken):
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
@@ -50,13 +49,13 @@ class RegisterUserView(APIView):
         try:
             data = request.data
 
-            name = data["name"] if data["name"]!=None else ''
+            name = data["name"] if data["name"] != None else ""
             email = data["email"]
             password = data["password"]
             password2 = data["password2"]
-            phone = data["phone"] if data["phone"]!=None else ''
-            company = data["company"] if data["company"]!=None else ''
-            company_url = data["url"] if data["url"] != None else ''
+            phone = data["phone"] if data["phone"] != None else ""
+            company = data["company"] if data["company"] != None else ""
+            company_url = data["url"] if data["url"] != None else ""
             username = email
 
             # print("passed")
@@ -73,19 +72,20 @@ class RegisterUserView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-
             if len(password) >= 8:
                 print("passed 1")
                 try:
                     user = User.objects.create_user(
-                        first_name = name,
-                        username= username,
+                        first_name=name,
+                        username=username,
                         password=password,
                         email=email,
                     )
 
                     # print(f"{company} {company_url} {phone}")
-                    client = Client(user=user, email = email) #, email=email, phone=phone, company=company, website=company_url)
+                    client = Client(
+                        user=user, email=email
+                    )  # , email=email, phone=phone, company=company, website=company_url)
 
                     phone = '"{}"'.format(phone)
                     client.phone = PhoneNumber.from_string(str(phone))
@@ -94,9 +94,9 @@ class RegisterUserView(APIView):
                     client.save()
 
                 except IntegrityError as e:
-                        # handle the case where a user with the same email already exists
-                        print("Error creating client: ", e)
-                    
+                    # handle the case where a user with the same email already exists
+                    print("Error creating client: ", e)
+
                 subject = "Account Activation"
                 activate_url = (
                     "https://api.orangewaves.tech/"
@@ -115,8 +115,8 @@ class RegisterUserView(APIView):
                     Team NsN
                     """
                 return Response(
-                {"message": "User created successfully"},
-                status=status.HTTP_201_CREATED,
+                    {"message": "User created successfully"},
+                    status=status.HTTP_201_CREATED,
                 )
             else:
                 return Response(
@@ -152,7 +152,7 @@ class ValidateToken(APIView):
 
             user = User.objects.get(email=token.user.email)
             try:
-                role = Role.objects.get(user=user) #get_object_or_404(Role, user=user)
+                role = Role.objects.get(user=user)  # get_object_or_404(Role, user=user)
             except:
                 role = None
 
@@ -160,7 +160,7 @@ class ValidateToken(APIView):
             user = {
                 "name": user.first_name + " " + user.last_name,
                 "email": user.email,
-                "role": role.role if role else 'Client'
+                "role": role.role if role else "Client",
             }
             return Response(
                 {

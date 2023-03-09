@@ -8,7 +8,7 @@ class Skill(models.Model):
     genres = models.ManyToManyField("Genre", related_name="skills")
 
     def __str__(self):
-        return self.name
+        return self.name + " " + str(self.id)
 
 
 class Location(models.Model):
