@@ -149,7 +149,9 @@ class Artist(models.Model):
     genre = models.ManyToManyField(Genre, default="", blank=True)
     email = models.EmailField(max_length=100, default="", blank=True)
     phone = models.IntegerField(default=0, blank=True)
-
+    
+    full_time = models.BooleanField(default=False)
+    part_time = models.BooleanField(default=False)
     # Conditional only on  skill = 'Actor'
 
     other_arts = models.CharField(max_length=100, default="", blank=True)
