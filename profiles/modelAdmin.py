@@ -104,6 +104,7 @@ class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     "social_links",
                     ("has_manager", "manager"),
                     "other_arts",
+                    ("full_time", "part_time"),
                 ]
             },
         ),
