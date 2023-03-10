@@ -42,35 +42,166 @@ from drf_spectacular.utils import extend_schema
 
 import os
 
+
 job_roles = {
-    'Artwork': ['Writer', 'Graphic Designer', '2D animation Artist', '3D Animation Artist'],
-    'Chat Show': ['Anchor', 'Voice Over Artist', 'Actor', 'Influencer', 'Video Producer', 'Video Editor', 'Writer', 'Music Producer', 'Director', '2D animation Artist', '3D Animation Artist'],
-    'Documentary': ['Director', 'Video Producer', 'Video Editor', 'Writer', 'Music Producer', 'Anchor', 'Voice Over Artist', 'Actor', 'Influencer'],
-    'Fiction & Reality': ['Writer', 'Director', 'Video Producer', 'Video Editor', 'Actor', 'Anchor', 'Voice Over Artist', 'Influencer', 'Lyricist', 'Music Producer', 'Vocalist', 'Rapper', '2D animation Artist', '3D Animation Artist'],
-    'Musical': ['Lyricist', 'Music Producer', 'Vocalist', 'Rapper', 'Director', 'Video Producer', 'Video Editor', 'Actor', 'Influencer', '2D animation Artist', '3D Animation Artist'],
-    'Web 3.0 Solutions': ['Website Designer', 'Website Developer', 'Augmented Reality Developer', 'Virtual Reality Developer', 'Game Developer', 'Writer', '2D animation Artist', '3D Animation Artist', 'Graphic Designer']
+    "Artwork": [
+        ["Writer", "Graphic Designer", "2D animation Artist", "3D Animation Artist"],
+        ["Augmented Reality Developer", "Game Developer"],
+    ],
+    "Chat Show": [
+        [
+            "Anchor",
+            "Voice Over Artist",
+            "Actor",
+            "Influencer",
+            "Video Producer",
+            "Video Editor",
+            "Writer",
+            "Music Producer",
+            "Director",
+            "2D animation Artist",
+            "3D Animation Artist",
+        ],
+        [
+            "Website Designer",
+            "Website Developer",
+            "Augmented Reality Developer",
+            "Game Developer",
+        ],
+    ],
+    "Documentary": [
+        [
+            "Director",
+            "Video Producer",
+            "Video Editor",
+            "Writer",
+            "Music Producer",
+            "Anchor",
+            "Voice Over Artist",
+            "Actor",
+            "Influencer",
+        ],
+        ["2D Animation Artist", "3D Animation Artist"],
+    ],
+    "Fiction & Reality": [
+        [
+            "Writer",
+            "Director",
+            "Video Producer",
+            "Video Editor",
+            "Actor",
+            "Anchor",
+            "Voice Over Artist",
+            "Influencer",
+            "Lyricist",
+            "Music Producer",
+            "Vocalist",
+            "Rapper",
+            "2D animation Artist",
+            "3D Animation Artist",
+        ],
+        [
+            "Website Designer",
+            "Website Developer",
+            "Augmented Reality Developer",
+            "Virtual Reality Developer",
+            "Game Developer",
+        ],
+    ],
+    "Musical": [
+        [
+            "Lyricist",
+            "Music Producer",
+            "Vocalist",
+            "Rapper",
+            "Director",
+            "Video Producer",
+            "Video Editor",
+            "Actor",
+            "Influencer",
+            "2D animation Artist",
+            "3D Animation Artist",
+        ],
+        ["Website Designer", "Website Developer", "Game Developer"],
+    ],
+
+    "Web 3.0 Solutions": [
+        [
+            "Website Designer",
+            "Website Developer",
+            "Augmented Reality Developer",
+            "Virtual Reality Developer",
+            "Game Developer",
+            "Writer",
+            "2D animation Artist",
+            "3D Animation Artist",
+            "Graphic Designer",
+        ],[
+            "Music Producer/Sound Engineer",
+            "Voice Over Artist",
+            "Director",
+            "Video Producer",
+            "Video Editor",
+            "Actor",
+            "Influencer",
+        ]
+    ],
 }
 
-result_dict = {'Video Producer': 30, 'Graphic Designer': 31, 'Director': 32, 'Singer': 33, 'Music Producer': 34, 'Writer': 36, 'Voice Over Artist': 39, 'Actor': 40, 'Influencer': 41, 'Actress': 42, '2D animation Artist': 43, '3D Animation Artist': 44, 'Anchor': 45, 'Video Editor': 46, 'Website Developer': 47}
+result_dict = {
+    "Video Producer": 30,
+    "Graphic Designer": 31,
+    "Director": 32,
+    "Singer": 33,
+    "Music Producer": 34,
+    "Writer": 36,
+    "Voice Over Artist": 39,
+    "Actor": 40,
+    "Influencer": 41,
+    "Actress": 42,
+    "2D animation Artist": 43,
+    "3D Animation Artist": 44,
+    "Anchor": 45,
+    "Video Editor": 46,
+    "Website Developer": 47,
+}
 
 
 # method to update or add New Skills, Id (Call only when modified table)
 def chatflowskills():
+    result_dict = {}
     query_set = []
     skills = Skill.objects.all().values_list("name", "id")
     for skill in skills:
         query_set.append(skill)
     for item in query_set:
         result_dict[item[0]] = item[1]
+    return result_dict
 
 
-
-def get_chatflow(product):
+def get_chatflow(result_dict:dict, product, index:int):
     result = []
-    for skill in job_roles[product]:
-        result.append([skill, result_dict[skill]])
+    if index == 0:
+        for skill in job_roles[product][int(index)]:
+            if skill in result_dict.keys():
+                result.append([skill, result_dict[skill]])
+            else:
+                # genre = Genre.objects.first()
+                # skill = Skill(name=skill)
+                # skill.genre.add(genre)
+                # skill.save()
+                # result.append([skill, skill.])
+                result.append([skill, 0])
+
+    else:
+        for skill in job_roles[product][int(index)]:
+            result.append(skill)
+
     print(result)
     return result
+
+
+
 
 # ------------------------------ chat flow api ----------------------------------------------------
 class chatflowSkills(APIView):
@@ -78,6 +209,7 @@ class chatflowSkills(APIView):
 
     def post(self, request):
         try:
+            result_dict = chatflowskills()
             data = request.data
             product = data["product"]
 
@@ -86,13 +218,12 @@ class chatflowSkills(APIView):
                     {"skills": [], "projects": []}, status=status.HTTP_200_OK
                 )
             else:
-                prod_name = TemplateProjects.objects.get(
-                                id=int(product)
-                            ).name
+                prod_name = TemplateProjects.objects.get(id=int(product)).name
                 return Response(
                     {
-                        "skills": get_chatflow(prod_name),
-                        "projects": [product, prod_name]
+                        "skills": get_chatflow(result_dict, prod_name, 0),
+                        "add ons": get_chatflow(result_dict, prod_name, 1),
+                        "projects": [product, prod_name],
                     },
                     status=status.HTTP_200_OK,
                 )
@@ -189,7 +320,7 @@ class CreateProjectView(APIView):
             openai.api_key = config("OPENAI_API_KEY")
             # print(f'prompt -> {ChatGPTMessage.objects.last().message} {message_content}')
             completion = openai.Completion.create(
-                prompt=f'{ChatGPTMessage.objects.last().message} {message_content}',
+                prompt=f"{ChatGPTMessage.objects.last().message} {message_content}",
                 max_tokens=100,
                 n=1,
                 stop=None,

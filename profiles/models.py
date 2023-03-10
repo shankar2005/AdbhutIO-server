@@ -38,7 +38,7 @@ class TemplateProjects(models.Model):
     file = models.FileField(upload_to="work_files", default="", blank=True)
 
     def __str__(self):
-        return self.name
+        return self.name + " " + str(self.id)
 
 
 class Work(models.Model):
