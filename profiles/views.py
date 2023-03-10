@@ -168,6 +168,8 @@ class CreateProjectView(APIView):
             message = request.data["message"]
             project_id = request.data["project_id"]
             project = get_object_or_404(Project, id=project_id)
+
+            # print("passed 1")
             new_message = {"user": message}
             messageID = 1
 
@@ -182,6 +184,9 @@ class CreateProjectView(APIView):
                 message_content = message["message"]
             elif "user" in message:
                 message_content = message["user"]
+
+            # print(f"passed 2\n{message_content}\n")
+            openai.api_key = config("OPENAI_API_KEY")
             # print(f'prompt -> {ChatGPTMessage.objects.last().message} {message_content}')
             completion = openai.Completion.create(
                 prompt=f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
@@ -192,6 +197,7 @@ class CreateProjectView(APIView):
                 model=model_id,
             )
 
+            # print(f"passed 3\n")
             ans = completion.choices[0].text.strip()
 
             if ans is "":
