@@ -189,12 +189,12 @@ class CreateProjectView(APIView):
             openai.api_key = config("OPENAI_API_KEY")
             # print(f'prompt -> {ChatGPTMessage.objects.last().message} {message_content}')
             completion = openai.Completion.create(
-                prompt=f'{ChatGPTMessage.objects.latest("id").message} {message_content}',
+                prompt=f'{ChatGPTMessage.objects.last().message} {message_content}',
                 max_tokens=100,
                 n=1,
                 stop=None,
                 temperature=0.7,
-                model=model_id,
+                model="text-davinci-003",
             )
 
             # print(f"passed 3\n")
