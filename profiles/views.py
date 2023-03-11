@@ -49,23 +49,24 @@ class chatflowSkills(APIView):
     def post(self, request):
         try:
             data = request.data
-            print(data)
-            artists = data["artists"]
+            artists = data.get("artists", 0)
             product = data["product"]
 
+
             # ----------Testing--- ------------
-            print(artists)
-            print(product)
+            print(f" product {product}")
             # ----------------------------
             skills = []
             possible_projects = []
             # print intersecting skills of artists
             if artists in [0, "0", None, ""]:
+                print("passed1")
                 if product in [0, "0", None, ""]:
                     return Response(
                         {"skills": [], "projects": []}, status=status.HTTP_200_OK
                     )
                 else:
+                    print("passed 2")
                     return Response(
                         {
                             "skills": [
