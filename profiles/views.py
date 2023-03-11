@@ -43,191 +43,74 @@ from drf_spectacular.utils import extend_schema
 import os
 
 
-job_roles = {
-    "Artwork": [
-        ["Writer", "Graphic Designer", "2D animation Artist", "3D Animation Artist"],
-        ["Augmented Reality Developer", "Game Developer"],
-    ],
-    "Chat Show": [
-        [
-            "Anchor",
-            "Voice Over Artist",
-            "Actor",
-            "Influencer",
-            "Video Producer",
-            "Video Editor",
-            "Writer",
-            "Music Producer",
-            "Director",
-            "2D animation Artist",
-            "3D Animation Artist",
-        ],
-        [
-            "Website Designer",
-            "Website Developer",
-            "Augmented Reality Developer",
-            "Game Developer",
-        ],
-    ],
-    "Documentary": [
-        [
-            "Director",
-            "Video Producer",
-            "Video Editor",
-            "Writer",
-            "Music Producer",
-            "Anchor",
-            "Voice Over Artist",
-            "Actor",
-            "Influencer",
-        ],
-        ["2D Animation Artist", "3D Animation Artist"],
-    ],
-    "Fiction & Reality": [
-        [
-            "Writer",
-            "Director",
-            "Video Producer",
-            "Video Editor",
-            "Actor",
-            "Anchor",
-            "Voice Over Artist",
-            "Influencer",
-            "Lyricist",
-            "Music Producer",
-            "Vocalist",
-            "Rapper",
-            "2D animation Artist",
-            "3D Animation Artist",
-        ],
-        [
-            "Website Designer",
-            "Website Developer",
-            "Augmented Reality Developer",
-            "Virtual Reality Developer",
-            "Game Developer",
-        ],
-    ],
-    "Musical": [
-        [
-            "Lyricist",
-            "Music Producer",
-            "Vocalist",
-            "Rapper",
-            "Director",
-            "Video Producer",
-            "Video Editor",
-            "Actor",
-            "Influencer",
-            "2D animation Artist",
-            "3D Animation Artist",
-        ],
-        ["Website Designer", "Website Developer", "Game Developer"],
-    ],
-
-    "Web 3.0 Solutions": [
-        [
-            "Website Designer",
-            "Website Developer",
-            "Augmented Reality Developer",
-            "Virtual Reality Developer",
-            "Game Developer",
-            "Writer",
-            "2D animation Artist",
-            "3D Animation Artist",
-            "Graphic Designer",
-        ],[
-            "Music Producer/Sound Engineer",
-            "Voice Over Artist",
-            "Director",
-            "Video Producer",
-            "Video Editor",
-            "Actor",
-            "Influencer",
-        ]
-    ],
-}
-
-result_dict = {
-    "Video Producer": 30,
-    "Graphic Designer": 31,
-    "Director": 32,
-    "Singer": 33,
-    "Music Producer": 34,
-    "Writer": 36,
-    "Voice Over Artist": 39,
-    "Actor": 40,
-    "Influencer": 41,
-    "Actress": 42,
-    "2D animation Artist": 43,
-    "3D Animation Artist": 44,
-    "Anchor": 45,
-    "Video Editor": 46,
-    "Website Developer": 47,
-}
-
-
-# method to update or add New Skills, Id (Call only when modified table)
-def chatflowskills():
-    result_dict = {}
-    query_set = []
-    skills = Skill.objects.all().values_list("name", "id")
-    for skill in skills:
-        query_set.append(skill)
-    for item in query_set:
-        result_dict[item[0]] = item[1]
-    return result_dict
-
-
-def get_chatflow(result_dict:dict, product, index:int):
-    result = []
-    if index == 0:
-        for skill in job_roles[product][int(index)]:
-            if skill in result_dict.keys():
-                result.append([skill, result_dict[skill]])
-            else:
-                # genre = Genre.objects.first()
-                # skill = Skill(name=skill)
-                # skill.genre.add(genre)
-                # skill.save()
-                # result.append([skill, skill.])
-                result.append([skill, 0])
-
-    else:
-        for skill in job_roles[product][int(index)]:
-            result.append(skill)
-
-    print(result)
-    return result
-
-
-
-
-# ------------------------------ chat flow api ----------------------------------------------------
 class chatflowSkills(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         try:
-            result_dict = chatflowskills()
             data = request.data
+            print(data)
+            artists = data["artists"]
             product = data["product"]
 
+            # ----------Testing--- ------------
+            print(artists)
+            print(product)
+            # ----------------------------
+            skills = []
+            possible_projects = []
+            # print intersecting skills of artists
+            if artists in [0, "0", None, ""]:
+                if product in [0, "0", None, ""]:
+                    return Response(
+                        {"skills": [], "projects": []}, status=status.HTTP_200_OK
+                    )
+                else:
+                    return Response(
+                        {
+                            "skills": [
+                                [skill.name, skill.id]
+                                for skill in TemplateProjects.objects.get(
+                                    id=int(product)
+                                ).skills.all()
+                            ],
+                            "projects": TemplateProjects.objects.filter(
+                                pk=product
+                            ).values_list("name", "id"),
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+            for artist in artists.split(","):
+                artist_skills = Artist.objects.get(pk=artist).skill.all()
+                for skill in artist_skills:
+                    if [skill.name, skill.id] not in skills:
+                        skills.append([skill.name, skill.id])
+
             if product in [0, "0", None, ""]:
-                return Response(
-                    {"skills": [], "projects": []}, status=status.HTTP_200_OK
-                )
+                for project in TemplateProjects.objects.all():
+                    for skill in project.skills.all():
+                        if [skill.name, skill.id] in skills:
+                            possible_projects.append([project.name, project.id])
             else:
-                prod_name = TemplateProjects.objects.get(id=int(product)).name
                 return Response(
                     {
-                        "skills": get_chatflow(result_dict, prod_name, 0),
-                        "add ons": get_chatflow(result_dict, prod_name, 1),
-                        "projects": [product, prod_name],
+                        "skills": [
+                            [skill.name, skill.id]
+                            for skill in TemplateProjects.objects.get(
+                                id=int(product)
+                            ).skills.all()
+                        ],
+                        "projects": TemplateProjects.objects.filter(
+                            pk=product
+                        ).values_list("name", "id"),
                     },
                     status=status.HTTP_200_OK,
                 )
 
+            return Response(
+                {"skills": skills, "projects": possible_projects},
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response(
                 {"error": "Something went wrong", "error_message": str(e)},
