@@ -31,14 +31,33 @@ def saveNameLocationForProfilePic(self, filename):
 class TemplateProjects(models.Model):
     name = models.CharField(max_length=100, default="")
     details = models.TextField(default="", blank=True)
+
+
     skills = models.ManyToManyField(
-        Skill, default="", blank=True, related_name="%(class)s_Skill"
+        Skill, through='TemplateProjectSkill', blank=True, related_name="%(class)s_Skill"
     )
+
     weblink = models.URLField(max_length=100, default="", blank=True)
     file = models.FileField(upload_to="work_files", default="", blank=True)
 
     def __str__(self):
         return self.name + " " + str(self.id)
+
+    def get_ordered_skills(self):
+        return [s.skill for s in self.templateprojectskill_set.order_by('priority')]
+
+
+
+class TemplateProjectSkill(models.Model):
+    template_project = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE)
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    priority = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.template_project.name + "<-->" + self.skill.name + " id-" + str(self.id)
+
+    class Meta:
+        unique_together = ('template_project', 'skill')
 
 
 class Work(models.Model):

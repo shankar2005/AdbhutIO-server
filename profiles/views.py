@@ -73,7 +73,7 @@ class chatflowSkills(APIView):
                                 [skill.name, skill.id]
                                 for skill in TemplateProjects.objects.get(
                                     id=int(product)
-                                ).skills.all()
+                                ).get_ordered_skills()
                             ],
                             "projects": TemplateProjects.objects.filter(
                                 pk=product
@@ -89,7 +89,7 @@ class chatflowSkills(APIView):
 
             if product in [0, "0", None, ""]:
                 for project in TemplateProjects.objects.all():
-                    for skill in project.skills.all():
+                    for skill in project.get_ordered_skills():
                         if [skill.name, skill.id] in skills:
                             possible_projects.append([project.name, project.id])
             else:
@@ -99,7 +99,7 @@ class chatflowSkills(APIView):
                             [skill.name, skill.id]
                             for skill in TemplateProjects.objects.get(
                                 id=int(product)
-                            ).skills.all()
+                            ).get_ordered_skills()
                         ],
                         "projects": TemplateProjects.objects.filter(
                             pk=product
@@ -971,16 +971,22 @@ class CreateNewProject(APIView):
     def post(self, request):
         try:
             data = request.data
+            print(request.data)
             client = get_object_or_404(Client, user=request.user)
             data["client"] = client.id
             project_serializer = ProjectSerializer(data=data)
+            print("PASSED 2")
+            print(f"project serializer {project_serializer}")
+            print("passed 3")
             if project_serializer.is_valid():
                 project_serializer.save()
                 return Response(project_serializer.data, status=status.HTTP_201_CREATED)
+            print("response rror")
             return Response(
                 project_serializer.error_messages, status=status.HTTP_400_BAD_REQUEST
             )
         except Exception as e:
+            print("error occurdd")
             return Response(
                 {"message": "something wents wrong!", "error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
