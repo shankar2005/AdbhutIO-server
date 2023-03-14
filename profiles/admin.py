@@ -5,6 +5,7 @@ from .models import *
 
 # Register your models here.
 # admin.site.register(Company)
+admin.site.register(TemplateProjectSkill)
 admin.site.register(SocialProfile)
 admin.site.register(Role, RoleAdmin)
 admin.site.register(Work, WorkAdmin)

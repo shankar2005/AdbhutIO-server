@@ -1,11 +1,16 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import SocialProfile  # , Company
+from .models import SocialProfile , TemplateProjects # , Company
+
+class SkillInlineAdmin(admin.TabularInline):
+    model = TemplateProjects.skills.through
 
 
 class TemplateProjectsAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     filter_horizontal = ("skills",)
-    fieldsets = [("Work", {"fields": ["name", "details", "skills", "weblink", "file"]})]
+    fieldsets = [("Work", {"fields": ["name", "details", "weblink", "file"]})]
+
+    inlines = (SkillInlineAdmin,)
 
 
 class WorkAdmin(ImportExportModelAdmin, admin.ModelAdmin):

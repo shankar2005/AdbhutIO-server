@@ -73,7 +73,7 @@ class chatflowSkills(APIView):
                                 [skill.name, skill.id]
                                 for skill in TemplateProjects.objects.get(
                                     id=int(product)
-                                ).skills.all()
+                                ).get_ordered_skills()
                             ],
                             "projects": TemplateProjects.objects.filter(
                                 pk=product
@@ -89,7 +89,7 @@ class chatflowSkills(APIView):
 
             if product in [0, "0", None, ""]:
                 for project in TemplateProjects.objects.all():
-                    for skill in project.skills.all():
+                    for skill in project.get_ordered_skills():
                         if [skill.name, skill.id] in skills:
                             possible_projects.append([project.name, project.id])
             else:
@@ -99,7 +99,7 @@ class chatflowSkills(APIView):
                             [skill.name, skill.id]
                             for skill in TemplateProjects.objects.get(
                                 id=int(product)
-                            ).skills.all()
+                            ).get_ordered_skills()
                         ],
                         "projects": TemplateProjects.objects.filter(
                             pk=product
