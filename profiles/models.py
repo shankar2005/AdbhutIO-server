@@ -31,11 +31,12 @@ def saveNameLocationForProfilePic(self, filename):
 class TemplateProjects(models.Model):
     name = models.CharField(max_length=100, default="")
     details = models.TextField(default="", blank=True)
-
-
     skills = models.ManyToManyField(
-        Skill, through='TemplateProjectSkill', blank=True, related_name="%(class)s_Skill"
+        Skill, blank=True, through='TemplateProjectSkill', related_name="%(class)s_Skill"
     )
+
+
+
 
     weblink = models.URLField(max_length=100, default="", blank=True)
     file = models.FileField(upload_to="work_files", default="", blank=True)
