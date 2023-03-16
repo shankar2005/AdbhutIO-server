@@ -621,7 +621,7 @@ class ArtistActionviewSet(APIView):
                 return Response(
                     {"artists": artist_serializer.data}, status=status.HTTP_200_OK
                 )
-            artists = Artist.objects.all()
+            artists = Artist.objects.all().order_by('-professional_rating')
             artist_serializer = ArtistFilterSerializer(artists, many=True)
             return Response(
                 {"artists": artist_serializer.data}, status=status.HTTP_200_OK
