@@ -11,19 +11,12 @@ db.sqlite3
 # AWS User-specific
 .idea/**/aws.xml
 
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
 
 
 # Generated files
 .idea/**/contentModel.xml
 
-# Migrations
 
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
@@ -34,9 +27,6 @@ db.sqlite3
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
 
 # Gradle
 .idea/**/gradle.xml
