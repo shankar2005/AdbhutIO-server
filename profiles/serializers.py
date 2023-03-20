@@ -91,6 +91,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     shortlisted_artists_details = serializers.SerializerMethodField()
     assigned_artists_details = serializers.SerializerMethodField()
+    project_demos = serializers.SerializerMethodField()
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -111,7 +112,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             {"id": artist.id, "name": artist.name}
             for artist in obj.shortlisted_artists.all()
         ]
-
+    
     def get_assigned_artists_details(self, obj):
         artists = []
         for artist in obj.assigned_artists.all():
@@ -128,9 +129,15 @@ class ProjectSerializer(serializers.ModelSerializer):
             ]
             artists.append(artist_detail)
         return artists
-
+    
     def get_name(self, obj) -> Optional[str]:
         return obj.title or None
+    
+    def get_project_demos(self, obj):
+        return [
+            WorkFeedSerializer(project_demo.demo_work, many=False).data
+            for project_demo in obj.project_demos.all()
+        ]
 
     class Meta:
         model = Project
