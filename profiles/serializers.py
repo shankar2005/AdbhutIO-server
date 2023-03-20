@@ -135,8 +135,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     def get_project_demos(self, obj):
         return [
-            WorkFeedSerializer(project_demo.demo_work, many=False).data
-            for project_demo in obj.project_demos.all()
+            WorkFeedSerializer(work, many=False).data
+            for work in obj.showcase_demos.all()
         ]
 
     class Meta:
