@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions, status
+from rest_framework import permissions, status, exceptions
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,7 +26,7 @@ class EmailLogin(ObtainAuthToken):
         print(f"eddamail => {email}\tpassword=>{password}")
 
         if email is None or password is None:
-            raise exceptions.AuthenticationFailed(_("Email and password required"))
+            raise exceptions.AuthenticationFailed("Email and password required")
 
         if email and password:
             user = authenticate(request=request, email=email, password=password)
@@ -47,8 +47,9 @@ class RegisterUserView(APIView):
 
     def post(self, request):
         try:
+            print("passed 0")
             data = request.data
-
+ 
             name = data["name"] if data["name"] != None else ""
             email = data["email"]
             password = data["password"]
@@ -56,9 +57,10 @@ class RegisterUserView(APIView):
             phone = data["phone"] if data["phone"] != None else ""
             company = data["company"] if data["company"] != None else ""
             company_url = data["url"] if data["url"] != None else ""
+            role = "Client"
             username = email
 
-            # print("passed")
+            print("passed")
 
             if User.objects.filter(email=email).exists():
                 return Response(
@@ -82,16 +84,20 @@ class RegisterUserView(APIView):
                         email=email,
                     )
 
-                    # print(f"{company} {company_url} {phone}")
+                    print(f"{company} {company_url} {phone}")
                     client = Client(
                         user=user, email=email
-                    )  # , email=email, phone=phone, company=company, website=company_url)
+                    ) 
 
                     phone = '"{}"'.format(phone)
                     client.phone = PhoneNumber.from_string(str(phone))
-                    # print(f"client phone {client.phone}")
+                    print(f"client phone {client.phone}")
                     client.company = company
                     client.save()
+
+                    role = Role(user=user, role=role)
+                    role.save()
+                    
 
                 except IntegrityError as e:
                     # handle the case where a user with the same email already exists
@@ -131,12 +137,20 @@ class RegisterUserView(APIView):
                     status=status.HTTP_200_OK,
                 )
             return Response(
-                {"error": "Something went wrong"},
+                {"error": "Something went wrong", "error_message": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-
+        
 class ValidateToken(APIView):
+    """verify token
+
+    Args:
+        APIView (POST): Validate user by token
+
+    Returns:
+        User: User details along with message
+    """
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
@@ -151,20 +165,31 @@ class ValidateToken(APIView):
             # print("passed3")
 
             user = User.objects.get(email=token.user.email)
+
+            response = {
+                    "name": user.first_name + " " + user.last_name,
+                    "email": user.email
+            }
+
             try:
                 role = Role.objects.get(user=user)  # get_object_or_404(Role, user=user)
             except:
                 role = None
 
-            print("passed4")
-            user = {
-                "name": user.first_name + " " + user.last_name,
-                "email": user.email,
-                "role": role.role if role else "Client",
-            }
+            # print(f"role => {role.role if role else ''}")
+            if role:
+                if role.role == "Client":
+                    client = Client.objects.get(user=user)
+                    response["role"] = "Client"
+                    response["phone"] =  client.phone,
+                    response["company"] = client.company
+                    
+                elif role.role == "PM":
+                    response["role"] = "PM"
+
             return Response(
                 {
-                    "user": user,
+                    "user": response,
                     "status": "success",
                     "msg": "Token is valid",
                 },
@@ -193,7 +218,7 @@ class UserDetailsView(APIView):
                     {"user": client_serializer.data, "role": role.role},
                     status=status.HTTP_200_OK,
                 )
-            elif role.role == "Artist Manager":
+            elif role.role == "AM":
                 user = {
                     "name": request.user.first_name + " " + request.user.last_name,
                     "email": request.user.email,
