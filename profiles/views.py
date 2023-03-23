@@ -7,7 +7,7 @@ import openai
 from decouple import config
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from django_filters import Filter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import (
@@ -626,10 +626,11 @@ class ArtistActionviewSet(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            id = request.query_params.get("id", None)
-            if id is not None:
-                artists = get_object_or_404(Artist, id=id)
-                artist_serializer = ArtistFilterSerializer(artists, many=False)
+            ids = request.query_params.get("id", None)
+            if ids is not None:
+                ids = [ int(x) for x in ids.split(',') ]
+                artists = get_list_or_404(Artist, id__in=ids) 
+                artist_serializer = ArtistFilterSerializer(artists, many=True)
                 return Response(
                     {"artists": artist_serializer.data}, status=status.HTTP_200_OK
                 )
