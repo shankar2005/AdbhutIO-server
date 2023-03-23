@@ -28,9 +28,9 @@ default_storage = get_storage_class()()
 #             Token.objects.create(user=instance)
 
 #         if instance.username[:2] == "AM":
-#             Role.objects.create(user=instance, role="Artist Manager")
+#             Role.objects.create(user=instance, role="AM")
 #         elif instance.username[:2] == "PM":
-#             Role.objects.create(user=instance, role="Product Manager")
+#             Role.objects.create(user=instance, role="PM")
 #         else:
 #             Role.objects.create(user=instance, role="Client")
 #             Client.objects.create(

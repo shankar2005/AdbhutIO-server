@@ -1,8 +1,8 @@
 # Description: This file contains the choices for the models in the nsn app
 ROLE_TYPE = (
     ("Client", "Client"),
-    ("Artist Manager", "Artist Manager"),
-    ("Product Manager", "Product Manager"),
+    ("AM", "Artist Manager"),
+    ("PM", "Production Manager"),
 )
 # Base
 SKILLS = (

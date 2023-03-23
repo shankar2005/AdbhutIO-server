@@ -174,6 +174,8 @@ class CreateProjectView(APIView):
     def patch(self, request, *args, **kwargs):
         try:
             # for testing (non logged in user| only message is passed in chatbox)
+            # print(request.data)
+            # print(request)
             if "project_id" not in request.data:
                 message = request.data["message"]
                 return openai_response(message)
@@ -184,9 +186,7 @@ class CreateProjectView(APIView):
             project_id = request.data["project_id"]
             project = get_object_or_404(Project, id=project_id)
 
-            # print("passed 1")
-            new_message = {"user": message}
-            messageID = 1
+            print("passed 1")###################
 
             if project.brief in ["", None, "[]"]:
                 project.brief = f"[{json.dumps(message)}]"
@@ -194,6 +194,18 @@ class CreateProjectView(APIView):
                 brief = project.brief[:-1]
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
+
+            # if PM login, we don't return bot response and project details
+            # user = User.objects.get(email=request.token.user.email)
+            print(request.user)
+            if Role.objects.get(user=request.user).role == "PM":
+                project.save()
+                project_serializer = ProjectSerializer(instance=project, many=False)
+                return Response(
+                {"message": "Message is updated to project"},
+                status=status.HTTP_200_OK,
+                )
+
             message_content = ""
             if "message" in message:
                 message_content = message["message"]
@@ -386,7 +398,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             elif not request.user.is_anonymous:
                 if Role.objects.get(user=request.user).role in [
                     "Client",
-                    "Product Manager",
+                    "PM",
                 ]:
                     return Response(
                         self.serializer_class(project).data, status=status.HTTP_200_OK
@@ -514,7 +526,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             elif not request.user.is_anonymous:
                 if Role.objects.get(user=request.user).role in [
                     "Client",
-                    "Product Manager",
+                    "PM",
                 ]:
                     project_serializer = ProjectSerializer(
                         instance=project, data=request.data
@@ -731,7 +743,7 @@ class AllProjectViewSet(viewsets.ModelViewSet):
             return Project.objects.filter(client__user=self.request.user).exclude(
                 stage="DreamProject"
             )
-        elif role == "Product Manager":
+        elif role == "PM":
             return Project.objects.exclude(stage="DreamProject")
         return None
 
