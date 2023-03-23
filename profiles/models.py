@@ -35,9 +35,6 @@ class TemplateProjects(models.Model):
         Skill, blank=True, through='TemplateProjectSkill', related_name="%(class)s_Skill"
     )
 
-
-
-
     weblink = models.URLField(max_length=100, default="", blank=True)
     file = models.FileField(upload_to="work_files", default="", blank=True)
 
@@ -47,7 +44,9 @@ class TemplateProjects(models.Model):
     def get_ordered_skills(self):
         return [s.skill for s in self.templateprojectskill_set.order_by('priority')]
 
-
+    class Meta:
+        verbose_name = 'Content Product'
+        verbose_name_plural = 'Content Products'
 
 class TemplateProjectSkill(models.Model):
     template_project = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE)
@@ -58,6 +57,8 @@ class TemplateProjectSkill(models.Model):
         return self.template_project.name + "<-->" + self.skill.name + " id-" + str(self.id)
 
     class Meta:
+        verbose_name = 'Product-Skill'
+        verbose_name_plural = 'Products-Skills'
         unique_together = ('template_project', 'skill')
 
 
