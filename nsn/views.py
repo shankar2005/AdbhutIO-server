@@ -177,13 +177,14 @@ class ValidateToken(APIView):
                 role = None
 
             # print(f"role => {role.role if role else ''}")
+            backend_url = "https://dev.nsnco.in"
             if role:
                 if role.role == "Client":
                     client = Client.objects.get(user=user)
                     response["role"] = "Client"
                     response["phone"] =  client.phone,
                     response["company"] = client.company,
-                    response['image'] = client.image.url
+                    response['image'] = f"{backend_url}{client.image.url}"
                 elif role.role == "PM":
                     response["role"] = "PM"
 
