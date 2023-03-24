@@ -207,7 +207,7 @@ class CreateProjectView(APIView):
                     print(project_serializer.errors)
                 project.save()
                 return Response(
-                {"message": "Message is updated to project", "project": project_serializer.data, "success": "Project is updated!"},
+                {"success": "Project is updated!"},
                 status=status.HTTP_200_OK,
                 )
 
