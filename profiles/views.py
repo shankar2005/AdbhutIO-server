@@ -195,8 +195,7 @@ class CreateProjectView(APIView):
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
 
-            # if PM login, we don't return bot response and project details
-            # user = User.objects.get(email=request.token.user.email)
+
             print(request.user)
             if Role.objects.get(user=request.user).role == "PM":    
                 project_serializer = ProjectSerializer(instance=project, data=request.data, many=False, partial=True)
@@ -211,42 +210,44 @@ class CreateProjectView(APIView):
                 status=status.HTTP_200_OK,
                 )
 
-            message_content = ""
-            if "message" in message:
-                message_content = message["message"]
-            elif "user" in message:
-                message_content = message["user"]
+            elif Role.objects.get(user=request.user).role == "Client":
 
-            # print(f"passed 2\n{message_content}\n")
-            openai.api_key = config("OPENAI_API_KEY")
-            # print(f'prompt -> {ChatGPTMessage.objects.last().message} {message_content}')
-            completion = openai.Completion.create(
-                prompt=f"{ChatGPTMessage.objects.last().message} {message_content}",
-                max_tokens=100,
-                n=1,
-                stop=None,
-                temperature=0.7,
-                model="text-davinci-003",
-            )
+                if project.chatbot_status.status == "ON":
+                    message_content = ""
+                    if "message" in message:
+                        message_content = message["message"]
+                    elif "user" in message:
+                        message_content = message["user"]
+                    openai.api_key = config("OPENAI_API_KEY")
+                    completion = openai.Completion.create(
+                        prompt=f"{ChatGPTMessage.objects.last().message} {message_content}",
+                        max_tokens=100,
+                        n=1,
+                        stop=None,
+                        temperature=0.7,
+                        model="text-davinci-003",
+                    )
 
-            # print(f"passed 3\n")
-            ans = completion.choices[0].text.strip()
+                    # print(f"passed 3\n")
+                    ans = completion.choices[0].text.strip()
 
-            if ans is "":
-                ans = "I don't understand. What did you say? Try with another message."
-            NewMessage = {
-                "msgID": int(message["msgID"]) + 1,
-                "bot": ans,
-            }
-            brief = project.brief[:-1]
-            brief += f",{json.dumps(NewMessage)}]"
-            project.brief = brief
-            project.save()
-            project_serializer = ProjectSerializer(instance=project, many=False)
-            return Response(
-                {"project": project_serializer.data, "success": "Project is updated!"},
-                status=status.HTTP_200_OK,
-            )
+                    if ans is "":
+                        ans = "I don't understand. What did you say? Try with another message."
+                    NewMessage = {
+                        "msgID": int(message["msgID"]) + 1,
+                        "bot": ans,
+                    }
+                    brief = project.brief[:-1]
+                    brief += f",{json.dumps(NewMessage)}]"
+                    project.brief = brief
+
+                project.save()
+                project_serializer = ProjectSerializer(instance=project, many=False)
+
+                return Response(
+                    {"project": project_serializer.data, "success": "Project is updated!"},
+                    status=status.HTTP_200_OK,
+                )
         except Exception as e:
             return Response(
                 {"error": "Something went wrong", "error_message": str(e)},
