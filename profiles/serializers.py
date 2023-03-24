@@ -2,6 +2,8 @@ from dataclasses import field
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 from typing import Optional
+from decouple import config
+
 
 from rest_framework import serializers
 
@@ -103,7 +105,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             return {
                 "id": obj.client.id,
                 "name": obj.client.name,
-                "email": obj.client.name,
+                "email": obj.client.email,
+                "image": config("URL") + obj.client.image.url,
             }
         return None
 
