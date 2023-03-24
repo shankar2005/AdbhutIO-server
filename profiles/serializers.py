@@ -86,6 +86,16 @@ class ProjectDemoSerializer(serializers.ModelSerializer):
         fields = ["id", "artist", "demo_work", "project", "comment", "status"]
 
 
+class ChatBotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatBot
+        fields = ["status"]
+
+
+""" 
+    The default ModelSerializer .create() and .update() methods
+     do not include support for writable nested representations.
+"""
 # -------------------- project serializer ---------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
@@ -94,6 +104,19 @@ class ProjectSerializer(serializers.ModelSerializer):
     shortlisted_artists_details = serializers.SerializerMethodField()
     assigned_artists_details = serializers.SerializerMethodField()
     project_demos = serializers.SerializerMethodField()
+    chatbot_status = ChatBotSerializer(required=False)
+
+    def update(self, instance, validated_data):
+        chat = ChatBot.objects.get(project=instance)
+        # print(f"validated status {validated_data.get('chatbot_status').get('status')}")
+        if 'chatbot_status' in validated_data:
+            chat.status = validated_data.pop('chatbot_status').get('status')
+            chat.save()
+        return super().update(instance, validated_data)
+        
+
+        
+
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -141,6 +164,13 @@ class ProjectSerializer(serializers.ModelSerializer):
             WorkFeedSerializer(work, many=False).data
             for work in obj.showcase_demos.all()
         ]
+    
+    # def update(self, instance, validated_data):
+    #     chatbot = validated_data.pop('chatbot_status')
+    #     shop_obj = Shop.objects.filter(name=shop).first()
+    #     if shop_obj:
+    #         instance.shop = shop_obj
+    #     return super().update(instance, validated_data)
 
     class Meta:
         model = Project
@@ -152,6 +182,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "client_details",
             "stage",
             "brief",
+            "chatbot_status",
             "reference_links",
             "template",
             "shortlisted_artists_details",

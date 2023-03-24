@@ -332,6 +332,18 @@ class Project(models.Model):
         )
 
 
+class ChatBot(models.Model):
+    status = models.CharField(max_length=5, default="ON", choices=CHAT_BOT)
+    project = models.OneToOneField('Project', on_delete=models.CASCADE, related_name='chatbot_status')
+
+    def __str__(self):
+        return f"{str(self.project.title)} | {str(self.project.id)} | {self.status}"
+
+    class Meta:
+        verbose_name = 'ChatBot status'
+        verbose_name_plural = "ChatBot status"
+    
+
 class ProjectFee(models.Model):
     project = models.ForeignKey(
         Project,

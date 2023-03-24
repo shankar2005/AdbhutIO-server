@@ -174,7 +174,7 @@ class CreateProjectView(APIView):
     def patch(self, request, *args, **kwargs):
         try:
             # for testing (non logged in user| only message is passed in chatbox)
-            # print(request.data)
+            print(request.data)
             # print(request)
             if "project_id" not in request.data:
                 message = request.data["message"]
@@ -198,11 +198,16 @@ class CreateProjectView(APIView):
             # if PM login, we don't return bot response and project details
             # user = User.objects.get(email=request.token.user.email)
             print(request.user)
-            if Role.objects.get(user=request.user).role == "PM":
+            if Role.objects.get(user=request.user).role == "PM":    
+                project_serializer = ProjectSerializer(instance=project, data=request.data, many=False, partial=True)
+
+                if project_serializer.is_valid():
+                    project_serializer.save()
+                else:
+                    print(project_serializer.errors)
                 project.save()
-                project_serializer = ProjectSerializer(instance=project, many=False)
                 return Response(
-                {"message": "Message is updated to project"},
+                {"message": "Message is updated to project", "project": project_serializer.data, "success": "Project is updated!"},
                 status=status.HTTP_200_OK,
                 )
 

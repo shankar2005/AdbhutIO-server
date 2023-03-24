@@ -4,6 +4,12 @@ ROLE_TYPE = (
     ("AM", "Artist Manager"),
     ("PM", "Production Manager"),
 )
+
+CHAT_BOT = (
+    ("ON", "ON"),
+    ("OFF", "OFF"),
+)
+
 # Base
 SKILLS = (
     ("Writer", "Writer"),
