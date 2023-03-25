@@ -1,10 +1,9 @@
 from dataclasses import field
 from datetime import datetime, timedelta
-from urllib.parse import urlparse
 from typing import Optional
+from urllib.parse import urlparse
+
 from decouple import config
-
-
 from rest_framework import serializers
 
 from .models import *
@@ -90,13 +89,15 @@ class ChatBotSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatBot
         fields = ["status"]
-        extra_kwargs = {'status': {'required': True}} 
+        extra_kwargs = {"status": {"required": True}}
 
 
 """ 
     The default ModelSerializer .create() and .update() methods
      do not include support for writable nested representations.
 """
+
+
 # -------------------- project serializer ---------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
     template = serializers.SerializerMethodField()
@@ -110,14 +111,10 @@ class ProjectSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         chat = ChatBot.objects.get(project=instance)
         # print(f"validated status {validated_data.get('chatbot_status').get('status')}")
-        if 'chatbot_status' in validated_data:
-            chat.status = validated_data.pop('chatbot_status').get('status')
+        if "chatbot_status" in validated_data:
+            chat.status = validated_data.pop("chatbot_status").get("status")
             chat.save()
         return super().update(instance, validated_data)
-        
-
-        
-
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -139,7 +136,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             {"id": artist.id, "name": artist.name}
             for artist in obj.shortlisted_artists.all()
         ]
-    
+
     def get_assigned_artists_details(self, obj):
         artists = []
         for artist in obj.assigned_artists.all():
@@ -156,16 +153,16 @@ class ProjectSerializer(serializers.ModelSerializer):
             ]
             artists.append(artist_detail)
         return artists
-    
+
     def get_name(self, obj) -> Optional[str]:
         return obj.title or None
-    
+
     def get_project_demos(self, obj):
         return [
             WorkFeedSerializer(work, many=False).data
             for work in obj.showcase_demos.all()
         ]
-    
+
     # def update(self, instance, validated_data):
     #     chatbot = validated_data.pop('chatbot_status')
     #     shop_obj = Shop.objects.filter(name=shop).first()

@@ -96,12 +96,12 @@ WSGI_APPLICATION = "nsn.wsgi.application"
 
 DATABASES = {
     "default": {
-         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nsnco',
-        'USER': 'shankar',
-        'PASSWORD': 'shankar123',
-        'HOST': 'localhost',
-        'PORT': '5432'  
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "nsnco",
+        "USER": "shankar",
+        "PASSWORD": "shankar123",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 # Password validation

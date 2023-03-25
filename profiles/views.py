@@ -1,4 +1,5 @@
 import json
+import os
 
 # openAI package
 import openai
@@ -7,9 +8,10 @@ import openai
 from decouple import config
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404
 from django_filters import Filter
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import (
     filters,
     generics,
@@ -38,10 +40,6 @@ from .models import ChatGPTMessage
 # serializers
 from .serializers import *
 
-from drf_spectacular.utils import extend_schema
-
-import os
-
 
 class chatflowSkills(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -51,7 +49,6 @@ class chatflowSkills(APIView):
             data = request.data
             artists = data.get("artists", 0)
             product = data["product"]
-
 
             # ----------Testing--- ------------
             print(f" product {product}")
@@ -187,7 +184,7 @@ class CreateProjectView(APIView):
             project_id = request.data["project_id"]
             project = get_object_or_404(Project, id=project_id)
 
-            print("passed 1")###################
+            print("passed 1")  ###################
 
             if project.brief in ["", None, "[]"]:
                 project.brief = f"[{json.dumps(message)}]"
@@ -196,10 +193,11 @@ class CreateProjectView(APIView):
                 brief += f",{json.dumps(message)}]"
                 project.brief = brief
 
-
             print(request.user)
-            if Role.objects.get(user=request.user).role == "PM":    
-                project_serializer = ProjectSerializer(instance=project, data=request.data, many=False, partial=True)
+            if Role.objects.get(user=request.user).role == "PM":
+                project_serializer = ProjectSerializer(
+                    instance=project, data=request.data, many=False, partial=True
+                )
 
                 if project_serializer.is_valid():
                     project_serializer.save()
@@ -207,12 +205,11 @@ class CreateProjectView(APIView):
                     print(project_serializer.errors)
                 project.save()
                 return Response(
-                {"success": "Project is updated!"},
-                status=status.HTTP_200_OK,
+                    {"success": "Project is updated!"},
+                    status=status.HTTP_200_OK,
                 )
 
             elif Role.objects.get(user=request.user).role == "Client":
-
                 if project.chatbot_status.status == "ON":
                     message_content = ""
                     if "message" in message:
@@ -246,7 +243,10 @@ class CreateProjectView(APIView):
                 project_serializer = ProjectSerializer(instance=project, many=False)
 
                 return Response(
-                    {"project": project_serializer.data, "success": "Project is updated!"},
+                    {
+                        "project": project_serializer.data,
+                        "success": "Project is updated!",
+                    },
                     status=status.HTTP_200_OK,
                 )
         except Exception as e:
@@ -570,14 +570,14 @@ class ChatOnOff(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
-        pk = request.data['id']
+        pk = request.data["id"]
         chat = ChatBot.objects.get(project__id=pk)
         serializer = ChatBotSerializer(chat)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, *args, **kwargs):
         try:
-            id = request.data['id']
+            id = request.data["id"]
             if Project.objects.filter(pk=id).exists():
                 chat = ChatBot.objects.get(project__id=id)
                 # print(chat.status)
@@ -586,16 +586,18 @@ class ChatOnOff(APIView):
                 # assert chat.status == request.data['status'], "status should be toggle"
 
                 serializer = ChatBotSerializer(chat, data=request.data)
-                
+
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(
                 {"error": "Something went wrong", "error_message": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+
 # ====================== delete project api ==============================
 
 
@@ -665,13 +667,13 @@ class ArtistActionviewSet(APIView):
         try:
             ids = request.query_params.get("id", None)
             if ids is not None:
-                ids = [ int(x) for x in ids.split(',') ]
-                artists = get_list_or_404(Artist, id__in=ids) 
+                ids = [int(x) for x in ids.split(",")]
+                artists = get_list_or_404(Artist, id__in=ids)
                 artist_serializer = ArtistFilterSerializer(artists, many=True)
                 return Response(
                     {"artists": artist_serializer.data}, status=status.HTTP_200_OK
                 )
-            artists = Artist.objects.all().order_by('-professional_rating')
+            artists = Artist.objects.all().order_by("-professional_rating")
             artist_serializer = ArtistFilterSerializer(artists, many=True)
             return Response(
                 {"artists": artist_serializer.data}, status=status.HTTP_200_OK

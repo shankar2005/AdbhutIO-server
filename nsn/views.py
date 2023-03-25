@@ -1,17 +1,19 @@
+from django.contrib.auth import authenticate, login
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions, status, exceptions
+from django.views.decorators.csrf import csrf_exempt
+from phonenumber_field.phonenumber import PhoneNumber
+from rest_framework import exceptions, permissions, status
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth import login, authenticate
+
 from profiles.models import *
 from profiles.serializers import ClientSerializer
-from rest_framework.authtoken.views import ObtainAuthToken
-from django.views.decorators.csrf import csrf_exempt
+
 from .tokens import account_activation_token
-from phonenumber_field.phonenumber import PhoneNumber
-from django.db import IntegrityError
 
 
 class EmailLogin(ObtainAuthToken):
@@ -49,7 +51,7 @@ class RegisterUserView(APIView):
         try:
             print("passed 0")
             data = request.data
- 
+
             name = data["name"] if data["name"] != None else ""
             email = data["email"]
             password = data["password"]
@@ -85,9 +87,7 @@ class RegisterUserView(APIView):
                     )
 
                     print(f"{company} {company_url} {phone}")
-                    client = Client(
-                        user=user, email=email, name=name
-                    ) 
+                    client = Client(user=user, email=email, name=name)
 
                     phone = '"{}"'.format(phone)
                     client.phone = PhoneNumber.from_string(str(phone))
@@ -97,7 +97,6 @@ class RegisterUserView(APIView):
 
                     role = Role(user=user, role=role)
                     role.save()
-                    
 
                 except IntegrityError as e:
                     # handle the case where a user with the same email already exists
@@ -141,7 +140,7 @@ class RegisterUserView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        
+
 class ValidateToken(APIView):
     """verify token
 
@@ -151,6 +150,7 @@ class ValidateToken(APIView):
     Returns:
         User: User details along with message
     """
+
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
@@ -167,8 +167,8 @@ class ValidateToken(APIView):
             user = User.objects.get(email=token.user.email)
 
             response = {
-                    "name": user.first_name + " " + user.last_name,
-                    "email": user.email
+                "name": user.first_name + " " + user.last_name,
+                "email": user.email,
             }
 
             try:
@@ -182,9 +182,9 @@ class ValidateToken(APIView):
                 if role.role == "Client":
                     client = Client.objects.get(user=user)
                     response["role"] = "Client"
-                    response["phone"] =  client.phone,
-                    response["company"] = client.company,
-                    response['image'] = f"{backend_url}{client.image.url}"
+                    response["phone"] = (client.phone,)
+                    response["company"] = (client.company,)
+                    response["image"] = f"{backend_url}{client.image.url}"
                 elif role.role == "PM":
                     response["role"] = "PM"
 

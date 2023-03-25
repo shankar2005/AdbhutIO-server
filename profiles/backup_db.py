@@ -1,8 +1,9 @@
+import datetime
 import os
 import shutil
-import datetime
-from django.core.management import call_command
 from pathlib import Path
+
+from django.core.management import call_command
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

@@ -1,6 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import SocialProfile , TemplateProjects # , Company
+
+from .models import SocialProfile, TemplateProjects  # , Company
+
 
 class SkillInlineAdmin(admin.TabularInline):
     model = TemplateProjects.skills.through

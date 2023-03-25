@@ -32,7 +32,10 @@ class TemplateProjects(models.Model):
     name = models.CharField(max_length=100, default="")
     details = models.TextField(default="", blank=True)
     skills = models.ManyToManyField(
-        Skill, blank=True, through='TemplateProjectSkill', related_name="%(class)s_Skill"
+        Skill,
+        blank=True,
+        through="TemplateProjectSkill",
+        related_name="%(class)s_Skill",
     )
 
     weblink = models.URLField(max_length=100, default="", blank=True)
@@ -42,11 +45,12 @@ class TemplateProjects(models.Model):
         return self.name + " " + str(self.id)
 
     def get_ordered_skills(self):
-        return [s.skill for s in self.templateprojectskill_set.order_by('priority')]
+        return [s.skill for s in self.templateprojectskill_set.order_by("priority")]
 
     class Meta:
-        verbose_name = 'Content Product'
-        verbose_name_plural = 'Content Products'
+        verbose_name = "Content Product"
+        verbose_name_plural = "Content Products"
+
 
 class TemplateProjectSkill(models.Model):
     template_project = models.ForeignKey(TemplateProjects, on_delete=models.CASCADE)
@@ -54,12 +58,18 @@ class TemplateProjectSkill(models.Model):
     priority = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.template_project.name + "<-->" + self.skill.name + " id-" + str(self.id)
+        return (
+            self.template_project.name
+            + "<-->"
+            + self.skill.name
+            + " id-"
+            + str(self.id)
+        )
 
     class Meta:
-        verbose_name = 'Product-Skill'
-        verbose_name_plural = 'Products-Skills'
-        unique_together = ('template_project', 'skill')
+        verbose_name = "Product-Skill"
+        verbose_name_plural = "Products-Skills"
+        unique_together = ("template_project", "skill")
 
 
 class Work(models.Model):
@@ -170,7 +180,7 @@ class Artist(models.Model):
     genre = models.ManyToManyField(Genre, default="", blank=True)
     email = models.EmailField(max_length=100, default="", blank=True)
     phone = models.IntegerField(default=0, blank=True)
-    
+
     full_time = models.BooleanField(default=False)
     part_time = models.BooleanField(default=False)
     # Conditional only on  skill = 'Actor'
@@ -334,15 +344,17 @@ class Project(models.Model):
 
 class ChatBot(models.Model):
     status = models.CharField(max_length=5, default="ON", choices=CHAT_BOT)
-    project = models.OneToOneField('Project', on_delete=models.CASCADE, related_name='chatbot_status')
+    project = models.OneToOneField(
+        "Project", on_delete=models.CASCADE, related_name="chatbot_status"
+    )
 
     def __str__(self):
         return f"{str(self.project.title)} | {str(self.project.id)} | {self.status}"
 
     class Meta:
-        verbose_name = 'ChatBot status'
+        verbose_name = "ChatBot status"
         verbose_name_plural = "ChatBot status"
-    
+
 
 class ProjectFee(models.Model):
     project = models.ForeignKey(

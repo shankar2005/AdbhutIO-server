@@ -56,10 +56,8 @@ def post_save_update_project(sender, instance, created, **kwargs):
     if created:
         if instance.title is None:
             instance.title = (
-                str(instance.project_template.name) if instance.project_template else ""
-                + " - "
-                + instance.stage
-                + " - "
-                + str(instance.id)
+                str(instance.project_template.name)
+                if instance.project_template
+                else "" + " - " + instance.stage + " - " + str(instance.id)
             )
             instance.save()
