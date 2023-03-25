@@ -63,6 +63,9 @@ urlpatterns = [
     path("api/v1/auth/register/", RegisterUserView.as_view()),
     path("api/v1/auth/user_details/", UserDetailsView.as_view(), name="user_details"),
     path("api/v1/create_project/", CreateProjectView.as_view()),
+    path("api/v1/chat_toggle/", ChatOnOff.as_view()),
+
+
     # Admin URLs
     path("admin/", admin.site.urls),
 ]

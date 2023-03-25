@@ -90,6 +90,7 @@ class ChatBotSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatBot
         fields = ["status"]
+        extra_kwargs = {'status': {'required': True}} 
 
 
 """ 

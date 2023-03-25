@@ -152,12 +152,13 @@ class CreateProjectView(APIView):
                 project_template=project,
                 client=Client.objects.get(user=request.user),
             )
-
             # add artists
             for artist in artists:
                 new_project.shortlisted_artists.add(Artist.objects.get(pk=artist))
 
             new_project.save()
+            ChatBot.objects.create(project=new_project)
+
             return Response(
                 {
                     "success": "Project created successfully",
@@ -231,7 +232,7 @@ class CreateProjectView(APIView):
                     # print(f"passed 3\n")
                     ans = completion.choices[0].text.strip()
 
-                    if ans is "":
+                    if not ans or ans == "":
                         ans = "I don't understand. What did you say? Try with another message."
                     NewMessage = {
                         "msgID": int(message["msgID"]) + 1,
@@ -565,6 +566,36 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             )
 
 
+class ChatOnOff(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request):
+        pk = request.data['id']
+        chat = ChatBot.objects.get(project__id=pk)
+        serializer = ChatBotSerializer(chat)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, *args, **kwargs):
+        try:
+            id = request.data['id']
+            if Project.objects.filter(pk=id).exists():
+                chat = ChatBot.objects.get(project__id=id)
+                # print(chat.status)
+                # chat.status = request.data['status']
+                # chat.save()
+                # assert chat.status == request.data['status'], "status should be toggle"
+
+                serializer = ChatBotSerializer(chat, data=request.data)
+                
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+        except Exception as e:
+            return Response(
+                {"error": "Something went wrong", "error_message": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 # ====================== delete project api ==============================
 
 
