@@ -154,8 +154,10 @@ class CreateProjectView(APIView):
                 new_project.shortlisted_artists.add(Artist.objects.get(pk=artist))
 
             new_project.save()
-            ChatBot.objects.create(project=new_project)
-
+            chat = ChatBot(status="ON", project = new_project)
+            chat.save()
+            print(f"chat status {chat.id} {chat.status}")
+            print("passed2")
             return Response(
                 {
                     "success": "Project created successfully",
@@ -1032,6 +1034,10 @@ class CreateNewProject(APIView):
             print("passed 3")
             if project_serializer.is_valid():
                 project_serializer.save()
+
+                project = Project.objects.get(id=project_serializer.data['pk'])
+                ChatBot.objects.create(status="ON", project = project)
+                
                 return Response(project_serializer.data, status=status.HTTP_201_CREATED)
             print("response rror")
             return Response(
