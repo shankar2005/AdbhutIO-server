@@ -86,7 +86,7 @@ class RegisterUserView(APIView):
 
                     print(f"{company} {company_url} {phone}")
                     client = Client(
-                        user=user, email=email
+                        user=user, email=email, name=name
                     ) 
 
                     phone = '"{}"'.format(phone)
