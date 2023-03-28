@@ -179,7 +179,9 @@ class Artist(models.Model):
     age = models.IntegerField(default=0)
     genre = models.ManyToManyField(Genre, default="", blank=True)
     email = models.EmailField(max_length=100, default="", blank=True)
-    phone = models.IntegerField(default=0, blank=True)
+
+    phone = PhoneNumberField(null=True, blank=True)
+
 
     full_time = models.BooleanField(default=False)
     part_time = models.BooleanField(default=False)

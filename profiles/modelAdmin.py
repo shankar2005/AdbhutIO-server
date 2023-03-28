@@ -1,8 +1,16 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 from .models import SocialProfile, TemplateProjects  # , Company
+from django import forms
 
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        widgets = {                          # Here
+            'phone': PhoneNumberPrefixWidget(initial='US'),
+        }
 
 class SkillInlineAdmin(admin.TabularInline):
     model = TemplateProjects.skills.through
@@ -88,6 +96,7 @@ class ClientAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     filter_horizontal = ("skill", "genre", "languages", "works_links")
+    form = ContactForm
 
     fieldsets = [
         (
