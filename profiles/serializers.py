@@ -240,8 +240,9 @@ def social_link_filter(self, obj):
         domain = domain.split(".")
 
         if "facebook" in domain:
+            q["facebook"] = social
+        elif "instagram" in domain:
             q["instagram"] = social
-
         elif "twitter" in domain:
             q["twitter"] = social
         elif "youtube" in domain:
@@ -256,6 +257,8 @@ def social_link_filter(self, obj):
             q["tiktok"] = social
         elif "twitch" in domain:
             q["twitch"] = social
+        else:
+            q["other"] = social
 
     return q
 
