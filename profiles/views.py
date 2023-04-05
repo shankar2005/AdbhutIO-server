@@ -154,7 +154,7 @@ class CreateProjectView(APIView):
                 new_project.shortlisted_artists.add(Artist.objects.get(pk=artist))
 
             new_project.save()
-            chat = ChatBot(status="ON", project = new_project)
+            chat = ChatBot(status="ON", project=new_project)
             chat.save()
             print(f"chat status {chat.id} {chat.status}")
             print("passed2")
@@ -186,7 +186,7 @@ class CreateProjectView(APIView):
             project_id = request.data["project_id"]
             project = get_object_or_404(Project, id=project_id)
 
-            print("passed 1")  ###################
+            print("passed 1")
 
             if project.brief in ["", None, "[]"]:
                 project.brief = f"[{json.dumps(message)}]"
@@ -352,14 +352,14 @@ class MyProjectsViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        return Project.objects.filter(client__user=self.request.user, stage="Lead")
+        return Project.objects.filter(client__user=self.request.user, stage="Lead").order_by('-id')
 
 
 class GetDreamProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        return Project.objects.filter(stage="DreamProject")
+        return Project.objects.filter(stage="DreamProject").order_by('-id')
 
 
 # ------------------------------------ project calculation ------------------------
@@ -392,8 +392,8 @@ class EditProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
             if not self.request.user.is_anonymous:
-                return Project.objects.exclude(stage="DreamProject")
-            return Project.objects.filter(stage="DreamProject")
+                return Project.objects.exclude(stage="DreamProject").order_by('-id')
+            return Project.objects.filter(stage="DreamProject").order_by('-id')
         except Exception as e:
             return None
 
@@ -784,9 +784,9 @@ class AllProjectViewSet(viewsets.ModelViewSet):
         if role == "Client":
             return Project.objects.filter(client__user=self.request.user).exclude(
                 stage="DreamProject"
-            )
+            ).order_by('-id')
         elif role == "PM":
-            return Project.objects.exclude(stage="DreamProject")
+            return Project.objects.exclude(stage="DreamProject").order_by('-id')
         return None
 
 
@@ -1036,8 +1036,8 @@ class CreateNewProject(APIView):
                 project_serializer.save()
 
                 project = Project.objects.get(id=project_serializer.data['pk'])
-                ChatBot.objects.create(status="ON", project = project)
-                
+                ChatBot.objects.create(status="ON", project=project)
+
                 return Response(project_serializer.data, status=status.HTTP_201_CREATED)
             print("response rror")
             return Response(
