@@ -428,7 +428,9 @@ class EditProjectViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         try:
+            print("called")
             project = get_object_or_404(Project, pk=pk)
+            print(project)
             data = request.data
             if "project_demo" in data:
                 data["project_demo"]["project"] = project.id
@@ -453,19 +455,19 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 calculation = PorjectCalculation(project, data)
                 if calculation:
                     del data["assigned_artist_payouts"]
-            if project.stage == "DreamProject":
-                project_serializer = ProjectSerializer(instance=project, data=data)
-                if project_serializer.is_valid():
-                    project_serializer.save()
-                    return Response(project_serializer.data, status=status.HTTP_200_OK)
-                return Response(
-                    project_serializer.error_messages,
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            elif not request.user.is_anonymous:
+            # if project.stage == "DreamProject":
+            #     project_serializer = ProjectSerializer(instance=project, data=data)
+            #     if project_serializer.is_valid():
+            #         project_serializer.save()
+            #         return Response(project_serializer.data, status=status.HTTP_200_OK)
+            #     return Response(
+            #         project_serializer.error_messages,
+            #         status=status.HTTP_400_BAD_REQUEST,
+            #     )
+            if not request.user.is_anonymous:
                 if Role.objects.get(user=request.user).role in [
                     "Client",
-                    "Product Manager",
+                    "PM",
                 ]:
                     project_serializer = ProjectSerializer(instance=project, data=data)
                     if project_serializer.is_valid():
@@ -473,7 +475,8 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                         return Response(
                             project_serializer.data, status=status.HTTP_200_OK
                         )
-                    return Response(
+                    else:
+                        return Response(
                         project_serializer.error_messages,
                         status=status.HTTP_400_BAD_REQUEST,
                     )
@@ -483,14 +486,14 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(
-                {"error": "user is not logged in or project is not dream project"},
+                {"error": "user is not logged in"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             print(e)
             return Response(
                 {
-                    "error": "user is not logged in or project is not dream project",
+                    "error": "something is wrong",
                     "error_message": str(e),
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
