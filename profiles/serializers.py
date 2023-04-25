@@ -80,9 +80,14 @@ class ProjectSerializerMini(serializers.ModelSerializer):
 
 
 class ProjectDemoSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    def get_url(self, obj):
+        return config("URL") + obj.document.url
+
     class Meta:
         model = ProjectDemo
-        fields = ["id", "artist", "demo_work", "project", "comment", "status"]
+        fields = ["id", "artist", "demo_work", "project", "document", "url", "comment", "status"]
 
 
 class ChatBotSerializer(serializers.ModelSerializer):

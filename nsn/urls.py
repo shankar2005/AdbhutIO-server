@@ -21,6 +21,8 @@ from profiles.views import *
 from .views import *
 
 router = routers.DefaultRouter()
+
+router.register("project_demo", ProjectDemoViewSet, basename="project_demo"),
 router.register("get_feed", WorkFeedViewSet, basename="get_feed")
 router.register("get_artist", ArtistViewSet, basename="get_artist")
 router.register("get_skill", SkillViewSet, basename="get_skill")

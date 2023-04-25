@@ -49,7 +49,7 @@ urlpatterns = [
         CreateNewProject.as_view(),
         name="create_new_project",
     ),
-    # demo
+    
     path("api/v1/demo/", DemoView.as_view(), name="demo"),
     path("api/v1/openai/", OpenAIViewSet.as_view(), name="open-ai"),
 ]

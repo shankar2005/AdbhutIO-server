@@ -187,6 +187,10 @@ class ValidateToken(APIView):
                     response["image"] = f"{backend_url}{client.image.url}"
                 elif role.role == "PM":
                     response["role"] = "PM"
+                elif role.role == "AM":
+                    response["role"] = "AM"
+                else:
+                    response["role"] = "Unknown"
 
             return Response(
                 {

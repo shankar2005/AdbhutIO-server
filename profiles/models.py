@@ -101,7 +101,7 @@ class Work(models.Model):
 
 
 class SocialProfile(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
     url = models.URLField()
     client = models.ForeignKey("Client", on_delete=models.CASCADE)
 
@@ -251,6 +251,9 @@ class ProjectDemo(models.Model):
         null=True,
         related_name="%(class)s_DemoWork",
     )
+
+    document = models.FileField(max_length=255,  default='profile_pics\default.jpg', upload_to="demo")
+
     project = models.ForeignKey(
         "Project",
         on_delete=models.CASCADE,
@@ -266,7 +269,7 @@ class ProjectDemo(models.Model):
     )
 
     def __str__(self):
-        return str(self.artist.name) + "--" + str(self.project.title) + "--" + " Demo"
+        return str(self.id) + "--" + str(self.artist.name) + "--" + str(self.project.title) + "--" + " Demo" 
 
 
 class Project(models.Model):

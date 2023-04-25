@@ -161,7 +161,7 @@ class ArtistFeedbackAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class ProjectDemoAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     fieldsets = [
         ("Project", {"fields": ["artist", "demo_work", "project"]}),
-        ("Review", {"fields": ["comment", "status"]}),
+        ("Review", {"fields": ["comment", "status", "document"]}),
     ]
 
 

@@ -5,6 +5,7 @@ import os
 import openai
 
 # import the api key
+
 from decouple import config
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
@@ -20,6 +21,7 @@ from rest_framework import (
     serializers,
     status,
     viewsets,
+    parsers
 )
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -383,6 +385,12 @@ def PorjectCalculation(project, data):
         project.save()
         return True
     return False
+
+class ProjectDemoViewSet(viewsets.ModelViewSet):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = ProjectDemoSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
 
 class EditProjectViewSet(viewsets.ModelViewSet):
