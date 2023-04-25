@@ -163,10 +163,23 @@ class ProjectSerializer(serializers.ModelSerializer):
         return obj.title or None
 
     def get_project_demos(self, obj):
-        return [
-            WorkFeedSerializer(work, many=False).data
-            for work in obj.showcase_demos.all()
-        ]
+        return [ProjectDemoSerializer(demo, many=False).data for demo in obj.projectdemo_Project.all()]
+        # project_demos = []
+        # print("project demo is -> ")
+        # print(obj.projectdemo_Project.all())
+        # for demo in obj.projectdemo_Project.all():
+        #     prdemo = {"id":demo.id, "document":config("URL")+demo.document.url, "project":obj.id, "artist": demo.artist.id}
+        #     prdemo["demo_work"] = demo.demo_work.id
+        #     prdemo["comment"] = demo.comment
+        #     project_demos.append(prdemo)
+        # return project_demos
+
+        # return [
+        #     WorkFeedSerializer(work, many=False).data
+        #     for work in obj.showcase_demos.all()
+        # ]
+
+# ---------------------------------------------------------------------
 
     # def update(self, instance, validated_data):
     #     chatbot = validated_data.pop('chatbot_status')
