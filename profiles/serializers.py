@@ -190,6 +190,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "project_template",
             "post_project_client_feedback",
             "project_demos",
+            "comments",
             "contract_status",
             "solution_fee",
             "production_advance",
