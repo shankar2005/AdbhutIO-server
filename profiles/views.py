@@ -700,7 +700,8 @@ class ArtistActionviewSet(APIView):
     def post(self, request, *args, **kwargs):
         try:
             data = request.data
-            if data["has_manager"]:
+            print(f"data -> {data}")
+            if data["has_manager"] == "True":
                 manager = Manager.objects.create(
                     name=data["manager"]["name"],
                     phone=data["manager"]["phone"],
@@ -731,7 +732,7 @@ class ArtistActionviewSet(APIView):
                     },
                     status=status.HTTP_201_CREATED,
                 )
-            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(artist_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(e)
             return Response(
