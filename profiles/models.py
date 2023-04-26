@@ -256,11 +256,8 @@ class ProjectDemo(models.Model):
 
     project = models.ForeignKey(
         "Project",
-        on_delete=models.CASCADE,
-        default="",
-        blank=True,
-        null=True,
-        related_name="%(class)s_Project",
+        on_delete=models.CASCADE,       
+        related_name="%(class)s_Project"
     )
 
     comment = models.TextField(default="", blank=True)
@@ -269,7 +266,13 @@ class ProjectDemo(models.Model):
     )
 
     def __str__(self):
-        return str(self.id) + "--" + str(self.artist.name) + "--" + str(self.project.title) + "--" + " Demo" 
+        res =  str(self.id) + "--"
+        if self.artist:
+            res += f"artist_id -> {str(self.artist.id)} -- "
+        if self.project:
+            res += f"prject_id -> {str(self.project.id)}"
+        return res
+        
 
 
 class Project(models.Model):
