@@ -266,11 +266,11 @@ class ProjectDemo(models.Model):
     )
 
     def __str__(self):
-        res =  str(self.id) + "--"
-        if self.artist:
-            res += f"artist_id -> {str(self.artist.id)} -- "
-        if self.project:
-            res += f"prject_id -> {str(self.project.id)}"
+        res =  str(self.id) # + "--"
+        # if self.artist:
+        #     res += f"artist_id -> {str(self.artist.id)} -- "
+        # if self.project:
+        #     res += f"prject_id -> {str(self.project.id)}"
         return res
         
 
