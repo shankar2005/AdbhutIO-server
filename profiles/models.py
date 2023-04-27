@@ -75,7 +75,7 @@ class TemplateProjectSkill(models.Model):
 class Work(models.Model):
     name = models.CharField(max_length=100, default="", blank=True)
     details = models.TextField(default="", blank=True)
-    weblink = models.URLField(max_length=100, default="", blank=True)
+    weblink = models.URLField(max_length=1000, default="", blank=True)
     show_in_top_feed = models.BooleanField(default=False)
     # skill = models.ManyToManyField(
     #    Skill, default='', blank=True, related_name='%(class)s_Skill')
@@ -166,12 +166,14 @@ class Client(models.Model):
 
 class Artist(models.Model):
     # Base
+    social_profile = models.URLField(max_length=2000, blank=True, default="") # id in DataWIP
     name = models.CharField(max_length=100, default="")
     skill = models.ManyToManyField(Skill, default="", blank=True)
     artist_intro = models.TextField(default="", blank=True)
     profile_pic = models.ImageField(
         upload_to=saveNameLocationForProfilePic, default="avatar.png", blank=True
     )
+    profile_image = models.URLField(max_length=2000, blank=True, default="")   # profile_image in DataWIP
     location = models.ForeignKey(
         Location, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -182,14 +184,18 @@ class Artist(models.Model):
 
     phone = PhoneNumberField(null=True, blank=True)
 
-
+    relocation = models.CharField(default=False, null=True, max_length=2000) # new field
     full_time = models.BooleanField(default=False)
     part_time = models.BooleanField(default=False)
     # Conditional only on  skill = 'Actor'
 
     other_arts = models.CharField(max_length=100, default="", blank=True)
+
+    # new field
+    best_link = models.URLField(max_length=2000, default="")
+
     works_links = models.ManyToManyField(Work, default="", blank=True)
-    social_links = models.CharField(default="", blank=True, max_length=200)
+    social_links = models.CharField(default="", blank=True, max_length=500)
 
     has_manager = models.BooleanField(default=False, blank=True)
     manager = models.ForeignKey(
@@ -200,6 +206,13 @@ class Artist(models.Model):
         null=True,
         related_name="%(class)s_to_Manager_relation",
     )
+
+    # new field
+    min_budget = models.CharField(default="", max_length=2000)
+    max_budget = models.CharField(default="", max_length=2000)
+    ctc_per_annum = models.CharField(default="", max_length=2000)
+
+
     budget_range = models.CharField(
         max_length=100, default="Less Than 10,000", blank=True, choices=BUDGET_RANGE
     )

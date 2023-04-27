@@ -753,13 +753,35 @@ class ArtistActionviewSet(APIView):
             )
             if artist_serializer.is_valid():
                 artist_serializer.save()
-                new_artist = ArtistFilterSerializer(
-                    instance=Artist(id=artist.id), many=False
-                )
+                # new_artist = ArtistFilterSerializer(
+                #     instance=Artist(id=artist.id), many=False
+                # )
                 return Response(
-                    {"artist": new_artist, "message": "artist is created"},
-                    status=status.HTTP_201_CREATED,
+                    {"message": "artist is updated"},
+                    status=status.HTTP_200_OK,
                 )
+            else:
+                return Response(
+                    artist_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+        except Exception as e:
+            return Response(
+                {"error": "something went's Wrong!", "error_message": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    
+    def delete(self, request, pk=None):
+        try:
+            print("called")
+            if pk is None:
+                return Response(
+                    {"error": "artist not found with empty id!"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            artist = get_object_or_404(Artist, id=pk)
+            artist.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         except Exception as e:
             return Response(
                 {"error": "something went's Wrong!", "error_message": str(e)},
