@@ -22,12 +22,12 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class WorkFeedSerializer(serializers.ModelSerializer):
-    def get_skills(self, obj):
-        return [skill.name for skill in obj.owner.skill.all()]
-
     owner_name = serializers.SerializerMethodField()
     owner_id = serializers.SerializerMethodField()
     skills = serializers.SerializerMethodField()
+
+    def get_skills(self, obj):
+        return [skill.name for skill in obj.owner.skill.all()]
 
     def get_owner_name(self, obj):
         return obj.owner.name
@@ -297,8 +297,23 @@ def social_link_filter(self, obj):
 
 # update the artist
 
+class WorkSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Work
+        fields = ['id', 'name', 'weblink']
+
 
 class ArtistProfileSerializer(serializers.ModelSerializer):
+    works_link = WorkFeedSerializer(source = "work_set", read_only=True, many=True)
+    skills = serializers.SerializerMethodField()
+    social = serializers.SerializerMethodField()
+    manager = serializers.SerializerMethodField()
+    artistID = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
+    # workLinks = serializers.SerializerMethodField()
+    location_name = serializers.SerializerMethodField()
+
     def get_skills(self, obj):
         return [skill.name for skill in obj.skill.all()]
 
@@ -321,29 +336,25 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     def get_artistID(self, obj):
         return obj.pk
 
-    def get_workLinks(self, obj):
-        return [[work.weblink] for work in obj.works_links.all()]
+    # def get_workLinks(self, obj):
+    #     return [[work.weblink] for work in obj.works_links.all()]
 
     def get_location_name(self, obj):
         if obj.location is not None:
             return obj.location.name
         return None
 
-    skills = serializers.SerializerMethodField()
-    social = serializers.SerializerMethodField()
-    manager = serializers.SerializerMethodField()
-    artistID = serializers.SerializerMethodField()
-    language = serializers.SerializerMethodField()
-    workLinks = serializers.SerializerMethodField()
-    works_link = WorkFeedSerializer(read_only=True, many=True)
-    location_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Artist
         fields = [
             "artistID",
+            "works_link",
+
             "name",
             "profile_pic",
+            "profile_image",
+
             "email",
             "phone",
             "skills",
@@ -354,12 +365,11 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "social",
             "has_manager",
             "manager",
-            "workLinks",
+            # "workLinks",
             "min_budget",
             "max_budget",
             "best_link",
             "ctc_per_annum",
-            "profile_image",
         ]
 
 

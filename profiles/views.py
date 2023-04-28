@@ -642,11 +642,17 @@ class ProjectDeleteViewSet(APIView):
 
 
 # ================== artist manager API's =======================
-
+class ProjectDemoViewSet(viewsets.ModelViewSet):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = ProjectDemoSerializer
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+    http_method_names = ["get", "post", "patch", "delete"]
 
 class ArtistViewSet(viewsets.ModelViewSet):
+    queryset = Artist.objects.all()
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistProfileSerializer
+    http_method_names = ["get", "post", "patch", "delete"]
 
     filter_backends = [
         DjangoFilterBackend,
