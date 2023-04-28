@@ -1,22 +1,23 @@
-from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
-from phonenumber_field.widgets import PhoneNumberPrefixWidget
-from phonenumber_field.phonenumber import PhoneNumber
 import phonenumbers
-
-from import_export import resources, fields
+from django import forms
+from django.contrib import admin
+from import_export import fields, resources
+from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import *
+from phonenumber_field.phonenumber import PhoneNumber
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
+
 from misc.models import *
 
 from .models import *  # , Company
-from django import forms
 
 
 class ContactForm(forms.ModelForm):
     class Meta:
-        widgets = {                          # Here
-            'phone': PhoneNumberPrefixWidget(initial='US'),
+        widgets = {  # Here
+            "phone": PhoneNumberPrefixWidget(initial="US"),
         }
+
 
 class SkillInlineAdmin(admin.TabularInline):
     model = TemplateProjects.skills.through
@@ -101,37 +102,38 @@ class ClientAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
 
 class LocationForeignKeyWidget(ForeignKeyWidget):
-
     def clean(self, value, row=None, **kwargs):
         try:
             return super().clean(value)
         except self.model.DoesNotExist:
             Location.objects.create(name=self.value)
-            #logger.warning(f"instance matching '{value}' does not exist")
-
+            # logger.warning(f"instance matching '{value}' does not exist")
 
 
 class ArtistResource(resources.ModelResource):
     location = fields.Field(
-        column_name='location',
-        attribute='location',
-        widget=LocationForeignKeyWidget(Location, field='name'))
+        column_name="location",
+        attribute="location",
+        widget=LocationForeignKeyWidget(Location, field="name"),
+    )
 
     skill = fields.Field(
-        column_name='skill',
-        attribute='skill',
-        widget=ManyToManyWidget(Skill, field='name', separator=','))
-
+        column_name="skill",
+        attribute="skill",
+        widget=ManyToManyWidget(Skill, field="name", separator=","),
+    )
 
     languages = fields.Field(
-        column_name='language',
-        attribute='languages',
-        widget=ManyToManyWidget(Language, field='name'))
+        column_name="language",
+        attribute="languages",
+        widget=ManyToManyWidget(Language, field="name"),
+    )
 
     genre = fields.Field(
-        column_name='genre',
-        attribute='genre',
-        widget=ManyToManyWidget(Genre, field='name', separator=','))
+        column_name="genre",
+        attribute="genre",
+        widget=ManyToManyWidget(Genre, field="name", separator=","),
+    )
 
     # works_links = fields.Field(
     #     column_name='works_links',
@@ -139,22 +141,24 @@ class ArtistResource(resources.ModelResource):
     #     widget=ManyToManyWidget(Genre, field='weblink', separator=','))
 
     manager = fields.Field(
-        column_name='manager',
-        attribute='manager',
-        widget=ForeignKeyWidget(Manager, field='name'))
+        column_name="manager",
+        attribute="manager",
+        widget=ForeignKeyWidget(Manager, field="name"),
+    )
 
     def after_save_instance(self, instance, using_transactions, dry_run):
         self.instance = instance
         return super().after_save_instance(instance, using_transactions, dry_run)
 
-
     def before_import_row(self, row, **kwargs):
         skill_name = row["skill"]
-        skill, _ = Skill.objects.get_or_create(name=skill_name, defaults={"name": skill_name})
+        skill, _ = Skill.objects.get_or_create(
+            name=skill_name, defaults={"name": skill_name}
+        )
 
-        if row["genre"] or row["genre"]!="" or row["genre"] is not None:
+        if row["genre"] or row["genre"] != "" or row["genre"] is not None:
             genre_names = str(row["genre"])
-        genre_names = [genre.strip() for genre in genre_names.split(',')]
+        genre_names = [genre.strip() for genre in genre_names.split(",")]
         genres = []
         for name in genre_names:
             genre, _ = Genre.objects.get_or_create(name=name, defaults={"name": name})
@@ -164,9 +168,8 @@ class ArtistResource(resources.ModelResource):
         skill.save()
         # row["genre"] = genres
 
-
         language_name = row["language"]
-        language_names = [language.strip() for language in row["language"].split(',')]
+        language_names = [language.strip() for language in row["language"].split(",")]
         languages = []
         for name in language_names:
             lang, _ = Language.objects.get_or_create(name=name, defaults={"name": name})
@@ -174,7 +177,9 @@ class ArtistResource(resources.ModelResource):
         # row["genre"] = genres
 
         location_name = row["location"]
-        Location.objects.get_or_create(name=location_name, defaults={"name": location_name})
+        Location.objects.get_or_create(
+            name=location_name, defaults={"name": location_name}
+        )
 
         # works_links_names = [works_links.strip() for works_links in row["works_links"].split(',')]
         # works_linkss = []
@@ -188,22 +193,40 @@ class ArtistResource(resources.ModelResource):
 
         print(f"works_links {row['works_links']}")
 
-        if row["works_links"] != "https://empty.com" and row["works_links"] or row["works_links"]!="" or row["works_links"] is not None:
+        if (
+            row["works_links"] != "https://empty.com"
+            and row["works_links"]
+            or row["works_links"] != ""
+            or row["works_links"] is not None
+        ):
             works_links_urls = str(row["works_links"])
-            works_links_names = [works_links.strip() for works_links in works_links_urls.split(',')]
+            works_links_names = [
+                works_links.strip() for works_links in works_links_urls.split(",")
+            ]
 
             works_linkss = []
             for name in works_links_names:
-                works_links, _ = Work.objects.get_or_create(weblink=name, owner=instance, demo_type="Other", defaults={"weblink": name})
+                works_links, _ = Work.objects.get_or_create(
+                    weblink=name,
+                    owner=instance,
+                    demo_type="Other",
+                    defaults={"weblink": name},
+                )
                 works_linkss.append(works_links)
 
-        best_link = row['best_link']
-        demo_type = row['demo_type']
-        Demo_Type.objects.get_or_create(name=demo_type, defaults={"name" : demo_type})
+        best_link = row["best_link"]
+        demo_type = row["demo_type"]
+        Demo_Type.objects.get_or_create(name=demo_type, defaults={"name": demo_type})
         print(f"best link -> {best_link}")
         if best_link != "https://empty.com":
-        #if best_link is not None or best_link!="" or len(best_link) !=0:
-            Work.objects.create(weblink=best_link, best_work=True, owner=instance, demo_type=demo_type, show_in_top_feed=True)
+            # if best_link is not None or best_link!="" or len(best_link) !=0:
+            Work.objects.create(
+                weblink=best_link,
+                best_work=True,
+                owner=instance,
+                demo_type=demo_type,
+                show_in_top_feed=True,
+            )
 
         # phone_str = row['phone']
         # phone_number_string = f'+91{str(phone_str[1:-2])}'
@@ -221,12 +244,11 @@ class ArtistResource(resources.ModelResource):
         # # instance.phone = PhoneNumber.from_string(str(phone))
         # # instance.save()
 
-        phone_str = f"+91{str(row['phone'])[1:-2]}" 
+        phone_str = f"+91{str(row['phone'])[1:-2]}"
         print(f"phone_str {phone_str}")
         instance.phone = phone_str
         print(f"instandphone {instance.phone}")
         instance.save()
-
 
     # def skip_row(self, instance, original, row, import_validation_errors=None):
     #     # name = row['manager_name']
@@ -255,8 +277,7 @@ class ArtistResource(resources.ModelResource):
 
     class Meta:
         model = Artist
-        exclude = ('manager', 'works_links')
-
+        exclude = ("manager", "works_links")
 
 
 class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
@@ -293,7 +314,6 @@ class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             {
                 "fields": [
                     "works_links",
-
                     "social_links",
                     ("has_manager", "manager"),
                     "other_arts",

@@ -44,6 +44,7 @@ class WorkFeedSerializer(serializers.ModelSerializer):
             "owner_name",
             "owner_id",
             "details",
+            "best_work",
             "name",
             "skills",
             "pk",
@@ -87,7 +88,16 @@ class ProjectDemoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectDemo
-        fields = ["id", "artist", "demo_work", "project", "document", "url", "comment", "status"]
+        fields = [
+            "id",
+            "artist",
+            "demo_work",
+            "project",
+            "document",
+            "url",
+            "comment",
+            "status",
+        ]
 
 
 class ChatBotSerializer(serializers.ModelSerializer):
@@ -163,7 +173,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         return obj.title or None
 
     def get_project_demos(self, obj):
-        return [ProjectDemoSerializer(demo, many=False).data for demo in obj.projectdemo_Project.all()]
+        return [
+            ProjectDemoSerializer(demo, many=False).data
+            for demo in obj.projectdemo_Project.all()
+        ]
         # project_demos = []
         # print("project demo is -> ")
         # print(obj.projectdemo_Project.all())
@@ -179,7 +192,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         #     for work in obj.showcase_demos.all()
         # ]
 
-# ---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
 
     # def update(self, instance, validated_data):
     #     chatbot = validated_data.pop('chatbot_status')
@@ -309,9 +322,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         return obj.pk
 
     def get_workLinks(self, obj):
-        return [
-            [work.weblink] for work in obj.works_links.all()
-        ]
+        return [[work.weblink] for work in obj.works_links.all()]
 
     def get_location_name(self, obj):
         if obj.location is not None:
@@ -344,6 +355,11 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "has_manager",
             "manager",
             "workLinks",
+            "min_budget",
+            "max_budget",
+            "best_link",
+            "ctc_per_annum",
+            "profile_image",
         ]
 
 
@@ -351,7 +367,7 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     languages = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
-    works_links = WorkFeedSerializer(many=True) #serializers.SerializerMethodField()
+    works_links = WorkFeedSerializer(many=True)  # serializers.SerializerMethodField()
     social_links = serializers.SerializerMethodField()
     skills = serializers.SerializerMethodField()
     genre = serializers.SerializerMethodField()
@@ -377,9 +393,7 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
 
     def get_works_links(self, obj):
         print("i called")
-        return [
-            [work.weblink] for work in obj.works_links.all()
-        ]
+        return [[work.weblink] for work in obj.works_links.all()]
 
     def get_location(self, obj):
         if obj.location is not None:

@@ -3,9 +3,6 @@ import os
 
 # openAI package
 import openai
-
-# import the api key
-
 from decouple import config
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
@@ -16,12 +13,12 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import (
     filters,
     generics,
+    parsers,
     permissions,
     routers,
     serializers,
     status,
     viewsets,
-    parsers
 )
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -41,6 +38,12 @@ from .models import ChatGPTMessage
 
 # serializers
 from .serializers import *
+
+# import the api key
+
+
+
+
 
 
 class chatflowSkills(APIView):
@@ -354,14 +357,16 @@ class MyProjectsViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        return Project.objects.filter(client__user=self.request.user, stage="Lead").order_by('-id')
+        return Project.objects.filter(
+            client__user=self.request.user, stage="Lead"
+        ).order_by("-id")
 
 
 class GetDreamProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializerMini
 
     def get_queryset(self):
-        return Project.objects.filter(stage="DreamProject").order_by('-id')
+        return Project.objects.filter(stage="DreamProject").order_by("-id")
 
 
 # ------------------------------------ project calculation ------------------------
@@ -386,11 +391,12 @@ def PorjectCalculation(project, data):
         return True
     return False
 
+
 class ProjectDemoViewSet(viewsets.ModelViewSet):
     queryset = ProjectDemo.objects.all()
     serializer_class = ProjectDemoSerializer
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ["get", "post", "patch", "delete"]
 
 
 class EditProjectViewSet(viewsets.ModelViewSet):
@@ -400,8 +406,8 @@ class EditProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
             if not self.request.user.is_anonymous:
-                return Project.objects.exclude(stage="DreamProject").order_by('-id')
-            return Project.objects.filter(stage="DreamProject").order_by('-id')
+                return Project.objects.exclude(stage="DreamProject").order_by("-id")
+            return Project.objects.filter(stage="DreamProject").order_by("-id")
         except Exception as e:
             return None
 
@@ -485,9 +491,9 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                         )
                     else:
                         return Response(
-                        project_serializer.error_messages,
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+                            project_serializer.error_messages,
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
 
                 return Response(
                     {"error": "you don't have permission to update"},
@@ -693,7 +699,7 @@ class ArtistActionviewSet(APIView):
             )
         except Exception as e:
             return Response(
-                artist_serializer.errors, 
+                artist_serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -732,7 +738,9 @@ class ArtistActionviewSet(APIView):
                     },
                     status=status.HTTP_201_CREATED,
                 )
-            return Response(artist_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                artist_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception as e:
             print(e)
             return Response(
@@ -769,7 +777,7 @@ class ArtistActionviewSet(APIView):
                 {"error": "something went's Wrong!", "error_message": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-    
+
     def delete(self, request, pk=None):
         try:
             print("called")
@@ -816,11 +824,13 @@ class AllProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         role = Role.objects.get(user=self.request.user).role
         if role == "Client":
-            return Project.objects.filter(client__user=self.request.user).exclude(
-                stage="DreamProject"
-            ).order_by('-id')
+            return (
+                Project.objects.filter(client__user=self.request.user)
+                .exclude(stage="DreamProject")
+                .order_by("-id")
+            )
         elif role == "PM":
-            return Project.objects.exclude(stage="DreamProject").order_by('-id')
+            return Project.objects.exclude(stage="DreamProject").order_by("-id")
         return None
 
 
@@ -1069,7 +1079,7 @@ class CreateNewProject(APIView):
             if project_serializer.is_valid():
                 project_serializer.save()
 
-                project = Project.objects.get(id=project_serializer.data['pk'])
+                project = Project.objects.get(id=project_serializer.data["pk"])
                 ChatBot.objects.create(status="ON", project=project)
 
                 return Response(project_serializer.data, status=status.HTTP_201_CREATED)

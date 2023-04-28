@@ -71,11 +71,12 @@ class TemplateProjectSkill(models.Model):
         verbose_name_plural = "Products-Skills"
         unique_together = ("template_project", "skill")
 
+
 class Demo_Type(models.Model):
     name = models.CharField(max_length=50, default="", blank=True)
 
     def __str__(self):
-        return self.name + "  " +  str(self.id)
+        return self.name + "  " + str(self.id)
 
 
 class Work(models.Model):
@@ -86,7 +87,7 @@ class Work(models.Model):
     # skill = models.ManyToManyField(
     #    Skill, default='', blank=True, related_name='%(class)s_Skill')
     is_demo = models.BooleanField(default=False)
-    best_work = models. BooleanField(default=False)
+    best_work = models.BooleanField(default=False)
     owner = models.ForeignKey(
         "Artist", on_delete=models.CASCADE, default="", related_name="%(class)s_Artist"
     )
@@ -102,6 +103,8 @@ class Work(models.Model):
             self.owner.name
             + " - "
             + self.demo_type
+            + " - "
+            + str(self.show_in_top_feed)
             + " - "
             + ("Best Work " if self.show_in_top_feed else "Work_ID " + str(self.id))
         )
@@ -173,14 +176,18 @@ class Client(models.Model):
 
 class Artist(models.Model):
     # Base
-    social_profile = models.URLField(max_length=2000, blank=True, default="") # id in DataWIP
+    social_profile = models.URLField(
+        max_length=2000, blank=True, default=""
+    )  # id in DataWIP
     name = models.CharField(max_length=100, default="")
     skill = models.ManyToManyField(Skill, default="", blank=True)
     artist_intro = models.TextField(default="", blank=True)
     profile_pic = models.ImageField(
         upload_to=saveNameLocationForProfilePic, default="avatar.png", blank=True
     )
-    profile_image = models.URLField(max_length=2000, blank=True, default="")   # profile_image in DataWIP
+    profile_image = models.URLField(
+        max_length=2000, blank=True, default=""
+    )  # profile_image in DataWIP
     location = models.ForeignKey(
         Location, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -191,7 +198,9 @@ class Artist(models.Model):
 
     phone = PhoneNumberField(null=True, blank=True)
 
-    relocation = models.CharField(default=False, null=True, max_length=2000) # new field
+    relocation = models.CharField(
+        default=False, null=True, max_length=2000
+    )  # new field
     full_time = models.BooleanField(default=False)
     part_time = models.BooleanField(default=False)
     # Conditional only on  skill = 'Actor'
@@ -219,7 +228,6 @@ class Artist(models.Model):
     max_budget = models.CharField(default="", max_length=2000)
     ctc_per_annum = models.CharField(default="", max_length=2000)
 
-
     budget_range = models.CharField(
         max_length=100, default="Less Than 10,000", blank=True, choices=BUDGET_RANGE
     )
@@ -235,7 +243,7 @@ class Artist(models.Model):
 
     def __str__(self):
         return self.name + " " + str(self.id)
-    
+
     def get_works_links(self, obj):
         return "\n".join([p.weblink for p in obj.works_links.all()])
 
@@ -275,12 +283,12 @@ class ProjectDemo(models.Model):
         related_name="%(class)s_DemoWork",
     )
 
-    document = models.FileField(max_length=255,  default='profile_pics\default.jpg', upload_to="demo")
+    document = models.FileField(
+        max_length=255, default="profile_pics\default.jpg", upload_to="demo"
+    )
 
     project = models.ForeignKey(
-        "Project",
-        on_delete=models.CASCADE,       
-        related_name="%(class)s_Project"
+        "Project", on_delete=models.CASCADE, related_name="%(class)s_Project"
     )
 
     comment = models.TextField(default="", blank=True)
@@ -289,13 +297,12 @@ class ProjectDemo(models.Model):
     )
 
     def __str__(self):
-        res =  str(self.id) # + "--"
+        res = str(self.id)  # + "--"
         # if self.artist:
         #     res += f"artist_id -> {str(self.artist.id)} -- "
         # if self.project:
         #     res += f"prject_id -> {str(self.project.id)}"
         return res
-        
 
 
 class Project(models.Model):
