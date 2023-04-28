@@ -5,6 +5,7 @@ from .models import *
 
 # Register your models here.
 # admin.site.register(Company)
+admin.site.register(Demo_Type)
 admin.site.register(ChatBot)
 admin.site.register(TemplateProjectSkill)
 admin.site.register(SocialProfile)

@@ -71,6 +71,12 @@ class TemplateProjectSkill(models.Model):
         verbose_name_plural = "Products-Skills"
         unique_together = ("template_project", "skill")
 
+class Demo_Type(models.Model):
+    name = models.CharField(max_length=50, default="", blank=True)
+
+    def __str__(self):
+        return self.name + "  " +  str(self.id)
+
 
 class Work(models.Model):
     name = models.CharField(max_length=100, default="", blank=True)
@@ -80,6 +86,7 @@ class Work(models.Model):
     # skill = models.ManyToManyField(
     #    Skill, default='', blank=True, related_name='%(class)s_Skill')
     is_demo = models.BooleanField(default=False)
+    best_work = models. BooleanField(default=False)
     owner = models.ForeignKey(
         "Artist", on_delete=models.CASCADE, default="", related_name="%(class)s_Artist"
     )
@@ -228,6 +235,9 @@ class Artist(models.Model):
 
     def __str__(self):
         return self.name + " " + str(self.id)
+    
+    def get_works_links(self, obj):
+        return "\n".join([p.weblink for p in obj.works_links.all()])
 
 
 class ArtistFeedback(models.Model):

@@ -102,10 +102,11 @@ BUDGET_RANGE = (
 
 
 DEMO_TYPE = (
-    ("Instagram Link", "Instagram"),
-    ("Youtube Link", "Youtube"),
-    ("Soundcloud Link", "Soundcloud"),
+    ("Instagram", "Instagram"),
+    ("Youtube", "Youtube"),
+    ("Soundcloud", "Soundcloud"),
     ("Image", "Image"),
     ("Video", "Video"),
     ("Other Document", "Other"),
+    ("Other Document", "Other Document"),
 )

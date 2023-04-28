@@ -120,7 +120,7 @@ class ArtistResource(resources.ModelResource):
     skill = fields.Field(
         column_name='skill',
         attribute='skill',
-        widget=ManyToManyWidget(Skill, field='name'))
+        widget=ManyToManyWidget(Skill, field='name', separator=','))
 
 
     languages = fields.Field(
@@ -188,14 +188,22 @@ class ArtistResource(resources.ModelResource):
 
         print(f"works_links {row['works_links']}")
 
-        if row["works_links"] or row["works_links"]!="" or row["works_links"] is not None:
+        if row["works_links"] != "https://empty.com" and row["works_links"] or row["works_links"]!="" or row["works_links"] is not None:
             works_links_urls = str(row["works_links"])
             works_links_names = [works_links.strip() for works_links in works_links_urls.split(',')]
 
-        works_linkss = []
-        for name in works_links_names:
-            works_links, _ = Work.objects.get_or_create(weblink=name, owner=instance, defaults={"weblink": name})
-            works_linkss.append(works_links)
+            works_linkss = []
+            for name in works_links_names:
+                works_links, _ = Work.objects.get_or_create(weblink=name, owner=instance, demo_type="Other", defaults={"weblink": name})
+                works_linkss.append(works_links)
+
+        best_link = row['best_link']
+        demo_type = row['demo_type']
+        Demo_Type.objects.get_or_create(name=demo_type, defaults={"name" : demo_type})
+        print(f"best link -> {best_link}")
+        if best_link != "https://empty.com":
+        #if best_link is not None or best_link!="" or len(best_link) !=0:
+            Work.objects.create(weblink=best_link, best_work=True, owner=instance, demo_type=demo_type, show_in_top_feed=True)
 
         # phone_str = row['phone']
         # phone_number_string = f'+91{str(phone_str[1:-2])}'
@@ -247,13 +255,17 @@ class ArtistResource(resources.ModelResource):
 
     class Meta:
         model = Artist
-        exclude = ('manager', 'works_links',)
+        exclude = ('manager', 'works_links')
 
 
 
 class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     filter_horizontal = ("skill", "genre", "languages", "works_links")
     form = ContactForm
+    # list_display = ('get_works_links',)
+
+    # def get_works_links(self, obj):
+    #     return "\n".join([p.weblink for p in obj.works_links.all()])
 
     fieldsets = [
         (
@@ -266,6 +278,13 @@ class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     ("skill", "genre"),
                     ("location", "languages"),
                     "profile_pic",
+                    "social_profile",
+                    "profile_image",
+                    "relocation",
+                    "best_link",
+                    "min_budget",
+                    "max_budget",
+                    "ctc_per_annum",
                 ]
             },
         ),
@@ -274,6 +293,7 @@ class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             {
                 "fields": [
                     "works_links",
+
                     "social_links",
                     ("has_manager", "manager"),
                     "other_arts",

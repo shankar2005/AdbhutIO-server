@@ -693,7 +693,7 @@ class ArtistActionviewSet(APIView):
             )
         except Exception as e:
             return Response(
-                {"error": "something went's Wrong!", "error_message": str(e)},
+                artist_serializer.errors, 
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

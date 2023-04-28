@@ -310,7 +310,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
 
     def get_workLinks(self, obj):
         return [
-            [work.weblink, work.demo_type, work.id] for work in obj.works_links.all()
+            [work.weblink] for work in obj.works_links.all()
         ]
 
     def get_location_name(self, obj):
@@ -324,6 +324,7 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     artistID = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
     workLinks = serializers.SerializerMethodField()
+    works_link = WorkFeedSerializer(read_only=True, many=True)
     location_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -350,7 +351,7 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     languages = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
-    works_links = serializers.SerializerMethodField()
+    works_links = WorkFeedSerializer(many=True) #serializers.SerializerMethodField()
     social_links = serializers.SerializerMethodField()
     skills = serializers.SerializerMethodField()
     genre = serializers.SerializerMethodField()
@@ -375,8 +376,9 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
         return [language.name for language in obj.languages.all()]
 
     def get_works_links(self, obj):
+        print("i called")
         return [
-            [work.weblink, work.demo_type, work.id] for work in obj.works_links.all()
+            [work.weblink] for work in obj.works_links.all()
         ]
 
     def get_location(self, obj):
@@ -401,6 +403,12 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
             "languages",
             "works_links",
             "social_links",
+            "social_profile",
+            "relocation",
+            "min_budget",
+            "max_budget",
+            "ctc_per_annum",
+            "best_link",
             "has_manager",
             "manager",
             "budget_idea",
