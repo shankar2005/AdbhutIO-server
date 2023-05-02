@@ -713,17 +713,19 @@ class ArtistActionviewSet(APIView):
         try:
             data = request.data
             print(f"data -> {data}")
-            if data["has_manager"] == "True":
+            
+            if data["has_manager"] == True:
                 manager = Manager.objects.create(
                     name=data["manager"]["name"],
                     phone=data["manager"]["phone"],
                     email=data["manager"]["email"],
                 )
                 data["manager"] = manager.id
+            
             works_links = data["works_links"]
             del data["works_links"]
             works = []
-            artist_serializer = ArtistActionSerializer(data=request.data)
+            artist_serializer = ArtistActionSerializer(data=data)
             if artist_serializer.is_valid():
                 artist_serializer.save()
                 artist = Artist.objects.get(id=artist_serializer.data["id"])

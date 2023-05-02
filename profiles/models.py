@@ -86,13 +86,13 @@ class Work(models.Model):
     show_in_top_feed = models.BooleanField(default=False)
     # skill = models.ManyToManyField(
     #    Skill, default='', blank=True, related_name='%(class)s_Skill')
-    is_demo = models.BooleanField(default=False)
-    best_work = models.BooleanField(default=False)
+    is_demo = models.BooleanField(default=False, blank=True)
+    best_work = models.BooleanField(default=False, blank=True)
     owner = models.ForeignKey(
         "Artist", on_delete=models.CASCADE, default="", related_name="%(class)s_Artist"
     )
-    from_client = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    from_client = models.BooleanField(default=False, blank=True)
+    is_active = models.BooleanField(default=True, blank=True)
     file = models.FileField(upload_to="work_files", default="", blank=True)
     demo_type = models.CharField(
         max_length=100, default="", blank=True, choices=DEMO_TYPE
@@ -186,7 +186,7 @@ class Artist(models.Model):
         upload_to=saveNameLocationForProfilePic, default="avatar.png", blank=True
     )
     profile_image = models.URLField(
-        max_length=2000, blank=True, default=""
+        max_length=2000, blank=True, default="",null=True
     )  # profile_image in DataWIP
     location = models.ForeignKey(
         Location, on_delete=models.SET_NULL, null=True, blank=True
@@ -199,7 +199,9 @@ class Artist(models.Model):
     phone = PhoneNumberField(null=True, blank=True)
 
     relocation = models.CharField(
-        default=False, null=True, max_length=2000
+        # default=False, null=True, max_length=2000
+        # Orignal values were boolean and field was required
+        default="False", null=True, max_length=2000, blank=True
     )  # new field
     full_time = models.BooleanField(default=False)
     part_time = models.BooleanField(default=False)
@@ -224,9 +226,9 @@ class Artist(models.Model):
     )
 
     # new field
-    min_budget = models.CharField(default="", max_length=2000)
-    max_budget = models.CharField(default="", max_length=2000)
-    ctc_per_annum = models.CharField(default="", max_length=2000)
+    min_budget = models.CharField(default="", max_length=2000,blank=True)
+    max_budget = models.CharField(default="", max_length=2000,blank=True)
+    ctc_per_annum = models.CharField(default="", max_length=2000,blank=True)
 
     budget_range = models.CharField(
         max_length=100, default="Less Than 10,000", blank=True, choices=BUDGET_RANGE
