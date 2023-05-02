@@ -730,11 +730,18 @@ class ArtistActionviewSet(APIView):
                 artist_serializer.save()
                 artist = Artist.objects.get(id=artist_serializer.data["id"])
                 for work_link in works_links:
-                    work = Work.objects.create(
-                        owner=artist,
-                        demo_type=work_link["demo_type"],
-                        weblink=work_link["weblink"],
+                    work = Work(
+                        owner=artist
                     )
+                    if "name" in work_link:
+                        work.name=work_link["name"]
+                    if "demo_type" in work_link:
+                        work.demo_type=work_link["demo_type"]
+                    if "weblink" in work_link:
+                        work.weblink=work_link["weblink"]
+                    if "details" in work_link:
+                        work.details = work_link["details"]
+                    work.save()
                     works.append(work.id)
                 artist.works_links.set(works)
                 return Response(

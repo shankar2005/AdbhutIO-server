@@ -37,10 +37,12 @@ class WorkAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             {
                 "fields": [
                     "owner",
+                    "name",
                     "show_in_top_feed",
                     "demo_type",
                     ("weblink", "file"),
                     "is_demo",
+                    "details",
                     "from_client",
                     "is_active",
                 ]
