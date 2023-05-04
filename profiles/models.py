@@ -97,6 +97,13 @@ class Work(models.Model):
     demo_type = models.CharField(
         max_length=100, default="", blank=True, choices=DEMO_TYPE
     )
+    
+    def save(self, *args, **kwargs):
+        if self.show_in_top_feed:
+            best_work = Work.objects.filter(owner_id=self.owner.id).first()
+            best_work.best_work = True
+            best_work.save()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return (
