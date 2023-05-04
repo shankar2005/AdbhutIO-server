@@ -101,8 +101,11 @@ class Work(models.Model):
     def save(self, *args, **kwargs):
         if self.show_in_top_feed:
             best_work = Work.objects.filter(owner_id=self.owner.id).first()
-            best_work.best_work = True
-            best_work.save()
+            if not best_work:
+                self.best_work = True
+            else:
+                best_work.best_work = True
+                best_work.save()
         super().save(*args, **kwargs)
 
     def __str__(self):
