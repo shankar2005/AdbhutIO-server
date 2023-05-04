@@ -677,6 +677,7 @@ class ArtistViewSet(viewsets.ModelViewSet):
 class ArtistList(generics.ListAPIView):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
+    pagination_class = ArtistListPagination
 
 
 class ArtistActionviewSet(APIView):

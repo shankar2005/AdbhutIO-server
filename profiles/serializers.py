@@ -4,7 +4,7 @@ from typing import Optional
 from urllib.parse import urlparse
 
 from decouple import config
-from rest_framework import serializers
+from rest_framework import serializers,pagination
 
 from .models import *
 
@@ -392,6 +392,9 @@ class ArtistSerializer(serializers.ModelSerializer):
                   'attitude_rating', 
                   'budget_range'
                 ]
+
+class ArtistListPagination(pagination.PageNumberPagination):
+    page_size = 10
         
 class ArtistFilterSerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
