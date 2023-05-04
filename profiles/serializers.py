@@ -372,26 +372,44 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "ctc_per_annum",
         ]
 
+        
+# Serializers to display sills location and languages without pk
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ['name']
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ['name']
+
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ['name']
+
+
 # Serializer for artist list display
 class ArtistSerializer(serializers.ModelSerializer):
+    skill = SkillSerializer(many=True)
+    location = LocationSerializer()
+    languages = LanguageSerializer(many=True)
+
     class Meta:
         model = Artist
-        fields = ['id',
-                  'name',
-                  'artist_intro',
-                  'email',
-                  'phone',
-                  'skill',
-                  'location',
-                  'languages',
-                  'profile_pic',
-                  'profile_image',
-                  'full_time',
-                  'part_time',
-                  'professional_rating',
-                  'attitude_rating', 
-                  'budget_range'
-                ]
+        fields = ['name', 'artist_intro', 'email', 'phone', 'skill', 'location', 'languages',
+                  'profile_pic', 'profile_image', 'full_time', 'part_time', 'professional_rating',
+                  'attitude_rating', 'budget_range']
+
+    # Get the real names of the ids to display on response object for artist list
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['skill'] = [s['name'] for s in representation['skill']]
+        representation['languages'] = [l['name'] for l in representation['languages']]
+        representation['location'] = representation['location']['name']
+        return representation
+
 
 class ArtistListPagination(pagination.PageNumberPagination):
     page_size = 10
