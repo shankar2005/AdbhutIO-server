@@ -372,7 +372,27 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "ctc_per_annum",
         ]
 
-
+# Serializer for artist list display
+class ArtistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Artist
+        fields = ['id',
+                  'name',
+                  'artist_intro',
+                  'email',
+                  'phone',
+                  'skill',
+                  'location',
+                  'languages',
+                  'profile_pic',
+                  'profile_image',
+                  'full_time',
+                  'part_time',
+                  'professional_rating',
+                  'attitude_rating', 
+                  'budget_range'
+                ]
+        
 class ArtistFilterSerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     languages = serializers.SerializerMethodField()
