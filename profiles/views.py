@@ -741,6 +741,10 @@ class ArtistActionviewSet(APIView):
                         work.weblink=work_link["weblink"]
                     if "details" in work_link:
                         work.details = work_link["details"]
+                    if "show_in_top_feed" in work_link:
+                        work.show_in_top_feed = work_link["show_in_top_feed"]
+                    if "best_work" in work_link:
+                        work.best_work = work_link["best_work"]
                     work.save()
                     works.append(work.id)
                 artist.works_links.set(works)

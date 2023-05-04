@@ -45,6 +45,7 @@ class WorkAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     "details",
                     "from_client",
                     "is_active",
+                    "best_work",
                 ]
             },
         )
