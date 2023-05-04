@@ -13,6 +13,7 @@ urlpatterns = [
         ArtistActionviewSet.as_view(),
         name="artist_action_pk",
     ),
+    path("api/v1/artist_list/", ArtistList.as_view(), name="artist_list"),
     # ---------------------------- project urls ----------------------------------------------
     path(
         "api/v1/delete_project/<int:pk>/",

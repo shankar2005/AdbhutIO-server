@@ -673,6 +673,11 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 # ====================== artist action ===================================
 
+# Get the list of artist with all the important details like skills, languages, location, rating etc.
+class ArtistList(generics.ListAPIView):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
+
 
 class ArtistActionviewSet(APIView):
     permission_classes = (permissions.AllowAny,)
