@@ -15,7 +15,7 @@ from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import slugify
 from rest_framework.authtoken.models import Token
-
+from .models import Work
 from .models import Client, Project, Role
 
 default_storage = get_storage_class()()
@@ -61,3 +61,24 @@ def post_save_update_project(sender, instance, created, **kwargs):
                 else "" + " - " + instance.stage + " - " + str(instance.id)
             )
             instance.save()
+
+@receiver(post_save, sender=Work)
+def update_artist_best_link(sender, instance, **kwargs):
+    # Check if the work instance should be shown in the top feed and if the artist's best_link is empty or the work should be shown in the top feed
+    if instance.show_in_top_feed and instance.owner.best_link == "" or instance.show_in_top_feed:
+        artist = instance.owner
+        try:
+            # Retrieve the first work object owned by the artist
+            best_work = Work.objects.filter(owner=artist).first()
+
+            # Set the best_work field and show in top field of the retrieved work object to True
+            best_work.best_work = True
+            # Set the best_link field of the artist to the weblink of the best work
+            artist.best_link = best_work.weblink
+
+            # Save the changes to the artist and the best work
+            artist.save()
+            best_work.save()
+        except IndexError:
+            # There is no best work for this artist
+            pass
