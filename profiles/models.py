@@ -106,7 +106,7 @@ class Work(models.Model):
             + " - "
             + str(self.show_in_top_feed)
             + " - "
-            + ("Best Work " if self.show_in_top_feed else "Work_ID " + str(self.id))
+            + ("Best Work " if self.best_work else "Work_ID " + str(self.id))
         )
 
 
