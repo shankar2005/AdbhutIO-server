@@ -620,23 +620,4 @@ class ArtistRequestSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = ArtistRequest
-        fields = [
-            "id",
-            "skill",
-            "skills_details",
-            "location",
-            "location_details",
-            "genre",
-            "genre_details",
-            "languages",
-            "languages_details",
-            "other_performin_arts",
-            "budget_idea",
-            "project",
-            "project_details",
-            "production_hiring",
-            "shortlisted_artists",
-            "shortlisted_artists_details",
-            "rejected_artists",
-            "rejected_artists_details",
-        ]
+        fields = '__all__'

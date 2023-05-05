@@ -490,6 +490,8 @@ class ArtistRequest(models.Model):
     hiring_status = models.CharField(
         max_length=100, default="", blank=True, choices=HIRING_STATUS
     )
+    def __str__(self):
+        return str(self.id)
 
 
 class Manager(models.Model):
