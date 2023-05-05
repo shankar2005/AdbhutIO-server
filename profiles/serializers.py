@@ -398,7 +398,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Artist
-        fields = ['name', 'artist_intro', 'email', 'phone', 'skill', 'location', 'languages',
+        fields = ['id','name', 'artist_intro', 'email', 'phone', 'skill', 'location', 'languages',
                   'profile_pic', 'profile_image', 'full_time', 'part_time', 'professional_rating',
                   'attitude_rating', 'budget_range']
 
