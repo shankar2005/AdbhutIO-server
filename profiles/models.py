@@ -103,9 +103,12 @@ class Work(models.Model):
             best_work = Work.objects.filter(owner_id=self.owner.id).first()
             if not best_work:
                 self.best_work = True
-            else:
+            elif best_work != self:
+                print("here")
                 best_work.best_work = True
+                best_work.show_in_top_feed = True
                 best_work.save()
+                self.show_in_top_feed = False
         super().save(*args, **kwargs)
 
     def __str__(self):
