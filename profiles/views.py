@@ -31,7 +31,7 @@ from .customPermission import (
     CustomPermissionForClientAndPM,
     ProductManagerPermission,
 )
-
+from django.db.models import F
 # models
 from .models import *
 from .models import ChatGPTMessage
@@ -844,6 +844,9 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistRequestSerializers
     queryset = ArtistRequest.objects.all()
+
+    def get_queryset(self):
+        return ArtistRequest.objects.order_by(F('id').desc())
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
