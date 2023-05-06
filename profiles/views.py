@@ -674,10 +674,15 @@ class ArtistViewSet(viewsets.ModelViewSet):
 # ====================== artist action ===================================
 
 # Get the list of artist with all the important details like skills, languages, location, rating etc.
-class ArtistList(generics.ListAPIView):
-    queryset = Artist.objects.all()
-    serializer_class = ArtistSerializer
+class ArtistListAPIView(generics.ListAPIView):
     pagination_class = ArtistListPagination
+    def get(self, request):
+        paginator = self.pagination_class()
+        artists = Artist.objects.all().order_by('-id')
+        paginated_artists = paginator.paginate_queryset(artists, request)
+        serializer = ArtistSerializer(paginated_artists, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
 
 
 class ArtistActionviewSet(APIView):
