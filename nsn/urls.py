@@ -44,6 +44,7 @@ router.register("project_fee_actions", ProjectFeeViewSet, basename="project_fee"
 router.register(
     "artist_request_action", ArtistRequestViewSet, basename="artist_request"
 )
+router.register("artist_request_action/<int:id>", ArtistRequestViewSet, basename="artist_request_id")
 router.register("all_projects", AllProjectViewSet, basename="all_projects")
 
 

@@ -843,7 +843,6 @@ class ProjectFeeViewSet(viewsets.ModelViewSet):
 class ArtistRequestViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistRequestSerializers
-    queryset = ArtistRequest.objects.all()
 
     def get_queryset(self):
         return ArtistRequest.objects.order_by(F('id').desc())
@@ -867,7 +866,13 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)\
+    
+    # Get a single object with id 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 # ----------------------- all projects api -----------------------------
 class AllProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
