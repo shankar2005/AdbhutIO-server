@@ -83,10 +83,7 @@ PROJECT_ADVANCE_STATUS = (
     ("In Progress", "In Progress"),
     ("Done", "Done"),
 )
-VISIBILITY_STATUS = (
-        ('private', 'Private'),
-        ('public', 'Public'),
-    )
+
 
 ARTIST_PAYOUT_STATUS = (
     ("In Progress", "In Progress"),

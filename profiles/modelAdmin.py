@@ -383,7 +383,6 @@ class ProjectAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     ("name", "slug", "title"),
                     "client",
                     ("stage", "project_template"),
-                    "visibility",
                 ]
             },
         ),
@@ -442,7 +441,6 @@ class ProjectFeeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     "artist_payout_status",
                     "final_fee_settlement_status",
                     "project_fee_Status",
-                    
                 ]
             },
         ),
