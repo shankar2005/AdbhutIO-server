@@ -384,6 +384,13 @@ class Project(models.Model):
     )
     final_fee_settlement_status = models.BooleanField(default=False, blank=True)
     artist_discussion_updates = models.TextField(default="", null=True, blank=True)
+    visibility = models.CharField(
+        max_length=10,
+        choices=VISIBILITY_STATUS,
+        default='private',
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return (
