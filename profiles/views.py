@@ -866,7 +866,7 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)\
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
     # Get a single object with id 
     def retrieve(self, request, *args, **kwargs):
