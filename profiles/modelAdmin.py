@@ -383,6 +383,7 @@ class ProjectAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     ("name", "slug", "title"),
                     "client",
                     ("stage", "project_template"),
+                    "visibility",
                 ]
             },
         ),

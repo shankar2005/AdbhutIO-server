@@ -234,6 +234,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "post_project_client_total_payout",
             "project_fee_Status",
             "artist_discussion_updates",
+            "visibility",
         ]
         extra_kwargs = {
             "shortlisted_artists": {"write_only": True},
