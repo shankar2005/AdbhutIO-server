@@ -182,7 +182,7 @@ class ValidateToken(APIView):
                 if role.role == "Client":
                     client = Client.objects.get(user=user)
                     response["role"] = "Client"
-                    response["phone"] = (client.phone,)
+                    response["phone"] = str(client.phone,)
                     response["company"] = (client.company,)
                     response["image"] = f"{client.image.url}"
                 elif role.role == "PM":
