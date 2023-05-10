@@ -124,11 +124,16 @@ class ProjectSerializer(serializers.ModelSerializer):
     chatbot_status = ChatBotSerializer(required=False)
 
     def to_representation(self, instance):
-        
+
         user = self.context['request'].user # Get current user
-        client = instance.client.user # Get client of user
+        client = instance.client.user # Get client of project
         visibility = instance.visibility # Get visibility of project
-        role = Role.objects.get(user=client) # Get role of client
+        if user.is_anonymous and visibility == 'public':
+            # If user is anonymous and visibility is public, return full representation
+            return super().to_representation(instance)
+        elif user.is_anonymous and visibility == 'private':
+            return {} # If user is anonymous and visibility is private, return empty representation
+        role = Role.objects.get(user=user) # Get role of client
         if role and role.role == 'AM' or visibility == 'public' or user == client:
             # If client is an AM or project is public or user is the owner, return full representation
             return super().to_representation(instance)
