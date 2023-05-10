@@ -430,7 +430,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             if project.stage == "DreamProject":
                 
                 return Response(
-                    self.serializer_class(project).data, status=status.HTTP_200_OK
+                    ProjectSerializer(project, context={"request": request}).data, status=status.HTTP_200_OK
                 )
             elif request.user.is_anonymous:
                 return Response(
