@@ -3,6 +3,7 @@ import os
 
 # openAI package
 import openai
+from django.db.models import Q
 from decouple import config
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
@@ -203,7 +204,7 @@ class CreateProjectView(APIView):
             print(request.user)
             if Role.objects.get(user=request.user).role == "PM":
                 project_serializer = ProjectSerializer(
-                    instance=project, data=request.data, many=False, partial=True
+                    instance=project, data=request.data, many=False, partial=True,context={'request': request}
                 )
 
                 if project_serializer.is_valid():
@@ -247,7 +248,7 @@ class CreateProjectView(APIView):
                     project.brief = brief
 
                 project.save()
-                project_serializer = ProjectSerializer(instance=project, many=False)
+                project_serializer = ProjectSerializer(instance=project,context={'request': request}, many=False)
 
                 return Response(
                     {
@@ -299,11 +300,23 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
         "owner__name",
         "owner__skill__name",
         "owner__skill__genres__name",
+        "query",
     ]
     ordering_fields = "__all__"
 
     def get_queryset(self):
-        work = Work.objects.filter(show_in_top_feed=True).order_by("show_in_top_feed")
+        query = self.request.query_params.get("query", None)  # Get the search query parameter
+        work = Work.objects.all()  # Start with all artists
+
+        if query:
+            work = work.filter(
+                Q(name__icontains=query) |  # Filter by name
+                Q(owner__name__icontains=query) |  # Filter by owner's name
+                Q(owner__skill__name__icontains=query) |  # Filter by owner's skill name
+                Q(owner__skill__genres__name__icontains=query)  # Filter by owner's skill genres
+            )
+
+        work = work.order_by("show_in_top_feed")  # Order the results by show_in_top_feed field
         return work
 
 
@@ -409,22 +422,25 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 return Project.objects.exclude(stage="DreamProject").order_by("-id")
             return Project.objects.filter(stage="DreamProject").order_by("-id")
         except Exception as e:
-            return None
+            return {'error':e}
 
     def retrieve(self, request, pk=None):
         try:
             project = get_object_or_404(Project, pk=pk)
             if project.stage == "DreamProject":
+                
                 return Response(
                     self.serializer_class(project).data, status=status.HTTP_200_OK
                 )
             elif not request.user.is_anonymous:
+                print(project)
                 if Role.objects.get(user=request.user).role in [
                     "Client",
                     "PM",
+                    "AM",
                 ]:
                     return Response(
-                        self.serializer_class(project).data, status=status.HTTP_200_OK
+                        ProjectSerializer(project, context={"request": request}).data, status=status.HTTP_200_OK
                     )
                 return Response(
                     {"error": "you don't have permission to update"},
@@ -483,7 +499,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                     "Client",
                     "PM",
                 ]:
-                    project_serializer = ProjectSerializer(instance=project, data=data)
+                    project_serializer = ProjectSerializer(instance=project,context={'request': request}, data=data)
                     if project_serializer.is_valid():
                         project_serializer.save()
                         return Response(
@@ -541,7 +557,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 if calculation:
                     del data["assigned_artist_payouts"]
             if project.stage == "DreamProject":
-                project_serializer = ProjectSerializer(instance=project, data=data)
+                project_serializer = ProjectSerializer(instance=project,context={'request': request}, data=data)
                 if project_serializer.is_valid():
                     project_serializer.save()
                     return Response(project_serializer.data, status=status.HTTP_200_OK)
@@ -555,7 +571,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                     "PM",
                 ]:
                     project_serializer = ProjectSerializer(
-                        instance=project, data=request.data
+                        instance=project, data=request.data,context={'request': request}
                     )
                     if project_serializer.is_valid():
                         project_serializer.save()
@@ -943,7 +959,7 @@ class ProjectAssignArtistActionViewSet(APIView):
             project.save()
             return Response(
                 {
-                    "project": ProjectSerializer(project, many=False).data,
+                    "project": ProjectSerializer(project,context={'request': request}, many=False).data,
                     "message": "Assign Artist is updated.",
                 },
                 status=status.HTTP_200_OK,
@@ -967,7 +983,7 @@ class ProjectShortlistedArtistViewSet(APIView):
             project.save()
             return Response(
                 {
-                    "project": ProjectSerializer(project, many=False).data,
+                    "project": ProjectSerializer(project, context={'request': request},many=False).data,
                     "message": "Assign Artist is updated.",
                 },
                 status=status.HTTP_200_OK,
@@ -995,7 +1011,7 @@ class ProjectShortlistedArtistRemoveViewSet(APIView):
             project.save()
             return Response(
                 {
-                    "project": ProjectSerializer(project, many=False).data,
+                    "project": ProjectSerializer(project,context={'request': request}, many=False).data,
                     "message": "Assign Artist is updated.",
                 },
                 status=status.HTTP_200_OK,
@@ -1045,7 +1061,7 @@ class ProjectAssignArtistViewSet(APIView):
             project.save()
             return Response(
                 {
-                    "project": ProjectSerializer(project, many=False).data,
+                    "project": ProjectSerializer(project,context={'request': request}, many=False).data,
                     "message": "Assign Artist is updated.",
                 },
                 status=status.HTTP_200_OK,
@@ -1097,7 +1113,7 @@ class ProjectUnAssginArtistViewSet(APIView):
             project.save()
             return Response(
                 {
-                    "project": ProjectSerializer(project, many=False).data,
+                    "project": ProjectSerializer(project,context={'request': request}, many=False).data,
                     "message": "Assign Artist is updated.",
                 },
                 status=status.HTTP_200_OK,
