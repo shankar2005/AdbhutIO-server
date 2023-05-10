@@ -323,15 +323,63 @@ class WorkSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'weblink']
 
 
+
+        
+# Serializers to display sills location and languages without pk
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ['name']
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ['name']
+
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ['name']
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ['name']
+
+# Serializer for artist list display
+class ArtistSerializer(serializers.ModelSerializer):
+    skill = SkillSerializer(many=True)
+    location = LocationSerializer()
+    languages = LanguageSerializer(many=True)
+
+    class Meta:
+        model = Artist
+        fields = ['id','name', 'artist_intro', 'email', 'phone', 'skill', 'location', 'languages',
+                  'profile_pic', 'profile_image', 'full_time', 'part_time', 'professional_rating',
+                  'attitude_rating', 'budget_range']
+
+    # Get the real names of the ids to display on response object for artist list
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['skill'] = [s['name'] for s in representation['skill']]
+        representation['languages'] = [l['name'] for l in representation['languages']]
+        representation['location'] = representation['location']['name']
+        return representation
+
+
+class ArtistListPagination(pagination.PageNumberPagination):
+    page_size = 10
+
+
 class ArtistProfileSerializer(serializers.ModelSerializer):
-    works_link = WorkFeedSerializer(source = "work_set", read_only=True, many=True)
-    skills = serializers.SerializerMethodField()
+    works_links = WorkFeedSerializer(many=True)
+    skill = SkillSerializer(many=True)
     social = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
     artistID = serializers.SerializerMethodField()
-    language = serializers.SerializerMethodField()
+    genre = GenreSerializer(many=True)
+    languages = LanguageSerializer(many=True)
     # workLinks = serializers.SerializerMethodField()
-    location_name = serializers.SerializerMethodField()
+    location = LocationSerializer()
 
     def get_skills(self, obj):
         return [skill.name for skill in obj.skill.all()]
@@ -362,77 +410,20 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         if obj.location is not None:
             return obj.location.name
         return None
-
-
-    class Meta:
-        model = Artist
-        fields = [
-            "artistID",
-            "works_link",
-
-            "name",
-            "profile_pic",
-            "profile_image",
-
-            "email",
-            "phone",
-            "skills",
-            "location",
-            "language",
-            "location_name",
-            "budget_range",
-            "social",
-            "has_manager",
-            "manager",
-            # "workLinks",
-            "min_budget",
-            "max_budget",
-            "best_link",
-            "ctc_per_annum",
-        ]
-
-        
-# Serializers to display sills location and languages without pk
-class SkillSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Skill
-        fields = ['name']
-
-class LocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Location
-        fields = ['name']
-
-class LanguageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Language
-        fields = ['name']
-
-
-# Serializer for artist list display
-class ArtistSerializer(serializers.ModelSerializer):
-    skill = SkillSerializer(many=True)
-    location = LocationSerializer()
-    languages = LanguageSerializer(many=True)
-
-    class Meta:
-        model = Artist
-        fields = ['id','name', 'artist_intro', 'email', 'phone', 'skill', 'location', 'languages',
-                  'profile_pic', 'profile_image', 'full_time', 'part_time', 'professional_rating',
-                  'attitude_rating', 'budget_range']
-
-    # Get the real names of the ids to display on response object for artist list
+    
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['skill'] = [s['name'] for s in representation['skill']]
         representation['languages'] = [l['name'] for l in representation['languages']]
         representation['location'] = representation['location']['name']
+        representation['genre'] = [gen['name'] for gen in representation['genre']]
         return representation
+    
+    class Meta:
+        model = Artist
+        fields = "__all__"
 
 
-class ArtistListPagination(pagination.PageNumberPagination):
-    page_size = 10
-        
 class ArtistFilterSerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     languages = serializers.SerializerMethodField()
