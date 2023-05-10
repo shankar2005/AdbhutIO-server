@@ -132,14 +132,14 @@ class ProjectSerializer(serializers.ModelSerializer):
             # If user is anonymous and visibility is public, return full representation
             return super().to_representation(instance)
         elif user.is_anonymous and visibility == 'private':
-            return {} # If user is anonymous and visibility is private, return empty representation
+            return {"message":"Please login as the client of this project to view this project details as this project is private"} # If user is anonymous and visibility is private, return empty representation
         role = Role.objects.get(user=user) # Get role of client
-        if role and role.role == 'AM' or visibility == 'public' or user == client:
+        if (role and (role.role == 'AM' or role.role == 'PM')) or visibility == 'public' or user == client:
             # If client is an AM or project is public or user is the owner, return full representation
             return super().to_representation(instance)
         if visibility == 'private' and user != client:
             # If visibility is private and user is not the owner, return empty representation
-            return {}
+            return {"message":"This project is private and only the owner can view this project"}
 
     def update(self, instance, validated_data):
         chat = ChatBot.objects.get(project=instance)
