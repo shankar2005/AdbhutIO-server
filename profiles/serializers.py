@@ -123,6 +123,19 @@ class ProjectSerializer(serializers.ModelSerializer):
     project_demos = serializers.SerializerMethodField()
     chatbot_status = ChatBotSerializer(required=False)
 
+    def to_representation(self, instance):
+        
+        user = self.context['request'].user # Get current user
+        client = instance.client.user # Get client of user
+        visibility = instance.visibility # Get visibility of project
+        role = Role.objects.get(user=client) # Get role of client
+        if role and role.role == 'AM' or visibility == 'public' or user == client:
+            # If client is an AM or project is public or user is the owner, return full representation
+            return super().to_representation(instance)
+        if visibility == 'private' and user != client:
+            # If visibility is private and user is not the owner, return empty representation
+            return {}
+
     def update(self, instance, validated_data):
         chat = ChatBot.objects.get(project=instance)
         # print(f"validated status {validated_data.get('chatbot_status').get('status')}")
