@@ -432,6 +432,10 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 return Response(
                     self.serializer_class(project).data, status=status.HTTP_200_OK
                 )
+            elif request.user.is_anonymous:
+                return Response(
+                    ProjectSerializer(project, context={"request": request}).data, status=status.HTTP_200_OK
+                )
             elif not request.user.is_anonymous:
                 print(project)
                 if Role.objects.get(user=request.user).role in [
