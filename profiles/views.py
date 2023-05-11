@@ -300,23 +300,11 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
         "owner__name",
         "owner__skill__name",
         "owner__skill__genres__name",
-        "query",
     ]
     ordering_fields = "__all__"
 
     def get_queryset(self):
-        query = self.request.query_params.get("query", None)  # Get the search query parameter
-        work = Work.objects.all()  # Start with all artists
-
-        if query:
-            work = work.filter(
-                Q(name__icontains=query) |  # Filter by name
-                Q(owner__name__icontains=query) |  # Filter by owner's name
-                Q(owner__skill__name__icontains=query) |  # Filter by owner's skill name
-                Q(owner__skill__genres__name__icontains=query)  # Filter by owner's skill genres
-            )
-
-        work = work.order_by("show_in_top_feed")  # Order the results by show_in_top_feed field
+        work = Work.objects.filter(show_in_top_feed=True).order_by("show_in_top_feed")
         return work
 
 
