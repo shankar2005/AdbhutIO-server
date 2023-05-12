@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-
+import tldextract
+import urllib.parse
 from misc.models import *
 
 from .choices import *
@@ -97,6 +98,28 @@ class Work(models.Model):
     demo_type = models.CharField(
         max_length=100, default="", blank=True, choices=DEMO_TYPE
     )
+    @classmethod
+    def update_demo_types(cls):
+        for work in cls.objects.all():
+            work.update_demo_type()
+
+    def update_demo_type(self):
+        if self.weblink:
+            parsed_url = urllib.parse.urlparse(self.weblink)
+            domain_parts = tldextract.extract(parsed_url.netloc.lower())
+            root_domain = domain_parts.domain
+
+            matching_demo_types = []
+            for choice in DEMO_TYPE:
+                if choice[0].lower().startswith(root_domain):
+                    matching_demo_types.append(choice[0])
+            if not matching_demo_types:
+                matching_demo_types = Demo_Type.objects.filter(name__istartswith=root_domain).values_list('name', flat=True)
+            if matching_demo_types:
+                self.demo_type = matching_demo_types[0]
+            else:
+                self.demo_type = "Other Document"
+        self.save()
     
     def save(self, *args, **kwargs):
         if self.show_in_top_feed:
@@ -104,7 +127,6 @@ class Work(models.Model):
             if not best_work:
                 self.best_work = True
             elif best_work != self:
-                print("here")
                 best_work.best_work = True
                 best_work.show_in_top_feed = True
                 best_work.save()
