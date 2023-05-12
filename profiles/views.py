@@ -307,10 +307,6 @@ class WorkFeedViewSet(viewsets.ModelViewSet):
         work = Work.objects.filter(show_in_top_feed=True).order_by("show_in_top_feed")
         return work
 
-class UpdateDemoTypesView(APIView):#Temporary view to update demo_types
-    def get(self, request, format=None):
-        Work.update_demo_types()
-        return Response({"message": "Demo types updated successfully"})
 # ------------------------------- RecommendedResults api ------------------------------------
 class GetRecommendationsViewSet(viewsets.ModelViewSet):
     pagination_class = RecommendedResultsSetPagination
