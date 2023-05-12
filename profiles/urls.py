@@ -8,7 +8,6 @@ urlpatterns = [
     # ==================== artist manager urls ===========================
     # re_path(r'api/v1/artist_action/<int:pk>/?$', ArtistActionviewSet.as_view(), name="artist_action_pk"),
     path("api/v1/artist_action/", ArtistActionviewSet.as_view(), name="artist_action"),
-    path("api/v1/update-demo-types/", UpdateDemoTypesView.as_view(), name='update_demo_types'),
     path(
         "api/v1/artist_action/<int:pk>/",
         ArtistActionviewSet.as_view(),

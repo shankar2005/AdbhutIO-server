@@ -98,17 +98,12 @@ class Work(models.Model):
     demo_type = models.CharField(
         max_length=100, default="", blank=True, choices=DEMO_TYPE
     )
-    @classmethod
-    def update_demo_types(cls):
-        for work in cls.objects.all():
-            work.update_demo_type()
-
-    def update_demo_type(self):
+    
+    def save(self, *args, **kwargs):
         if self.weblink:
             parsed_url = urllib.parse.urlparse(self.weblink)
             domain_parts = tldextract.extract(parsed_url.netloc.lower())
             root_domain = domain_parts.domain
-
             matching_demo_types = []
             for choice in DEMO_TYPE:
                 if choice[0].lower().startswith(root_domain):
@@ -119,9 +114,6 @@ class Work(models.Model):
                 self.demo_type = matching_demo_types[0]
             else:
                 self.demo_type = "Other Document"
-        self.save()
-    
-    def save(self, *args, **kwargs):
         if self.show_in_top_feed:
             best_work = Work.objects.filter(owner_id=self.owner.id).first()
             if not best_work:
