@@ -506,6 +506,7 @@ class ArtistActionSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "profile_pic",
+            "artist_intro",
             "location",
             "age",
             "email",
