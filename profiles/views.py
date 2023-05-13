@@ -25,6 +25,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 
 # custom permissions
 from .customPermission import (
@@ -690,7 +691,16 @@ class ArtistListAPIView(generics.ListAPIView):
         serializer = ArtistSerializer(paginated_artists, many=True)
         return paginator.get_paginated_response(serializer.data)
 
-
+### Note: Temporary method to fix work links remove this later when not needed!!!!! ###
+### visit /api/v1/linken_works/ by making post request to fix work links of artist###
+@api_view(['POST'])
+def link_unassigned_works(request):
+    artists = Artist.objects.all()
+    for artist in artists:
+        works = Work.objects.filter(owner=artist)
+        artist.works_links.set(works)
+        artist.save()
+    return Response({'message': 'Unassigned works linked to artists.'})
 
 class ArtistActionviewSet(APIView):
     permission_classes = (permissions.AllowAny,)
