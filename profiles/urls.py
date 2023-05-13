@@ -8,6 +8,7 @@ urlpatterns = [
     # ==================== artist manager urls ===========================
     # re_path(r'api/v1/artist_action/<int:pk>/?$', ArtistActionviewSet.as_view(), name="artist_action_pk"),
     path("api/v1/artist_action/", ArtistActionviewSet.as_view(), name="artist_action"),
+    path('api/v1/linked_works/', link_unassigned_works, name='link_unassigned_works'),
     path(
         "api/v1/artist_action/<int:pk>/",
         ArtistActionviewSet.as_view(),

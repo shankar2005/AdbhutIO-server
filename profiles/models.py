@@ -251,7 +251,6 @@ class Artist(models.Model):
         null=True,
         related_name="%(class)s_to_Manager_relation",
     )
-    print('fix this')
     # new field
     min_budget = models.CharField(default="", max_length=2000,blank=True)
     max_budget = models.CharField(default="", max_length=2000,blank=True)
