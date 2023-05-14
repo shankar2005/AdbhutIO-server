@@ -372,21 +372,17 @@ class ArtistListPagination(pagination.PageNumberPagination):
 
 class ArtistProfileSerializer(serializers.ModelSerializer):
     works_links = WorkFeedSerializer(many=True)
-    skill = SkillSerializer(many=True)
+    skills = serializers.SerializerMethodField()
     social = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
-    artistID = serializers.SerializerMethodField()
-    genre = GenreSerializer(many=True)
-    languages = LanguageSerializer(many=True)
+    language = serializers.SerializerMethodField()
     # workLinks = serializers.SerializerMethodField()
-    location = LocationSerializer()
-
+    location = serializers.SerializerMethodField()
+    genre = serializers.SerializerMethodField()
     def get_skills(self, obj):
-        return [skill.name for skill in obj.skill.all()]
-
+        return [{"value":skill.id,"label":skill.name} for skill in obj.skill.all()]
     def get_social(self, obj):
         return social_link_filter(self, obj)
-
     def get_manager(self, obj):
         if obj.has_manager and obj.manager:
             return {
@@ -396,32 +392,42 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             }
         else:
             return []
-
     def get_language(self, obj):
-        return [language.name for language in obj.languages.all()]
-
-    def get_artistID(self, obj):
-        return obj.pk
-
+        return [{"value":language.id,"label":language.name} for language in obj.languages.all()]
+    def get_genre(self, obj):
+        return [{"value": gen.id, "label": gen.name} for gen in obj.genre.all()]
     # def get_workLinks(self, obj):
     #     return [[work.weblink] for work in obj.works_links.all()]
-
-    def get_location_name(self, obj):
+    def get_location(self, obj):
         if obj.location is not None:
-            return obj.location.name
+            return {"value": obj.location.id, "label": obj.location.name}
         return None
-    
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['skill'] = [s['name'] for s in representation['skill']]
-        representation['languages'] = [l['name'] for l in representation['languages']]
-        representation['location'] = representation['location']['name']
-        representation['genre'] = [gen['name'] for gen in representation['genre']]
-        return representation
-    
     class Meta:
         model = Artist
-        fields = "__all__"
+        fields = [
+            "id",
+            "works_links",
+            "name",
+            "profile_pic",
+            "profile_image",
+            "email",
+            "phone",
+            "skills",
+            "language",
+            "location",
+            "budget_range",
+            "social",
+            "has_manager",
+            "manager",
+            # "workLinks",
+            "min_budget",
+            "max_budget",
+            "best_link",
+            "ctc_per_annum",
+            "genre"
+        ]
+
+
 
 
 class ArtistFilterSerializer(serializers.ModelSerializer):
@@ -612,8 +618,7 @@ class ArtistRequestSerializers(serializers.ModelSerializer):
         if obj.project is not None:
             return {
                 "id": obj.project.id,
-                "project": str(obj.project),
-                "brief": obj.project.brief,
+                "name": obj.project.title,
             }
         return None
 
@@ -631,4 +636,20 @@ class ArtistRequestSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = ArtistRequest
-        fields = '__all__'
+        fields = ['id',
+                  'skills_details',
+                  'location_details',
+                  'languages_details',
+                  'genre_details',
+                  'project_details',
+                  'shortlisted_artists_details',
+                  'rejected_artists_details',
+                  "other_performin_arts",
+                    "budget_range",
+                    "budget_idea",
+                    "production_hiring",
+                    "service_hiring",
+                    "target",
+                    "comments",
+                    "hiring_status",
+                  ]
