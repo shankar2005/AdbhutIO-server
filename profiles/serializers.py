@@ -373,7 +373,6 @@ class ArtistListPagination(pagination.PageNumberPagination):
 class ArtistProfileSerializer(serializers.ModelSerializer):
     works_links = WorkFeedSerializer(many=True)
     skills = serializers.SerializerMethodField()
-    social = serializers.SerializerMethodField()
     manager = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
     # workLinks = serializers.SerializerMethodField()
@@ -381,8 +380,6 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
     genre = serializers.SerializerMethodField()
     def get_skills(self, obj):
         return [{"value":skill.id,"label":skill.name} for skill in obj.skill.all()]
-    def get_social(self, obj):
-        return social_link_filter(self, obj)
     def get_manager(self, obj):
         if obj.has_manager and obj.manager:
             return {
@@ -406,27 +403,40 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
         model = Artist
         fields = [
             "id",
-            "works_links",
             "name",
-            "profile_pic",
-            "profile_image",
+            "artist_intro",
+            "age",
             "email",
             "phone",
             "skills",
-            "language",
             "location",
-            "budget_range",
-            "social",
-            "has_manager",
-            "manager",
-            # "workLinks",
+            "genre",
+            "language",
+            "works_links",
+            "profile_pic",
+            "profile_image",
+
+            "social_links",
+            "social_profile",
+            "relocation",
+            "other_arts",
+            "full_time",
+            "part_time",
+            "has_agreement",
+            "agreement",
             "min_budget",
             "max_budget",
-            "best_link",
             "ctc_per_annum",
-            "genre"
+            "best_link",
+            "has_manager",
+            "manager",
+            "budget_range",
+            "budget_idea",
+            "am_notes",
+            "pm_notes",
+            "professional_rating",
+            "attitude_rating",
         ]
-
 
 
 
