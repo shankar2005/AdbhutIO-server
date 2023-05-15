@@ -415,7 +415,6 @@ class ArtistProfileSerializer(serializers.ModelSerializer):
             "works_links",
             "profile_pic",
             "profile_image",
-
             "social_links",
             "social_profile",
             "relocation",

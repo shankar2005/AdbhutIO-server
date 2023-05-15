@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django_filters import Filter
 from django_filters.rest_framework import DjangoFilterBackend
+import django_filters.rest_framework
 from drf_spectacular.utils import extend_schema
 from rest_framework import (
     filters,
@@ -680,16 +681,23 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 
 # ====================== artist action ===================================
+# Filters for artist list api modify this for adding new filters to search for artist
+class ArtistFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
+    skill = django_filters.CharFilter(field_name='skill__name', lookup_expr='icontains')
 
+    class Meta:
+        model = Artist
+        fields = ['name', 'skill']
 # Get the list of artist with all the important details like skills, languages, location, rating etc.
 class ArtistListAPIView(generics.ListAPIView):
     pagination_class = ArtistListPagination
-    def get(self, request):
-        paginator = self.pagination_class()
-        artists = Artist.objects.all().order_by('-id')
-        paginated_artists = paginator.paginate_queryset(artists, request)
-        serializer = ArtistSerializer(paginated_artists, many=True)
-        return paginator.get_paginated_response(serializer.data)
+    serializer_class = ArtistSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_class = ArtistFilter
+    def get_queryset(self):
+        queryset = Artist.objects.all().order_by('-id')
+        return queryset
 
 ### Note: Temporary method to fix work links remove this later when not needed!!!!! ###
 ### visit /api/v1/linken_works/ by making post request to fix work links of artist###
