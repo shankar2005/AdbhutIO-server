@@ -1154,7 +1154,7 @@ class CreateNewProject(APIView):
             print(request.data)
             client = get_object_or_404(Client, user=request.user)
             data["client"] = client.id
-            project_serializer = ProjectSerializer(data=data)
+            project_serializer = ProjectSerializer(data=data,context={'request': request})
             print("PASSED 2")
             print(f"project serializer {project_serializer}")
             print("passed 3")
