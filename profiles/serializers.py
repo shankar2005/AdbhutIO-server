@@ -513,8 +513,22 @@ class ManagerSerializer(serializers.ModelSerializer):
         model = Manager
         fields = "__all__"
 
+class WorksLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Work
+        fields = [
+            "pk",
+            "weblink",
+            "file",
+            "demo_type",
+            "owner",
+            "details",
+            "best_work",
+            "name",
+        ]
 
 class ArtistActionSerializer(serializers.ModelSerializer):
+    works_links = WorksLinkSerializer(many=True)
     class Meta:
         model = Artist
         fields = [
@@ -538,6 +552,18 @@ class ArtistActionSerializer(serializers.ModelSerializer):
             "professional_rating",
             "attitude_rating",
         ]
+
+    def update(self, instance, validated_data):
+        works_links_data = validated_data.pop("works_links", [])
+        instance = super().update(instance, validated_data)
+        for work_link_data in works_links_data:
+            pk = work_link_data.get("pk", None)
+            if pk:
+                work_link = Work.objects.get(pk=pk)
+                serializer = WorksLinkSerializer(work_link, data=work_link_data, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+        return instance
 
 
 # ====================== product manager serializers ===========================
