@@ -848,7 +848,8 @@ class ArtistActionviewSet(APIView):
                             weblink=work_data.get("weblink"),
                             details=work_data.get("details"),
                             show_in_top_feed=work_data.get("show_in_top_feed"),
-                            best_work=work_data.get("best_work")
+                            best_work=work_data.get("best_work"),
+                            file=work_data.get("file")
                         )
                         artist.works_links.add(work)
                 artist_serializer.save()

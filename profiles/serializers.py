@@ -524,6 +524,7 @@ class WorksLinkSerializer(serializers.ModelSerializer):
             "owner",
             "details",
             "best_work",
+            "show_in_top_feed",
             "name",
         ]
 
