@@ -822,12 +822,12 @@ class ArtistActionviewSet(APIView):
                 for work_data in request.data.get("works_links", []):
                     work = Work.objects.create(
                         owner=artist,
-                        name=work_data.get("name"),
-                        demo_type=work_data.get("demo_type"),
+                        name=work_data.get("name",artist.name),
+                        demo_type=work_data.get("demo_type","other"),
                         weblink=work_data.get("weblink"),
                         details=work_data.get("details"),
-                        show_in_top_feed=work_data.get("show_in_top_feed"),
-                        best_work=work_data.get("best_work"),
+                        show_in_top_feed=work_data.get("show_in_top_feed",False),
+                        best_work=work_data.get("best_work",False),
                         file=work_data.get("file")
                     )
                     artist.works_links.add(work)
