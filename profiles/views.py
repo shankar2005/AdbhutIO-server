@@ -815,43 +815,22 @@ class ArtistActionviewSet(APIView):
                 instance=artist, data=request.data
             )
             if artist_serializer.is_valid():
-                # Delete missing work objects
-                updated_work_ids = [
-                    work_data["pk"] for work_data in request.data.get("works_links", [])
-                    if "pk" in work_data
-                ]
-                deleted_works = Work.objects.filter(owner=artist).exclude(id__in=updated_work_ids)
+                # Delete all previous work objects
+                deleted_works = Work.objects.filter(owner=artist)
                 deleted_works.delete()
-
-                # Update or create work objects
+                # Create new work objects
                 for work_data in request.data.get("works_links", []):
-                    if len(work_data) == 1 and "pk" in work_data:
-                        # Continue to next work data if only pk is present which means that the work object does not need any change
-                        continue 
-                    work_id = work_data.get("pk")
-                    if work_id:
-                        # Update existing work object
-                        work = Work.objects.get(id=work_id, owner=artist)
-                        work.name = work_data.get("name", work.name)
-                        work.demo_type = work_data.get("demo_type", work.demo_type)
-                        work.weblink = work_data.get("weblink", work.weblink)
-                        work.details = work_data.get("details", work.details)
-                        work.show_in_top_feed = work_data.get("show_in_top_feed", work.show_in_top_feed)
-                        work.best_work = work_data.get("best_work", work.best_work)
-                        work.save()
-                    else:
-                        # Create new work object
-                        work = Work.objects.create(
-                            owner=artist,
-                            name=work_data.get("name"),
-                            demo_type=work_data.get("demo_type"),
-                            weblink=work_data.get("weblink"),
-                            details=work_data.get("details"),
-                            show_in_top_feed=work_data.get("show_in_top_feed"),
-                            best_work=work_data.get("best_work"),
-                            file=work_data.get("file")
-                        )
-                        artist.works_links.add(work)
+                    work = Work.objects.create(
+                        owner=artist,
+                        name=work_data.get("name"),
+                        demo_type=work_data.get("demo_type"),
+                        weblink=work_data.get("weblink"),
+                        details=work_data.get("details"),
+                        show_in_top_feed=work_data.get("show_in_top_feed"),
+                        best_work=work_data.get("best_work"),
+                        file=work_data.get("file")
+                    )
+                    artist.works_links.add(work)
                 artist_serializer.save()
                 return Response(
                     {"message": "Artist is updated"},
