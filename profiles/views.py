@@ -825,7 +825,7 @@ class ArtistActionviewSet(APIView):
                         name=work_data.get("name",artist.name),
                         demo_type=work_data.get("demo_type","other"),
                         weblink=work_data.get("weblink"),
-                        details=work_data.get("details"),
+                        details=work_data.get("details","Write your work details here"),
                         show_in_top_feed=work_data.get("show_in_top_feed",False),
                         best_work=work_data.get("best_work",False),
                         file=work_data.get("file")
