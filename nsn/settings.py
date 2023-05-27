@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "rest_auth.registration",
     "storages",
     "import_export",
+    "channels",
+    "chat",
 ]
 
 MIDDLEWARE = [
@@ -91,7 +93,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "nsn.wsgi.application"
+ASGI_APPLICATION = "nsn.asgi.application"
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],  # Change this if necessary
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -199,7 +210,7 @@ AWS_S3_REGION_NAME = config("REGION_NAME")
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 AWS_S3_VERIFY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' 
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # cloud storage
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # AWS_ACCESS_KEY_ID = "AKIARY2G35G2RQ5B45MI"
