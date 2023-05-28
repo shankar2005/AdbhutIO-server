@@ -23,7 +23,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Get current user id to dynamically manage security of creating private rooms
 
         # current_user_id = user.id
-        print(self.scope.keys())
+        print("session",self.scope['session']())
+        session_data = dict(self.scope["session"])
+        for key, value in session_data.items():
+            print(f'{key}: {value}')
+        # print(self.scope.keys())
         current_user_id = 1
         project_id = self.scope['url_route']['kwargs']['project_id']
         project_status = await self.check_project_existance(project_id)
