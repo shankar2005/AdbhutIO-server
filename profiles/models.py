@@ -98,7 +98,7 @@ class Work(models.Model):
     demo_type = models.CharField(
         max_length=100, default="", blank=True, choices=DEMO_TYPE
     )
-    
+
     def save(self, *args, **kwargs):
         if self.weblink:
             parsed_url = urllib.parse.urlparse(self.weblink)

@@ -12,17 +12,19 @@ from profiles.models import *
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        user = self.scope['user']
-        if isinstance(user, AnonymousUser):
-            # Find auth token in headers
-            user = await self.get_user_from_headers()
-        if user is None:
-            # Handle anonymous user or unauthorized access
-            raise DenyConnection("Unauthorized")
+        # user = self.scope['user']
+        # if isinstance(user, AnonymousUser):
+        #     # Find auth token in headers
+        #     user = await self.get_user_from_headers()
+        # if user is None:
+        #     # Handle anonymous user or unauthorized access
+        #     raise DenyConnection("Unauthorized")
         other_user_id = self.scope['url_route']['kwargs']['id']
         # Get current user id to dynamically manage security of creating private rooms
-        
-        current_user_id = user.id
+
+        # current_user_id = user.id
+        print(self.scope['user'])
+        current_user_id = 48
         project_id = self.scope['url_route']['kwargs']['project_id']
         project_status = await self.check_project_existance(project_id)
         if project_status is None:
