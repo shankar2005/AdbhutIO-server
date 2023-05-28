@@ -23,8 +23,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Get current user id to dynamically manage security of creating private rooms
 
         # current_user_id = user.id
-        print(self.scope['user'])
-        current_user_id = 48
+        print(self.scope)
+        current_user_id = 1
         project_id = self.scope['url_route']['kwargs']['project_id']
         project_status = await self.check_project_existance(project_id)
         if project_status is None:
