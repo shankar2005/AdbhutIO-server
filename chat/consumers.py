@@ -1,10 +1,8 @@
-
 import json
-
+from urllib.parse import parse_qs
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import ObjectDoesNotExist
 from .serializers import CustomSerializer
 from chat.models import Message
 from channels.exceptions import DenyConnection
@@ -12,29 +10,24 @@ from profiles.models import *
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # user = self.scope['user']
-        # if isinstance(user, AnonymousUser):
-        #     # Find auth token in headers
-        #     user = await self.get_user_from_headers()
-        # if user is None:
-        #     # Handle anonymous user or unauthorized access
-        #     raise DenyConnection("Unauthorized")
+        await self.get_token(self.scope)
+        user = self.scope['user']
+        if isinstance(user, AnonymousUser):
+            raise DenyConnection("Unauthorized")
         other_user_id = self.scope['url_route']['kwargs']['id']
         # Get current user id to dynamically manage security of creating private rooms
-
-        # current_user_id = user.id
-        print(self.scope["session"].session_key)
-        # print(self.scope.keys())
-        current_user_id = 1
-        project_id = self.scope['url_route']['kwargs']['project_id']
-        project_status = await self.check_project_existance(project_id)
-        if project_status is None:
-            # Check validity of creating rooms based on project
+        self.current_user_id = user.id # Store current user id for reference
+        project_id = self.scope['url_route']['kwargs']['project_id'] # Get the project id to create a room for this project
+        self.client = await self.get_user(self.current_user_id) # Store the client for reference
+        project_status = await self.check_project_existance(project_id,self.client) # Get the project based on the client and project id given
+        role = await self.get_user_role(user)
+        if role != 'PM' and project_status is None:
+            # Check validity of creating rooms based on project of the client
             raise DenyConnection("Project does not exist")
-        self.room_name = (
-            f'{current_user_id}_{other_user_id}_{project_id}'
-            if int(current_user_id) > int(other_user_id)
-            else f'{other_user_id}_{current_user_id}_{project_id}'
+        self.room_name = ( #Create the room for the specific project
+            f'{self.current_user_id}_{other_user_id}_{project_id}'
+            if int(self.current_user_id) > int(other_user_id)
+            else f'{other_user_id}_{self.current_user_id}_{project_id}'
         )
         self.room_group_name = f'chat_{self.room_name}'
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -52,10 +45,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         message = data['message']
-        user_id = data['user_id'].replace('"', '')
-        sender = await self.get_user(user_id.replace('"', ''))
-
-        await self.save_message(sender=sender, message=message, thread_name=self.room_group_name)
+        await self.save_message(sender=self.client, message=message, thread_name=self.room_group_name)
 
         messages = await self.get_messages()
 
@@ -64,7 +54,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
-                'user_id': user_id,
+                'user_id': self.current_user_id,
                 'messages': messages,
             },
         )
@@ -91,28 +81,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
             text_data=json.dumps(
                 {
                     'user_id': user_id,
-                    'message': clean_messages,
+                    'messages': clean_messages,
                 }
             )
         )
 
+    async def get_token(self,scope):
+        query_string = scope["query_string"]
+        query_params = query_string.decode()
+        query_dict = parse_qs(query_params)
+        token = query_dict["token"][0]
+        user = await self.returnUser(token)
+        scope["user"] = user
+
     @database_sync_to_async
-    def get_user_from_headers(self):
+    def returnUser(self, token_string):
         try:
-            for key, value in self.scope["headers"]:
-                if key.decode("utf-8").lower() == "authorization":
-                    _, token = value.decode("utf-8").split(" ")
-                    user = User.objects.get(auth_token=token)
-                    return user
-        except (AttributeError, ObjectDoesNotExist):
+            user = User.objects.get(auth_token=token_string)
+        except:
+            user = AnonymousUser()
+        return user
+
+    @database_sync_to_async
+    def check_project_existance(self, project_id,client):
+        try: # If the project exists with the client being the owner then return the project
+            return Project.objects.get(id=project_id, client=client)
+        except Project.DoesNotExist: # Else return None to close the connection
             return None
 
     @database_sync_to_async
-    def check_project_existance(self, project_id):
-        try:
-            return Project.objects.get(id=project_id)
-        except Project.DoesNotExist:
-            return None
+    def get_user_role(self,user):
+        return Role.objects.get(user=user).role
 
 
     @database_sync_to_async
