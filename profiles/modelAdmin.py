@@ -416,7 +416,21 @@ class ProjectAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 ]
             },
         ),
+        (
+            "Production Manager",
+            {
+                "fields": [
+                    "production_manager",
+                ]
+            },
+        ),
     )
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if obj and obj.production_manager:
+            readonly_fields += ("production_manager",)
+        return readonly_fields
 
 
 class ProjectFeeAdmin(ImportExportModelAdmin, admin.ModelAdmin):

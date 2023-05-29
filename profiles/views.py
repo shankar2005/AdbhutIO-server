@@ -5,6 +5,7 @@ import os
 import openai
 from django.db.models import Q
 from decouple import config
+from rest_framework.generics import RetrieveAPIView
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -400,6 +401,18 @@ class ProjectDemoViewSet(viewsets.ModelViewSet):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
     http_method_names = ["get", "post", "patch", "delete"]
 
+class ProjectProductionManagerAPIView(RetrieveAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectProductionManagerSerializer
+    lookup_field = 'id'
+
+class ProjectsByPMAPIView(generics.ListAPIView):
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return Project.objects.filter(production_manager__id=id)
 
 class EditProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.AllowAny,)
@@ -417,7 +430,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
         try:
             project = get_object_or_404(Project, pk=pk)
             if project.stage == "DreamProject":
-                
+
                 return Response(
                     ProjectSerializer(project, context={"request": request}).data, status=status.HTTP_200_OK
                 )
@@ -749,7 +762,7 @@ class ArtistActionviewSet(APIView):
         try:
             data = request.data
             print(f"data -> {data}")
-            
+
             if data["has_manager"] == True:
                 manager = Manager.objects.create(
                     name=data["manager"]["name"],
@@ -757,7 +770,7 @@ class ArtistActionviewSet(APIView):
                     email=data["manager"]["email"],
                 )
                 data["manager"] = manager.id
-            
+
             works_links = data["works_links"]
             del data["works_links"]
             works = []
@@ -892,7 +905,7 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
@@ -905,8 +918,8 @@ class ArtistRequestViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    # Get a single object with id 
+
+    # Get a single object with id
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)

@@ -260,6 +260,17 @@ class ProjectSerializer(serializers.ModelSerializer):
             "project_demos": {"write_only": True},
         }
 
+class ProjectProductionManagerSerializer(serializers.ModelSerializer):
+    production_manager_id = serializers.SerializerMethodField()
+    def get_production_manager_id(self, project):
+        production_manager_role = Role.objects.filter(role='PM').order_by('?').first()
+        if production_manager_role:
+            return production_manager_role.user.id
+        return None
+
+    class Meta:
+        model = Project
+        fields = ('production_manager_id',)
 
 # ------------------------------------- project serializer end ---------------------------------------
 
