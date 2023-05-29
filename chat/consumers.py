@@ -19,11 +19,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.current_user_id = user.id # Store current user id for reference
         project_id = self.scope['url_route']['kwargs']['project_id'] # Get the project id to create a room for this project
         self.client = await self.get_user(self.current_user_id) # Store the client for reference
-        project_status = await self.check_project_existance(project_id,self.client) # Get the project based on the client and project id given
         role = await self.get_user_role(user)
-        if role != 'PM' and project_status is None:
-            # Check validity of creating rooms based on project of the client
-            raise DenyConnection("Project does not exist")
+        if role != 'PM':
+            project_status = await self.get_project(other_user_id,project_id,self.client) # Get the project based on the client and project id given
+            if project_status is None:
+                # Check validity of creating rooms based on project of the client
+                raise DenyConnection("Project does not exist")
         self.room_name = ( #Create the room for the specific project
             f'{self.current_user_id}_{other_user_id}_{project_id}'
             if int(self.current_user_id) > int(other_user_id)
@@ -123,10 +124,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user = AnonymousUser()
         return user
 
+    async def get_project(self,other_id,project_id,client):
+        try:
+            project = await self.check_project_existance(project_id,client)
+            if other_id == project.id:
+                return project
+            return None
+        except:
+            return None
+
+
     @database_sync_to_async
     def check_project_existance(self, project_id,client):
         try: # If the project exists with the client being the owner then return the project
-            return Project.objects.get(id=project_id, client=client)
+            return Project.objects.get(id=project_id, client=client).production_manager
         except Project.DoesNotExist: # Else return None to close the connection
             return None
 

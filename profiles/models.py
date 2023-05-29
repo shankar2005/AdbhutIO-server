@@ -4,6 +4,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 import tldextract
 import urllib.parse
 from misc.models import *
+import random
 
 from .choices import *
 
@@ -404,6 +405,25 @@ class Project(models.Model):
         blank=True,
         null=True,
     )
+
+    production_manager = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="%(class)s_production_manager",
+        limit_choices_to={'role__role': 'PM'},
+        help_text="Randomly assigned production manager with role 'PM'",
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            # Only assign production manager on creation
+            production_managers = Role.objects.filter(role='PM')
+            if production_managers.exists():
+                random_manager = random.choice(production_managers)
+                self.production_manager = random_manager.user
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return (
