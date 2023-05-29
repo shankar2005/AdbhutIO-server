@@ -107,7 +107,7 @@ class ChatBotSerializer(serializers.ModelSerializer):
         extra_kwargs = {"status": {"required": True}}
 
 
-""" 
+"""
     The default ModelSerializer .create() and .update() methods
      do not include support for writable nested representations.
 """
@@ -158,6 +158,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         if obj.client is not None:
             return {
                 "id": obj.client.id,
+                "user_id": obj.client.user.id,
                 "name": obj.client.name,
                 "email": obj.client.email,
                 "image": config("URL") + obj.client.image.url,
@@ -324,7 +325,7 @@ class WorkSerializer(serializers.ModelSerializer):
 
 
 
-        
+
 # Serializers to display sills location and languages without pk
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
