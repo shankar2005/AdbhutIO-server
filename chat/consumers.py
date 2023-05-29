@@ -32,7 +32,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f'chat_{self.room_name}'
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
-        await self.send(text_data=json.dumps({'message': self.room_group_name}))
+        await self.send_previous_messages()
+        # await self.send(text_data=json.dumps({'message': self.room_group_name}))
 
     async def disconnect(self, close_code):
         try:
@@ -59,13 +60,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             },
         )
 
-    async def chat_message(self, event):
-        user_id = event['user_id']
-        messages = event['messages']
-        # Parse the JSON string into a Python list of dictionaries
-        message_list = json.loads(messages)
-
-        # Create a new list with cleaner message data
+    async def create_clean_messages(self, message_list):
         clean_messages = []
         for msg in message_list:
             clean_msg = {
@@ -76,6 +71,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'sender_email': msg['fields']['sender__email']
             }
             clean_messages.append(clean_msg)
+        return clean_messages
+
+    async def chat_message(self, event):
+        user_id = event['user_id']
+        messages = event['messages']
+        # Parse the JSON string into a Python list of dictionaries
+        message_list = json.loads(messages)
+        clean_messages = await self.create_clean_messages(message_list)
 
         await self.send(
             text_data=json.dumps(
@@ -85,6 +88,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
+
+    async def send_previous_messages(self):
+        messages = await self.get_messages()
+
+        # Parse the JSON string into a Python list of dictionaries
+        message_list = json.loads(messages)
+        clean_messages = await self.create_clean_messages(message_list)
+
+        await self.send(
+            text_data=json.dumps(
+                {
+                    'user_id': self.current_user_id,
+                    'messages': clean_messages,
+                }
+            )
+        )
+
+
 
     async def get_token(self,scope):
         query_string = scope["query_string"]
