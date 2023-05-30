@@ -401,10 +401,6 @@ class ProjectDemoViewSet(viewsets.ModelViewSet):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
     http_method_names = ["get", "post", "patch", "delete"]
 
-class ProjectProductionManagerAPIView(RetrieveAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectProductionManagerSerializer
-    lookup_field = 'id'
 
 class ProjectsByPMAPIView(generics.ListAPIView):
     serializer_class = ProjectSerializer

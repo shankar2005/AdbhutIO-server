@@ -14,32 +14,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         if isinstance(user, AnonymousUser):
             raise DenyConnection("Unauthorized")
-        other_user_id = self.scope['url_route']['kwargs']['id']
         # Get current user id to dynamically manage security of creating private rooms
         self.current_user_id = user.id # Store current user id for reference
         project_id = self.scope['url_route']['kwargs']['project_id'] # Get the project id to create a room for this project
-        self.client = await self.get_user(self.current_user_id) # Store the client for reference
+        self.client = await self.get_client(self.current_user_id) # Store the client for reference
         role = await self.get_user_role(user)
-        if role != 'PM':
-            project_status = await self.get_project(other_user_id,project_id,self.client) # Get the project based on the client and project id given
-            if project_status is None:
-                # Check validity of creating rooms based on project of the client
-                raise DenyConnection("Project does not exist")
+        project_status = await self.get_project(role,project_id,self.client,user) # Get the project based on the client and project id given
+
+        if project_status is None:
+            # Check validity of creating rooms based on project of the client
+            raise DenyConnection("Project does not exist")
+
         self.room_name = ( #Create the room for the specific project
-            f'{self.current_user_id}_{other_user_id}_{project_id}'
-            if int(self.current_user_id) > int(other_user_id)
-            else f'{other_user_id}_{self.current_user_id}_{project_id}'
+            f'{self.current_user_id}_{project_status}_{project_id}'
+            if int(self.current_user_id) > int(project_status)
+            else f'{project_status}_{self.current_user_id}_{project_id}'
         )
         self.room_group_name = f'chat_{self.room_name}'
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
         await self.send_previous_messages()
-        # await self.send(text_data=json.dumps({'message': self.room_group_name}))
 
     async def disconnect(self, close_code):
         try:
-            await self.channel_layer.group_discard(self.room_group_name, self.channel_layer)
-            await self.disconnect(close_code)
+            if hasattr(self, 'room_group_name'):
+                await self.channel_layer.group_discard(self.room_group_name, self.channel_layer)
+            await super().disconnect(close_code)
         except:
             pass
 
@@ -124,30 +124,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user = AnonymousUser()
         return user
 
-    async def get_project(self,other_id,project_id,client):
+    async def get_project(self,role,project_id,client,user):
         try:
-            project = await self.check_project_existance(project_id,client)
-            if other_id == project.id:
-                return project
-            return None
+            project = await self.check_project_existance(role,project_id,client,user)
+            if role != 'PM':
+                return project.id
+            user = await self.get_user(project)
+            return user.id
         except:
             return None
 
 
     @database_sync_to_async
-    def check_project_existance(self, project_id,client):
+    def check_project_existance(self,role, project_id,client,user):
         try: # If the project exists with the client being the owner then return the project
-            return Project.objects.get(id=project_id, client=client).production_manager
-        except Project.DoesNotExist: # Else return None to close the connection
+            if role != 'PM':
+                return Project.objects.get(id=project_id, client=client).production_manager
+            return Project.objects.get(id=project_id, production_manager=user).client
+        except Exception as e: # Else return None to close the connection
             return None
 
     @database_sync_to_async
     def get_user_role(self,user):
         return Role.objects.get(user=user).role
 
+    @database_sync_to_async
+    def get_user(self,client):
+        return Client.objects.get(id = client.id).user
+
 
     @database_sync_to_async
-    def get_user(self, user_id):
+    def get_client(self, user_id):
         client = User.objects.get(id=user_id)
         return Client.objects.get(user=client)
 
