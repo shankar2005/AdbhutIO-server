@@ -363,7 +363,9 @@ class ArtistSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['skill'] = [s['name'] for s in representation['skill']]
         representation['languages'] = [l['name'] for l in representation['languages']]
-        representation['location'] = representation['location']['name']
+        location = representation.get('location')
+        if location:
+            representation['location'] = location['name']
         return representation
 
 
