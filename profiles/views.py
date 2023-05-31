@@ -692,18 +692,21 @@ class ArtistViewSet(viewsets.ModelViewSet):
 # ====================== artist action ===================================
 # Filters for artist list api modify this for adding new filters to search for artist
 class ArtistFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
-    skill = django_filters.CharFilter(field_name='skill__name', lookup_expr='icontains')
+    search = django_filters.CharFilter(method='filter_search')
+
+    def filter_search(self, queryset, name, value):
+        return queryset.filter(Q(name__icontains=value) | Q(skill__name__icontains=value))
 
     class Meta:
         model = Artist
-        fields = ['name', 'skill']
-# Get the list of artist with all the important details like skills, languages, location, rating etc.
+        fields = ['search']
+
 class ArtistListAPIView(generics.ListAPIView):
     pagination_class = ArtistListPagination
     serializer_class = ArtistSerializer
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_class = ArtistFilter
+
     def get_queryset(self):
         queryset = Artist.objects.all().order_by('-id')
         return queryset
