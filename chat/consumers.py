@@ -6,6 +6,9 @@ from django.contrib.auth.models import AnonymousUser
 from .serializers import CustomSerializer
 from chat.models import Message
 from channels.exceptions import DenyConnection
+import openai
+import asyncio
+from decouple import config
 from profiles.models import *
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -18,17 +21,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.current_user_id = user.id # Store current user id for reference
         project_id = self.scope['url_route']['kwargs']['project_id'] # Get the project id to create a room for this project
         self.client = await self.get_client(self.current_user_id) # Store the client for reference
-        role = await self.get_user_role(user)
-        project_status = await self.get_project(role,project_id,self.client,user) # Get the project based on the client and project id given
+        self.role = await self.get_user_role(user)
+        self.project_status = await self.get_project(self.role,project_id,self.client,user) # Get the project based on the client and project id given
 
-        if project_status is None:
+        if self.project_status is None:
             # Check validity of creating rooms based on project of the client
             raise DenyConnection("Project does not exist")
-
+        self.pm_client = await self.get_client(self.project_status)
         self.room_name = ( #Create the room for the specific project
-            f'{self.current_user_id}_{project_status}_{project_id}'
-            if int(self.current_user_id) > int(project_status)
-            else f'{project_status}_{self.current_user_id}_{project_id}'
+            f'{self.current_user_id}_{self.project_status}_{project_id}'
+            if int(self.current_user_id) > int(self.project_status)
+            else f'{self.project_status}_{self.current_user_id}_{project_id}'
         )
         self.room_group_name = f'chat_{self.room_name}'
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
@@ -47,16 +50,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         message = data['message']
+        toggle = data['toggle']
         await self.save_message(sender=self.client, message=message, thread_name=self.room_group_name)
+        if self.role == 'Client' and toggle == 'ON':
+            # Send the user's message immediately
+            messages = await self.get_messages()
+            await self.send_message_to_group(message, self.current_user_id, messages)
+            # Schedule the sending of the response with a delay
+            asyncio.create_task(self.send_response_with_delay(message))
+        else:
+            messages = await self.get_messages()
+            await self.send_message_to_group(message, self.current_user_id, messages)
 
+    async def send_response_with_delay(self, message):
+        # Get the response from ChatGPTMessage model
+        response_message = await self.get_chat_gpt_response(message)
+        await self.save_message(sender=self.pm_client, message=response_message, thread_name=self.room_group_name)
         messages = await self.get_messages()
+        await self.send_message_to_group(response_message, self.project_status, messages)
 
+    async def send_message_to_group(self, message, user_id, messages):
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
                 'message': message,
-                'user_id': self.current_user_id,
+                'user_id': user_id,
                 'messages': messages,
             },
         )
@@ -184,3 +203,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def save_message(self, sender, message, thread_name):
         Message.objects.create(sender=sender, message=message, thread_name=thread_name)
+
+    @database_sync_to_async
+    def get_chat_gpt_response(self, message):
+        try:
+            openai.api_key = config("OPENAI_API_KEY")
+            completion = openai.Completion.create(
+                prompt=f"{ChatGPTMessage.objects.last().message}\n\nQ:{message}?\nA:",
+                max_tokens=100,
+                n=1,
+                stop=None,
+                temperature=0.7,
+                model="text-davinci-003",
+            )
+
+            # print(f"passed 3\n")
+            ans = completion.choices[0].text.strip()
+
+            if not ans or ans == "":
+                ans = "I don't understand. What did you say? Try with another message."
+            return ans
+        except:
+            pass
