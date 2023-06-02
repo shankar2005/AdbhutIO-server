@@ -372,6 +372,16 @@ class ArtistSerializer(serializers.ModelSerializer):
 class ArtistListPagination(pagination.PageNumberPagination):
     page_size = 10
 
+class SkillSerializer(serializers.ModelSerializer):
+    artist = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Skill
+        fields = ['pk', 'name', 'artist']
+
+    def get_artist(self, skill):
+        return skill.artist_set.count()
+
 
 class ArtistProfileSerializer(serializers.ModelSerializer):
     works_links = WorkFeedSerializer(many=True)

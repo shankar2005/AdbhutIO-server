@@ -711,6 +711,12 @@ class ArtistListAPIView(generics.ListAPIView):
         queryset = Artist.objects.all().order_by('-id')
         return queryset
 
+class SkillListAPIView(APIView):
+    def get(self, request):
+        skills = Skill.objects.all()
+        serializer = SkillSerializer(skills, many=True)
+        return Response(serializer.data)
+
 ### Note: Temporary method to fix work links remove this later when not needed!!!!! ###
 ### visit /api/v1/linken_works/ by making post request to fix work links of artist###
 @api_view(['POST'])
