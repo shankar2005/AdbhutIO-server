@@ -593,6 +593,11 @@ def link_unassigned_works(request):
         artist.save()
     return Response({'message': 'Unassigned works linked to artists.'})
 
+def get_chatbot_status(request, project_id):
+    chatbot = get_object_or_404(ChatBot, project_id=project_id)
+    status = chatbot.status
+    return JsonResponse({'status': status})
+
 class ArtistActionviewSet(APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistActionSerializer
