@@ -217,9 +217,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 model="text-davinci-003",
             )
 
-            # print(f"passed 3\n")
+            print(f"passed 3\n")
             ans = completion.choices[0].text.strip()
-
+            print(ans)
             if not ans or ans == "":
                 ans = "I don't understand. What did you say? Try with another message."
             return ans
