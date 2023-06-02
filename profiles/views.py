@@ -711,6 +711,11 @@ class ArtistListAPIView(generics.ListAPIView):
         queryset = Artist.objects.all().order_by('-id')
         return queryset
 
+class TotalArtistCountAPIView(APIView):
+    def get(self, request):
+        total_count = Artist.objects.count()
+        return Response({'total_count': total_count})
+
 class SkillListAPIView(APIView):
     def get(self, request):
         skills = Skill.objects.all()
