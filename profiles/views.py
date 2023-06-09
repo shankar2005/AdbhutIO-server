@@ -628,6 +628,32 @@ def get_chatbot_status(request, project_id):
     status = chatbot.status
     return JsonResponse({'status': status})
 
+class WorkTagUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def put(self, request, pk):
+        try:
+            work = Work.objects.get(pk=pk)
+        except:
+            return Response({"error":"Work not found"}, status=404)
+        try:
+            current_user = Role.objects.get(user=request.user)
+            if current_user.role != 'AM':
+                return Response({"error":"Unauthorized User"}, status=403)
+        except:
+            return Response({"error":"No such user"},status=403)
+        tag_names = request.data.get('tags', [])
+
+        # Clear existing tags for the work object
+        work.tags.clear()
+
+        # Add the requested tags to the work object
+        for tag_name in tag_names:
+            tag_name = tag_name.capitalize()
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            work.tags.add(tag)
+
+        return Response({'message': 'Tags updated successfully'})
+
 class ArtistActionviewSet(APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ArtistActionSerializer
