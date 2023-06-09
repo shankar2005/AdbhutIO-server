@@ -573,7 +573,6 @@ class ArtistFilter(django_filters.FilterSet):
         filtered_queryset = queryset.filter(filter_conditions)
 
         if not filtered_queryset.exists():
-            print('here')
             fallback_conditions = Q()
             for term in search_terms:
                 fallback_conditions |= (

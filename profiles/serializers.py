@@ -351,11 +351,12 @@ class ArtistSerializer(serializers.ModelSerializer):
     skill = SkillSerializer(many=True)
     location = LocationSerializer()
     languages = LanguageSerializer(many=True)
+    genre = GenreSerializer(many=True)
 
     class Meta:
         model = Artist
         fields = ['id','name', 'artist_intro', 'email', 'phone', 'skill', 'location', 'languages',
-                  'profile_pic', 'profile_image', 'full_time', 'part_time', 'professional_rating',
+                  'genre','profile_pic', 'profile_image', 'full_time', 'part_time', 'professional_rating',
                   'attitude_rating', 'budget_range']
 
     # Get the real names of the ids to display on response object for artist list
@@ -363,6 +364,7 @@ class ArtistSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['skill'] = [s['name'] for s in representation['skill']]
         representation['languages'] = [l['name'] for l in representation['languages']]
+        representation['genre'] = [g['name'] for g in representation['genre']]
         location = representation.get('location')
         if location:
             representation['location'] = location['name']
