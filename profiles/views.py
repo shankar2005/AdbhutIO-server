@@ -630,11 +630,17 @@ def get_chatbot_status(request, project_id):
 
 class WorkTagUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    
-    def get(self, request, pk):
-        obj = Work.objects.get(pk=pk)
-        tags = obj.tags.all()
-        serializer = TagSerializer(tags, many=True)
+    serializer_class = WorkSerializer
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        return Work.objects.filter(pk=pk).first()
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -649,6 +655,7 @@ class WorkTagUpdateAPIView(generics.UpdateAPIView):
         except:
             return Response({"error":"No such user"},status=403)
         tag_names = request.data.get('tags', [])
+        weblink = request.data.get('weblink')
 
         # Clear existing tags for the work object
         work.tags.clear()
@@ -658,8 +665,11 @@ class WorkTagUpdateAPIView(generics.UpdateAPIView):
             tag_name = tag_name.capitalize()
             tag, _ = Tag.objects.get_or_create(name=tag_name)
             work.tags.add(tag)
+        if weblink:
+            work.weblink = weblink
+            work.save()
 
-        return Response({'message': 'Tags updated successfully'})
+        return Response({'message': 'Updated successfully'})
 
 class ArtistActionviewSet(APIView):
     permission_classes = (permissions.AllowAny,)
