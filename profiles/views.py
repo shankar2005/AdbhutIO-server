@@ -551,11 +551,42 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 # ====================== artist action ===================================
 # Filters for artist list api modify this for adding new filters to search for artist
+import django_filters
+from django.db.models import Q
+
 class ArtistFilter(django_filters.FilterSet):
     search = django_filters.CharFilter(method='filter_search')
 
     def filter_search(self, queryset, name, value):
-        return queryset.filter(Q(name__icontains=value) | Q(skill__name__icontains=value))
+        search_terms = value.split()
+        filter_conditions = Q()
+
+        for term in search_terms:
+            filter_conditions &= (
+                Q(name__icontains=term) |
+                Q(skill__name__icontains=term) |
+                Q(genre__name__icontains=term) |
+                Q(location__name__icontains=term) |
+                Q(languages__name__icontains=term)
+            )
+
+        filtered_queryset = queryset.filter(filter_conditions)
+
+        if not filtered_queryset.exists():
+            print('here')
+            fallback_conditions = Q()
+            for term in search_terms:
+                fallback_conditions |= (
+                    Q(name__icontains=term) |
+                    Q(skill__name__icontains=term) |
+                    Q(genre__name__icontains=term) |
+                    Q(location__name__icontains=term) |
+                    Q(languages__name__icontains=term)
+                )
+
+            filtered_queryset = queryset.filter(fallback_conditions)
+
+        return filtered_queryset
 
     class Meta:
         model = Artist
