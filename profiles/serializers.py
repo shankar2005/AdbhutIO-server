@@ -25,6 +25,7 @@ class WorkFeedSerializer(serializers.ModelSerializer):
     owner_name = serializers.SerializerMethodField()
     owner_id = serializers.SerializerMethodField()
     skills = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
 
     def get_skills(self, obj):
         return [skill.name for skill in obj.owner.skill.all()]
@@ -34,6 +35,9 @@ class WorkFeedSerializer(serializers.ModelSerializer):
 
     def get_owner_id(self, obj):
         return obj.owner.pk
+
+    def get_tags(self, obj):
+        return [tags.name for tags in obj.tags.all()]
 
     class Meta:
         model = Work
@@ -48,6 +52,7 @@ class WorkFeedSerializer(serializers.ModelSerializer):
             "name",
             "skills",
             "pk",
+            "tags",
         ]
 
 
@@ -318,18 +323,12 @@ def social_link_filter(self, obj):
 # update the artist
 
 class WorkSerializer(serializers.ModelSerializer):
-
+    tags = serializers.StringRelatedField(many=True)
     class Meta:
         model = Work
-        fields = ['id', 'name', 'weblink']
+        fields = ['id', 'name', 'weblink','demo_type','tags']
 
 
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ['name']
-        
 # Serializers to display sills location and languages without pk
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
