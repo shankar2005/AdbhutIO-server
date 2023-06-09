@@ -630,6 +630,13 @@ def get_chatbot_status(request, project_id):
 
 class WorkTagUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, pk):
+        obj = Work.objects.get(pk=pk)
+        tags = obj.tags.all()
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
+
     def put(self, request, pk):
         try:
             work = Work.objects.get(pk=pk)

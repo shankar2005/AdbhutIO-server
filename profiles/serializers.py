@@ -325,7 +325,11 @@ class WorkSerializer(serializers.ModelSerializer):
 
 
 
-
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['name']
+        
 # Serializers to display sills location and languages without pk
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
