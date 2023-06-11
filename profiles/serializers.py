@@ -95,6 +95,8 @@ class ProjectDemoSerializer(serializers.ModelSerializer):
         model = ProjectDemo
         fields = [
             "id",
+            "Title",
+            "link",
             "artist",
             "demo_work",
             "project",
@@ -197,7 +199,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         return obj.title or None
 
     def get_project_demos(self, obj):
-        print(obj.project_demos.all())
         return [
             ProjectDemoSerializer(demo, many=False).data
             for demo in obj.project_demos.all()
