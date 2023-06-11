@@ -288,24 +288,26 @@ class TemplateProjectsSerializer(serializers.ModelSerializer):
 class ProjectDemoLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDemo
-        fields = ('Title', 'link', 'comment')
+        fields = ('id', 'Title', 'link', 'comment')
 
     def create(self, validated_data):
-        return ProjectDemo.objects.create(**validated_data)
+        project_demo = ProjectDemo.objects.create(**validated_data)
+        return project_demo
 
 
 class ProjectDemoFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDemo
-        fields = ('Title', 'document', 'comment')
+        fields = ('id', 'Title', 'document', 'comment')
 
     def create(self, validated_data):
-        return ProjectDemo.objects.create(**validated_data)
+        project_demo = ProjectDemo.objects.create(**validated_data)
+        return project_demo
 
 class ProjectDemoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDemo
-        fields = ('Title', 'link', 'document', 'comment', 'artist')
+        fields = ('id', 'Title', 'link', 'document', 'comment', 'artist')
 
 class AssignArtistSerializer(serializers.ModelSerializer):
     class Meta:
