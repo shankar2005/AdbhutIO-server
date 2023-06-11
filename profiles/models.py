@@ -296,6 +296,7 @@ class ArtistFeedback(models.Model):
 
 
 class ProjectDemo(models.Model):
+    Title = models.CharField(max_length=100,null=True,blank=True,default="")
     artist = models.ForeignKey(
         Artist,
         on_delete=models.CASCADE,
@@ -312,13 +313,14 @@ class ProjectDemo(models.Model):
         null=True,
         related_name="%(class)s_DemoWork",
     )
+    link = models.URLField(null=True, blank=True,default="")
 
     document = models.FileField(
         max_length=255, default="profile_pics\default.jpg", upload_to="demo"
     )
 
     project = models.ForeignKey(
-        "Project", on_delete=models.CASCADE, related_name="%(class)s_Project"
+        "Project", null=True, blank=True, on_delete=models.CASCADE, related_name="%(class)s_Project"
     )
 
     comment = models.TextField(default="", blank=True)
