@@ -569,7 +569,7 @@ class AssignArtistView(generics.UpdateAPIView):
 
 
 class AssignProjectView(generics.UpdateAPIView):
-    queryset = ProjectDemo.objects.all()
+    queryset = Project.objects.all()
     serializer_class = AssignProjectSerializer
 # ====================== artist action ===================================
 # Filters for artist list api modify this for adding new filters to search for artist

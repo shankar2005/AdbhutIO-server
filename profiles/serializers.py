@@ -89,7 +89,7 @@ class ProjectDemoSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
 
     def get_url(self, obj):
-        return config("URL") + obj.document.url
+        return obj.document.url
 
     class Meta:
         model = ProjectDemo
@@ -197,9 +197,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         return obj.title or None
 
     def get_project_demos(self, obj):
+        print(obj.project_demos.all())
         return [
             ProjectDemoSerializer(demo, many=False).data
-            for demo in obj.projectdemo_Project.all()
+            for demo in obj.project_demos.all()
         ]
         # project_demos = []
         # print("project demo is -> ")
@@ -316,8 +317,8 @@ class AssignArtistSerializer(serializers.ModelSerializer):
 
 class AssignProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProjectDemo
-        fields = ('project',)
+        model = Project
+        fields = ('project_demos',)
 
 
 def social_link_filter(self, obj):
