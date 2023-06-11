@@ -285,6 +285,38 @@ class TemplateProjectsSerializer(serializers.ModelSerializer):
 
 # ====================== artist manager serializers ===========================
 
+class ProjectDemoLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectDemo
+        fields = ('Title', 'link', 'comment')
+
+    def create(self, validated_data):
+        return ProjectDemo.objects.create(**validated_data)
+
+
+class ProjectDemoFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectDemo
+        fields = ('Title', 'document', 'comment')
+
+    def create(self, validated_data):
+        return ProjectDemo.objects.create(**validated_data)
+
+class ProjectDemoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectDemo
+        fields = ('Title', 'link', 'document', 'comment', 'artist')
+
+class AssignArtistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectDemo
+        fields = ('artist',)
+
+class AssignProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectDemo
+        fields = ('project',)
+
 
 def social_link_filter(self, obj):
     q = {}

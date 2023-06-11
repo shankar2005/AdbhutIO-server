@@ -549,6 +549,28 @@ class ArtistViewSet(viewsets.ModelViewSet):
         return profile
 
 
+class ProjectDemoAddLinkOrDoc(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = ProjectDemo.objects.all()
+
+
+    def get_serializer_class(self):
+        if self.request.data.get('document'):
+            return ProjectDemoFileSerializer
+        return ProjectDemoLinkSerializer
+
+class ProjectDemoListView(generics.ListAPIView):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = ProjectDemoListSerializer
+
+class AssignArtistView(generics.UpdateAPIView):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = AssignArtistSerializer
+
+
+class AssignProjectView(generics.UpdateAPIView):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = AssignProjectSerializer
 # ====================== artist action ===================================
 # Filters for artist list api modify this for adding new filters to search for artist
 import django_filters
