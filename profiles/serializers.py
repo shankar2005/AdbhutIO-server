@@ -543,6 +543,7 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
             "phone",
             "skills",
             "location",
+            "profile_pic",
             "profile_image",
             "genre",
             "languages",
