@@ -848,13 +848,50 @@ class ArtistActionviewSet(APIView):
             )
 
 
-class ArtistWorksLinksAPIView(APIView):
+class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         artist_id = self.kwargs.get('pk')
         artist = get_object_or_404(Artist, id=artist_id)
         works_links = artist.works_links.all()
         serializer = ArtistWorkLinkSerializer({'works_links': works_links})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_object(self):
+        work_id = self.kwargs.get('pk')
+        try:
+            return Work.objects.get(pk=work_id)
+        except Work.DoesNotExist:
+            return None
+
+    def delete(self, request, *args, **kwargs):
+        work = self.get_object()
+        if not work:
+            return Response({"error": "Work not found"}, status=404)
+
+        current_user = Role.objects.filter(user=request.user).first()
+        if not current_user or current_user.role != 'AM':
+            return Response({"error": "Unauthorized User"}, status=403)
+
+        work.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, *args, **kwargs):
+        work = self.get_object()
+        if not work:
+            return Response({"error": "Work not found"}, status=404)
+
+        current_user = Role.objects.filter(user=request.user).first()
+        if not current_user or current_user.role != 'AM':
+            return Response({"error": "Unauthorized User"}, status=403)
+        print('here')
+
+        serializer = WorkLinkCreateSerializer(work, data=request.data)
+        print(serializer)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        print('here')
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
