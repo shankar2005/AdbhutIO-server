@@ -807,7 +807,7 @@ class ArtistActionviewSet(APIView):
                         owner=artist,
                         name=work_data.get("name",artist.name),
                         demo_type=work_data.get("demo_type","other"),
-                        weblink=work_data.get("weblink"),
+                        weblink=work_data.get("weblink","example.com"),
                         details=work_data.get("details","Write your work details here"),
                         show_in_top_feed=work_data.get("show_in_top_feed",False),
                         best_work=work_data.get("best_work",False),
@@ -846,6 +846,56 @@ class ArtistActionviewSet(APIView):
                 {"error": "something went's Wrong!", "error_message": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class ArtistWorksLinksAPIView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        artist_id = self.kwargs.get('pk')
+        artist = get_object_or_404(Artist, id=artist_id)
+        works_links = artist.works_links.all()
+        serializer = ArtistWorkLinkSerializer({'works_links': works_links})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class WorkLinkCreateAPIView(generics.CreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = WorkLinkCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        artist_id = self.kwargs.get('pk')
+        try:
+            artist = Artist.objects.get(pk=artist_id)
+        except Artist.DoesNotExist:
+            return Response({"error": "Artist not found"}, status=404)
+
+        current_user = Role.objects.filter(user=request.user).first()
+        if not current_user or current_user.role != 'AM':
+            return Response({"error": "Unauthorized User"}, status=403)
+
+        weblink = request.data.get('weblink',"example.com")
+        tags = request.data.get('tags', [])
+        is_demo = request.data.get('isdemo', False)
+        best_work = request.data.get('best_work', False)
+        demo_type = request.data.get('demo_type', 'Other')
+
+        work = Work(
+            weblink=weblink,
+            is_demo=is_demo,
+            best_work=best_work,
+            demo_type=demo_type,
+            owner=artist,
+        )
+        work.save()
+        artist.works_links.add(work)
+
+        for tag_name in tags:
+            tag_name = tag_name.capitalize()
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
+            work.tags.add(tag)
+
+        serializer = self.get_serializer(work)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # ================= product manager API's =======================

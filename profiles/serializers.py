@@ -628,6 +628,33 @@ class ArtistActionSerializer(serializers.ModelSerializer):
                 serializer.save()
         return instance
 
+class WorkLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Work
+        fields = ('name', 'details', 'weblink', 'show_in_top_feed', 'is_demo', 'best_work', 'demo_type','tags')
+
+class ArtistWorkLinkSerializer(serializers.ModelSerializer):
+    works_links = WorkLinkSerializer(many=True)
+
+    class Meta:
+        model = Artist
+        fields = ('name', 'works_links')
+
+class WorkLinkCreateSerializer(serializers.ModelSerializer):
+    tags = serializers.SlugRelatedField(
+        many=True,
+        slug_field='name',
+        queryset=Tag.objects.all()
+    )
+
+    class Meta:
+        model = Work
+        fields = (
+            'id', 'name', 'details', 'weblink', 'show_in_top_feed',
+            'is_demo', 'best_work', 'owner', 'from_client', 'is_active',
+            'file', 'demo_type', 'tags'
+        )
+
 
 # ====================== product manager serializers ===========================
 class ArtistFeedbackSerializer(serializers.ModelSerializer):
