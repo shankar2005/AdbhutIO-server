@@ -554,6 +554,7 @@ class ArtistFilterSerializer(serializers.ModelSerializer):
             "min_budget",
             "max_budget",
             "ctc_per_annum",
+            "full_time",
             "best_link",
             "has_manager",
             "manager",
@@ -614,6 +615,8 @@ class ArtistActionSerializer(serializers.ModelSerializer):
             "am_notes",
             "professional_rating",
             "attitude_rating",
+            "full_time",
+            "ctc_per_annum"
         ]
 
     def update(self, instance, validated_data):
@@ -627,11 +630,22 @@ class ArtistActionSerializer(serializers.ModelSerializer):
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
         return instance
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('name',)
+
 
 class WorkLinkSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True)
     class Meta:
         model = Work
         fields = ('name', 'details', 'weblink', 'show_in_top_feed', 'is_demo', 'best_work', 'demo_type','tags')
+    def to_representation(self, instance):
+        representation =  super().to_representation(instance)
+        representation['tags'] = [t['name'] for t in representation['tags']]
+        return representation
+
 
 class ArtistWorkLinkSerializer(serializers.ModelSerializer):
     works_links = WorkLinkSerializer(many=True)
