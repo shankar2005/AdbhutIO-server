@@ -658,7 +658,8 @@ class WorkLinkCreateSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(
         many=True,
         slug_field='name',
-        queryset=Tag.objects.all()
+        queryset=Tag.objects.all(),
+        required=False
     )
 
     class Meta:
