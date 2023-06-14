@@ -849,7 +849,6 @@ class ArtistActionviewSet(APIView):
 
 
 class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         artist_id = self.kwargs.get('pk')
@@ -866,6 +865,8 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
             return None
 
     def delete(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return Response({"error": "User Not Logged In"}, status=401)
         work = self.get_object()
         if not work:
             return Response({"error": "Work not found"}, status=404)
@@ -878,6 +879,8 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return Response({"error": "User Not Logged In"}, status=401)
         work = self.get_object()
         if not work:
             return Response({"error": "Work not found"}, status=404)
@@ -885,13 +888,10 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
         current_user = Role.objects.filter(user=request.user).first()
         if not current_user or current_user.role != 'AM':
             return Response({"error": "Unauthorized User"}, status=403)
-        print('here')
 
         serializer = WorkLinkCreateSerializer(work, data=request.data)
-        print(serializer)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        print('here')
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
