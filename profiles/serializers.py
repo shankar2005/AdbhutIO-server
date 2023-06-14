@@ -640,7 +640,7 @@ class WorkLinkSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     class Meta:
         model = Work
-        fields = ('name', 'details', 'weblink', 'show_in_top_feed', 'is_demo', 'best_work', 'demo_type','tags')
+        fields = ('pk', 'name', 'details', 'weblink', 'show_in_top_feed', 'is_demo', 'best_work', 'demo_type','tags')
     def to_representation(self, instance):
         representation =  super().to_representation(instance)
         representation['tags'] = [t['name'] for t in representation['tags']]

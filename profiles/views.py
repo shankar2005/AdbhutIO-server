@@ -891,7 +891,17 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
 
         serializer = WorkLinkCreateSerializer(work, data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        updated_work = serializer.save()
+        is_demo = request.data.get('is_demo', False)
+        if is_demo:
+            project_demo = ProjectDemo(
+                Title="Project Demo Verified by AM",
+                artist=updated_work.owner,
+                demo_work=updated_work,
+                link=updated_work.weblink,
+                comment="Add your comment here"
+            )
+            project_demo.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -912,7 +922,7 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
 
         weblink = request.data.get('weblink',"example.com")
         tags = request.data.get('tags', [])
-        is_demo = request.data.get('isdemo', False)
+        is_demo = request.data.get('is_demo', False)
         best_work = request.data.get('best_work', False)
         demo_type = request.data.get('demo_type', 'Other')
 
@@ -930,6 +940,15 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
             tag_name = tag_name.capitalize()
             tag, _ = Tag.objects.get_or_create(name=tag_name)
             work.tags.add(tag)
+        if is_demo:
+            project_demo = ProjectDemo(
+                Title="Project Demo Verified by AM",
+                artist=artist,
+                demo_work=work,
+                link=weblink,
+                comment="Add your comment here"
+            )
+            project_demo.save()
 
         serializer = self.get_serializer(work)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
