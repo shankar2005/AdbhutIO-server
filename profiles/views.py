@@ -888,6 +888,10 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
         current_user = Role.objects.filter(user=request.user).first()
         if not current_user or current_user.role != 'AM':
             return Response({"error": "Unauthorized User"}, status=403)
+        tags = request.data.get('tags', [])
+        for tag_name in tags:
+            tag_name = tag_name.capitalize()
+            tag, _ = Tag.objects.get_or_create(name=tag_name)
 
         serializer = WorkLinkCreateSerializer(work, data=request.data)
         serializer.is_valid(raise_exception=True)
