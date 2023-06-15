@@ -662,6 +662,14 @@ class WorkLinkCreateSerializer(serializers.ModelSerializer):
         required=False
     )
 
+    def to_internal_value(self, data):
+        # Capitalize the tags before validating and saving them
+        if 'tags' in data:
+            capitalized_tags = [tag.capitalize() for tag in data['tags']]
+            data['tags'] = capitalized_tags
+
+        return super().to_internal_value(data)
+
     class Meta:
         model = Work
         fields = (
