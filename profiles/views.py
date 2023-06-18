@@ -592,7 +592,7 @@ class ArtistFilter(django_filters.FilterSet):
                 Q(languages__name__icontains=term)
             )
 
-        filtered_queryset = queryset.filter(filter_conditions)
+        filtered_queryset = queryset.filter(filter_conditions).distinct('id')
 
         if not filtered_queryset.exists():
             fallback_conditions = Q()
@@ -605,7 +605,7 @@ class ArtistFilter(django_filters.FilterSet):
                     Q(languages__name__icontains=term)
                 )
 
-            filtered_queryset = queryset.filter(fallback_conditions)
+            filtered_queryset = queryset.filter(fallback_conditions).distinct('id')
 
         return filtered_queryset
 
