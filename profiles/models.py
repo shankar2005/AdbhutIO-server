@@ -305,6 +305,7 @@ class ProjectDemo(models.Model):
         null=True,
         related_name="%(class)s_Artist",
     )
+    assigned_artists = models.ManyToManyField(Artist, default="", blank=True)
     demo_work = models.ForeignKey(
         Work,
         on_delete=models.CASCADE,
