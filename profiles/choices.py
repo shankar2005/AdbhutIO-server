@@ -3,6 +3,7 @@ ROLE_TYPE = (
     ("Client", "Client"),
     ("AM", "Artist Manager"),
     ("PM", "Production Manager"),
+    ("Artist", "Artist"),
 )
 
 CHAT_BOT = (
