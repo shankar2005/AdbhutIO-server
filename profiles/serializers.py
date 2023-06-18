@@ -334,7 +334,7 @@ class ProjectDemoListSerializer(serializers.ModelSerializer):
 class AssignArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDemo
-        fields = ('artist',)
+        fields = ('artist','assigned_artists',)
 
 class AssignProjectSerializer(serializers.ModelSerializer):
     class Meta:
