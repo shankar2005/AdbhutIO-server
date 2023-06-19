@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/v1/artist_works_links/<int:pk>/', ArtistWorksLinksAPIView.as_view(), name='artist_works_links'),
     path('api/v1/assign_demo_project/<int:pk>/',AssignProjectView.as_view(),name='project-demo-assign-project'),
     path('api/v1/demos_list/', ProjectDemoListView.as_view(), name='project-demo-list'),
+    path('api/v1/un_assign_demo_artist/<int:pk>/', UnAssignArtistView.as_view(), name='project-demo-assign-artist'),
     path('api/v1/assign_demo_artist/<int:pk>/', AssignArtistView.as_view(), name='project-demo-assign-artist'),
     path('api/v1/demo_link_doc/', ProjectDemoAddLinkOrDoc.as_view(), name='project-demo-list-create'),
     path('api/v1/edit_tags/<int:pk>/', WorkTagUpdateAPIView.as_view(), name='work-tags'),
