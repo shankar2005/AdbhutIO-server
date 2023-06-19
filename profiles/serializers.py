@@ -309,9 +309,11 @@ class ProjectDemoFileSerializer(serializers.ModelSerializer):
 
 class ProjectDemoListSerializer(serializers.ModelSerializer):
     demo_type = serializers.SerializerMethodField()
+    artist_name = serializers.SerializerMethodField()
+    collaborators = serializers.SerializerMethodField()
     class Meta:
         model = ProjectDemo
-        fields = ('id', 'Title', 'link', 'document', 'comment', 'artist', 'demo_type')
+        fields = ('id', 'Title', 'link', 'document', 'comment', 'artist', 'artist_name', 'collaborators', 'demo_type')
 
     def get_demo_type(self, obj):
         if obj.link:
@@ -330,6 +332,16 @@ class ProjectDemoListSerializer(serializers.ModelSerializer):
         elif obj.document:
             return obj.document.name.split('.')[-1]
         return 'UnDefined Link Or Document Type'
+
+    def get_artist_name(self, obj):
+        if obj.artist:
+            return obj.artist.name
+        return 'No artist assigned'
+
+    def get_collaborators(self, obj):
+        if obj.assigned_artists:
+            return [{'id':collaborator.id,'name':collaborator.name} for collaborator in obj.assigned_artists.all()]
+        return []
 
 class AssignArtistSerializer(serializers.ModelSerializer):
     class Meta:
