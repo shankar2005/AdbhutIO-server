@@ -563,6 +563,10 @@ class ProjectDemoListView(generics.ListAPIView):
     queryset = ProjectDemo.objects.all()
     serializer_class = ProjectDemoListSerializer
 
+class ProjectDemoDetailView(generics.RetrieveAPIView):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = ProjectDemoListSerializer
+
 class AssignArtistView(generics.UpdateAPIView):
     queryset = ProjectDemo.objects.all()
     serializer_class = AssignArtistSerializer
