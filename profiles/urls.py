@@ -7,6 +7,7 @@ app_name = "profiles"
 urlpatterns = [
     # ==================== artist manager urls ===========================
     # re_path(r'api/v1/artist_action/<int:pk>/?$', ArtistActionviewSet.as_view(), name="artist_action_pk")
+    path('api/v1/get_feed/<int:pk>/', TemplateProjectsArtistSkillView.as_view(), name='template-projects-skills'),
     path('api/v1/get_project_demo/<int:pk>/', ProjectDemoDetailView.as_view(), name='project-demo-detail'),
     path('api/v1/artist_create_link/<int:pk>/',WorkLinkCreateAPIView.as_view(), name='artist_works_create'),
     path('api/v1/artist_works_links/<int:pk>/', ArtistWorksLinksAPIView.as_view(), name='artist_works_links'),

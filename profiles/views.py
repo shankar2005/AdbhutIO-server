@@ -214,6 +214,17 @@ class TemplateProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return TemplateProjects.objects.all()
 
+class TemplateProjectsArtistSkillView(generics.RetrieveAPIView):
+    queryset = TemplateProjects.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        skill_ids = instance.skills.values_list('id', flat=True)
+
+        filtered_artists = Artist.objects.filter(skill__in=skill_ids)
+
+        serializer = ArtistProfileSerializer(filtered_artists, many=True)
+        return Response(serializer.data)
 
 class MyProjectsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
