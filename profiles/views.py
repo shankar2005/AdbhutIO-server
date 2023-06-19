@@ -567,6 +567,29 @@ class AssignArtistView(generics.UpdateAPIView):
     queryset = ProjectDemo.objects.all()
     serializer_class = AssignArtistSerializer
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        artist_ids = request.data.get('assigned_artists', [])
+
+        instance.assigned_artists.add(*artist_ids)
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+class UnAssignArtistView(generics.UpdateAPIView):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = UnAssignArtistSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        artist_ids = request.data.get('artist_ids', [])
+
+        instance.assigned_artists.remove(*artist_ids)
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 class AssignProjectView(generics.UpdateAPIView):
     queryset = Project.objects.all()
