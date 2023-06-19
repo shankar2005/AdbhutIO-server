@@ -940,7 +940,7 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
         is_demo = request.data.get('is_demo', False)
         if is_demo:
             project_demo = ProjectDemo(
-                Title="Project Demo Verified by AM",
+                Title=f"{updated_work.owner.name}'s Project Demo",
                 artist=updated_work.owner,
                 demo_work=updated_work,
                 link=updated_work.weblink,
@@ -989,7 +989,7 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
             work.tags.add(tag)
         if is_demo:
             project_demo = ProjectDemo(
-                Title="Project Demo Verified by AM",
+                Title=f"{work.owner.name}'s Project Demo",
                 artist=artist,
                 demo_work=work,
                 link=weblink,
