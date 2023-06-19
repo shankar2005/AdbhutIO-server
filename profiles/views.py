@@ -967,6 +967,7 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
         is_demo = request.data.get('is_demo', False)
         best_work = request.data.get('best_work', False)
         demo_type = request.data.get('demo_type', 'Other')
+        show_in_top_feed = request.data.get('show_in_top_feed', False)
 
         work = Work(
             weblink=weblink,
@@ -974,6 +975,7 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
             best_work=best_work,
             demo_type=demo_type,
             owner=artist,
+            show_in_top_feed=show_in_top_feed,
         )
         work.save()
         artist.works_links.add(work)
