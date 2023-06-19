@@ -587,7 +587,7 @@ class AssignArtistView(generics.UpdateAPIView):
         artist = request.data.get('artist', None)
         artist_ids = request.data.get('assigned_artists', [])
         if artist is not None:
-            instance.artist = artist
+            instance.artist = Artist.objects.get(id=artist)
 
         instance.assigned_artists.add(*artist_ids)
         instance.save()
