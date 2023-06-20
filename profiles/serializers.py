@@ -424,6 +424,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 # Serializer for artist list display
 class ArtistSerializer(serializers.ModelSerializer):
+    works_links = serializers.SerializerMethodField()
     skill = SkillSerializer(many=True)
     location = LocationSerializer()
     languages = LanguageSerializer(many=True)
@@ -432,8 +433,19 @@ class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = ['id','name', 'artist_intro', 'email', 'phone', 'skill', 'location', 'languages',
-                  'genre','profile_pic', 'profile_image', 'full_time', 'part_time', 'professional_rating',
+                  'genre','profile_pic', 'profile_image', 'full_time', 'part_time', 'works_links','professional_rating',
                   'attitude_rating', 'budget_range']
+
+    def get_works_links(self, obj):
+        all_links = obj.works_links.all()
+        work_links = all_links.filter(best_work=True)
+        if work_links:
+            return [{"id":work.id,"weblink":work.weblink,"demo_type":work.demo_type,"best_work":work.best_work} for work in work_links]
+        elif all_links:
+            work_links = all_links.first()
+            return [{"id":work_links.id,"weblink":work_links.weblink,"demo_type":work_links.demo_type,"best_work":work_links.best_work}]
+        else:
+            return []
 
     # Get the real names of the ids to display on response object for artist list
     def to_representation(self, instance):
