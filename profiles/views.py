@@ -661,7 +661,7 @@ class ArtistListAPIView(generics.ListAPIView):
     filterset_class = ArtistFilter
 
     def get_queryset(self):
-        queryset = Artist.objects.all().order_by('works_links__best_work')
+        queryset = Artist.objects.all().order_by('works_links__best_work', '-id')
         return queryset
 
 class TotalArtistCountAPIView(APIView):

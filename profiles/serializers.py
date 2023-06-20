@@ -438,12 +438,12 @@ class ArtistSerializer(serializers.ModelSerializer):
 
     def get_works_links(self, obj):
         all_links = obj.works_links.all()
-        work_links = all_links.filter(best_work=True)
+        work_links = all_links.filter(best_work=True).first()
         if work_links:
-            return [{"id":work.id,"weblink":work.weblink,"demo_type":work.demo_type,"best_work":work.best_work} for work in work_links]
+            return [{"id":work_links.id,"weblink":work_links.weblink,"demo_type":work_links.demo_type}]
         elif all_links:
             work_links = all_links.first()
-            return [{"id":work_links.id,"weblink":work_links.weblink,"demo_type":work_links.demo_type,"best_work":work_links.best_work}]
+            return [{"id":work_links.id,"weblink":work_links.weblink,"demo_type":work_links.demo_type}]
         else:
             return []
 
