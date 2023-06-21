@@ -51,16 +51,23 @@ class RegisterUserView(APIView):
         try:
             print("passed 0")
             data = request.data
-
-            name = data["name"] if data["name"] != None else ""
-            email = data["email"]
-            password = data["password"]
-            password2 = data["password2"]
-            phone = data["phone"] if data["phone"] != None else ""
-            company = data["company"] if data["company"] != None else ""
-            company_url = data["url"] if data["url"] != None else ""
-            role = "Client"
-            username = email
+            if data["role"] == "Artist":
+                print("here")
+                name = data["name"]
+                email = data["email"]
+                password = data["password"]
+                password2 = data["password2"]
+                phone = data["phone"]
+                username = email
+            else:
+                name = data["name"] if data["name"] != None else ""
+                email = data["email"]
+                password = data["password"]
+                password2 = data["password2"]
+                phone = data["phone"] if data["phone"] != None else ""
+                company = data["company"] if data["company"] != None else ""
+                company_url = data["url"] if data["url"] != None else ""
+                username = email
 
             print("passed")
 
@@ -85,22 +92,26 @@ class RegisterUserView(APIView):
                         password=password,
                         email=email,
                     )
+                    print("passed 2")
+                    if data['role'] == 'Artist':
+                        phone = '"{}"'.format(phone)
+                        artist = Artist(user=user, email=email, name=name,phone=PhoneNumber.from_string(str(phone)))
+                        artist.save()
+                    else:
+                        client = Client(user=user, email=email, name=name)
+                        phone = '"{}"'.format(phone)
+                        client.phone = PhoneNumber.from_string(str(phone))
+                        print(f"client phone {client.phone}")
+                        client.company = company
+                        client.save()
 
-                    print(f"{company} {company_url} {phone}")
-                    client = Client(user=user, email=email, name=name)
-
-                    phone = '"{}"'.format(phone)
-                    client.phone = PhoneNumber.from_string(str(phone))
-                    print(f"client phone {client.phone}")
-                    client.company = company
-                    client.save()
-
-                    role = Role(user=user, role=role)
+                    role = Role(user=user, role=data['role'])
                     role.save()
+                    print("passed 3")
 
-                except IntegrityError as e:
+                except Exception as e:
                     # handle the case where a user with the same email already exists
-                    print("Error creating client: ", e)
+                    print("Error creating user: ", e)
 
                 subject = "Account Activation"
                 activate_url = (
@@ -189,6 +200,8 @@ class ValidateToken(APIView):
                     response["role"] = "PM"
                 elif role.role == "AM":
                     response["role"] = "AM"
+                elif role.role == "Artist":
+                    response["role"] = "Artist"
                 else:
                     response["role"] = "Unknown"
 
@@ -231,10 +244,18 @@ class UserDetailsView(APIView):
                 return Response(
                     {"user": user, "role": role.role}, status=status.HTTP_200_OK
                 )
-            elif role.role == "Product Manager":
+            elif role.role == "PM":
                 user = {
                     "name": request.user.first_name + " " + request.user.last_name,
                     "email": request.user.email,
+                }
+                return Response(
+                    {"user": user, "role": role.role}, status=status.HTTP_200_OK
+                )
+            elif role.role == "Artist":
+                user = {
+                    "name": request.user.first_name + " " + request.user.last_name,
+                    "email":request.user.email,
                 }
                 return Response(
                     {"user": user, "role": role.role}, status=status.HTTP_200_OK

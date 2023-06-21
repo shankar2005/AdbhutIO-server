@@ -196,6 +196,7 @@ class Client(models.Model):
 
 class Artist(models.Model):
     # Base
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     social_profile = models.URLField(
         max_length=2000, blank=True, default=""
     )  # id in DataWIP
