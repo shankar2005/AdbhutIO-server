@@ -789,6 +789,11 @@ class ArtistActionviewSet(APIView):
             )
 
     def post(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return Response({"error": "User Not Logged In"}, status=401)
+        role = Role.objects.get(user=request.user).role
+        if role != 'AM':
+            return Response({"error": "Unauthorized User"}, status=403)
         try:
             data = request.data
             print(f"data -> {data}")
@@ -847,13 +852,28 @@ class ArtistActionviewSet(APIView):
             )
 
     def put(self, request, pk=None):
+        if request.user.is_anonymous:
+            return Response({"error": "User Not Logged In"}, status=401)
+        role = Role.objects.get(user=request.user).role
+        if role == 'AM':
+            pass
+        elif role != 'Artist':
+            return Response({"error": "Unauthorized User"}, status=403)
+
+
         try:
             if pk is None:
                 return Response(
-                    {"error": "Artist not found with empty id!"},
+                    {"error": "Artist found with empty id!"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
             artist = get_object_or_404(Artist, id=pk)
+            if role == 'Artist':
+                user = Artist.objects.get(user=request.user)
+                if user.id != pk:
+                    return Response({"error": "Unauthorized Artist"}, status=403)
+
             artist_serializer = ArtistActionSerializer(
                 instance=artist, data=request.data
             )
@@ -890,6 +910,11 @@ class ArtistActionviewSet(APIView):
             )
 
     def delete(self, request, pk=None):
+        if request.user.is_anonymous:
+            return Response({"error": "User Not Logged In"}, status=401)
+        role = Role.objects.get(user=request.user)
+        if role.role != 'AM':
+            return Response({"error": "Unauthorized User"}, status=403)
         try:
             print("called")
             if pk is None:
@@ -932,8 +957,11 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "Work not found"}, status=404)
 
         current_user = Role.objects.filter(user=request.user).first()
-        if not current_user or current_user.role != 'AM':
-            return Response({"error": "Unauthorized User"}, status=403)
+        user = Artist.objects.get(user=request.user)
+        if current_user.role == 'Artist' and user != work.owner:
+            return Response({"error": "Unauthorized Artist"}, status=403)
+        elif current_user.role == 'Client':
+            return Response({"error": "Unauthorized Client"}, status=403)
 
         work.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -946,8 +974,11 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "Work not found"}, status=404)
 
         current_user = Role.objects.filter(user=request.user).first()
-        if not current_user or current_user.role != 'AM':
-            return Response({"error": "Unauthorized User"}, status=403)
+        user = Artist.objects.get(user=request.user)
+        if current_user.role == 'Artist' and user != work.owner:
+            return Response({"error": "Unauthorized Artist"}, status=403)
+        elif current_user.role == 'Client':
+            return Response({"error": "Unauthorized Client"}, status=403)
         tags = request.data.get('tags', [])
         for tag_name in tags:
             tag_name = tag_name.capitalize()
@@ -981,9 +1012,16 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
             return Response({"error": "Artist not found"}, status=404)
 
         current_user = Role.objects.filter(user=request.user).first()
-        if not current_user or current_user.role != 'AM':
+        if current_user.role == 'Artist':
             return Response({"error": "Unauthorized User"}, status=403)
-
+        if current_user.role == 'AM':
+            pass
+        elif current_user.role != 'Artist':
+            return Response({"error": "Unauthorized User"}, status=403)
+        if current_user.role == 'Artist':
+            user = Artist.objects.get(user=request.user)
+            if user.id != artist_id:
+                return Response({"error": "Unauthorized Artist"}, status=403)
         weblink = request.data.get('weblink',"example.com")
         tags = request.data.get('tags', [])
         is_demo = request.data.get('is_demo', False)

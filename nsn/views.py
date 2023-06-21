@@ -176,16 +176,26 @@ class ValidateToken(APIView):
             # print("passed3")
 
             user = User.objects.get(email=token.user.email)
-
-            response = {
-                "name": user.first_name + " " + user.last_name,
-                "email": user.email,
-            }
-
             try:
                 role = Role.objects.get(user=user)  # get_object_or_404(Role, user=user)
             except:
                 role = None
+
+            id = -1
+            if role:
+                if role.role =='PM' or role.role == 'AM':
+                    id = user.id
+                else:
+                    try:
+                        id = Artist.objects.get(user=user).id
+                    except Exception as e:
+                        id = Client.objects.get(user=user).id
+
+            response = {
+                "name": user.first_name + " " + user.last_name,
+                "email": user.email,
+                "id":id
+            }
 
             # print(f"role => {role.role if role else ''}")
             # backend_url = "https://dev.nsnco.in"
