@@ -226,6 +226,25 @@ class TemplateProjectsArtistSkillView(generics.RetrieveAPIView):
         serializer = ArtistProfileSerializer(filtered_artists, many=True)
         return Response(serializer.data)
 
+class TemplateProjectsWorksView(generics.RetrieveAPIView):
+    queryset = TemplateProjects.objects.all()
+    serializer_class = WorkSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        skill_ids = instance.skills.values_list('id', flat=True)
+        limit = request.query_params.get('limit')
+        filtered_artists = Artist.objects.filter(skill__in=skill_ids)
+        works = []
+        for artist in filtered_artists:
+            works.extend(artist.works_links.all())
+        random_works = random.sample(works, int(limit))
+        serializer = self.get_serializer(random_works, many=True)
+        return Response(
+            data={"content_works": serializer.data},
+            status=status.HTTP_200_OK,
+        )
+
 class MyProjectsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ProjectSerializerMini
