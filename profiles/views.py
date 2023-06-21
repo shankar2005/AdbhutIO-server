@@ -1012,8 +1012,6 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
             return Response({"error": "Artist not found"}, status=404)
 
         current_user = Role.objects.filter(user=request.user).first()
-        if current_user.role == 'Artist':
-            return Response({"error": "Unauthorized User"}, status=403)
         if current_user.role == 'AM':
             pass
         elif current_user.role != 'Artist':
