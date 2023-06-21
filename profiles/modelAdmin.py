@@ -297,7 +297,7 @@ class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             "Contact",
             {
                 "fields": [
-                    ("name", "age"),
+                    ("user","name", "age"),
                     ("artist_intro"),
                     ("email", "phone"),
                     ("skill", "genre"),
