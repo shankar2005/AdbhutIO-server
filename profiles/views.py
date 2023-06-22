@@ -590,7 +590,7 @@ class ProjectDemoAddLinkOrDoc(generics.ListCreateAPIView):
         return ProjectDemoLinkSerializer
 
 class ProjectDemoListView(generics.ListAPIView):
-    queryset = ProjectDemo.objects.all()
+    queryset = ProjectDemo.objects.all().order_by('-id')
     serializer_class = ProjectDemoListSerializer
 
 class ProjectDemoDetailView(generics.RetrieveAPIView):
@@ -709,6 +709,21 @@ def get_chatbot_status(request, project_id):
     chatbot = get_object_or_404(ChatBot, project_id=project_id)
     status = chatbot.status
     return JsonResponse({'status': status})
+
+class ArtistProjectDemos(RetrieveAPIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = ProjectDemoSerializer
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        return ProjectDemo.objects.filter(artist=pk).order_by('-id')
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(instance,many=True)
+        return Response(serializer.data)
+
 
 class WorkTagUpdateAPIView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]

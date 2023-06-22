@@ -88,7 +88,10 @@ class ProjectSerializerMini(serializers.ModelSerializer):
 
 class ProjectDemoSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
+    artist_name = serializers.SerializerMethodField()
 
+    def get_artist_name(self, obj):
+        return obj.artist.name
     def get_url(self, obj):
         return obj.document.url
 
@@ -99,6 +102,7 @@ class ProjectDemoSerializer(serializers.ModelSerializer):
             "Title",
             "link",
             "artist",
+            "artist_name",
             "demo_work",
             "project",
             "document",
@@ -291,7 +295,7 @@ class TemplateProjectsSerializer(serializers.ModelSerializer):
 class ProjectDemoLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDemo
-        fields = ('id', 'Title', 'link', 'comment')
+        fields = ('id', 'Title', 'link', 'comment','artist','content_product')
 
     def create(self, validated_data):
         project_demo = ProjectDemo.objects.create(**validated_data)
@@ -301,7 +305,7 @@ class ProjectDemoLinkSerializer(serializers.ModelSerializer):
 class ProjectDemoFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDemo
-        fields = ('id', 'Title', 'document', 'comment')
+        fields = ('id', 'Title', 'document', 'comment','artist','content_product')
 
     def create(self, validated_data):
         project_demo = ProjectDemo.objects.create(**validated_data)
@@ -311,9 +315,16 @@ class ProjectDemoListSerializer(serializers.ModelSerializer):
     demo_type = serializers.SerializerMethodField()
     artist_name = serializers.SerializerMethodField()
     collaborators = serializers.SerializerMethodField()
+    content_product_name = serializers.SerializerMethodField()
+
     class Meta:
         model = ProjectDemo
-        fields = ('id', 'Title', 'link', 'document', 'comment', 'artist', 'artist_name', 'collaborators', 'demo_type')
+        fields = ('id', 'Title', 'link', 'document', 'comment', 'artist', 'artist_name', 'collaborators', 'demo_type','content_product_name')
+
+    def get_content_product_name(self, obj):
+        if obj.content_product:
+            return obj.content_product.name
+        return "No content product assigned"
 
     def get_demo_type(self, obj):
         if obj.link:
