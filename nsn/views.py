@@ -211,7 +211,10 @@ class ValidateToken(APIView):
                 elif role.role == "AM":
                     response["role"] = "AM"
                 elif role.role == "Artist":
+                    artist = Artist.objects.get(user=user)
                     response["role"] = "Artist"
+                    response["phone"] = str(artist.phone,)
+                    response["image"] = f"{artist.profile_pic.url}"
                 else:
                     response["role"] = "Unknown"
 
