@@ -320,6 +320,14 @@ class ProjectDemo(models.Model):
     status = models.CharField(
         max_length=100, default="", blank=True, choices=PROJECT_DEMO_STATUS
     )
+    content_product = models.ForeignKey(
+        TemplateProjects,
+        on_delete=models.CASCADE,
+        default="",
+        blank=True,
+        null=True,
+        related_name="%(class)s_to_TemplateProjects_relation",
+    )
 
     def __str__(self):
         res = str(self.id)  # + "--"
