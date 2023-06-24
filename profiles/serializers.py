@@ -89,6 +89,25 @@ class ProjectSerializerMini(serializers.ModelSerializer):
 class ProjectDemoSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
     artist_name = serializers.SerializerMethodField()
+    demo_type = serializers.SerializerMethodField()
+
+    def get_demo_type(self, obj):
+        if obj.link:
+            parsed_url = urllib.parse.urlparse(obj.link)
+            domain_parts = tldextract.extract(parsed_url.netloc.lower())
+            root_domain = domain_parts.domain
+            matching_demo_types = []
+            for choice in DEMO_TYPE:
+                if choice[0].lower().startswith(root_domain):
+                    matching_demo_types.append(choice[0])
+            if not matching_demo_types:
+                matching_demo_types = Demo_Type.objects.filter(name__istartswith=root_domain).values_list('name', flat=True)
+            if matching_demo_types:
+                return matching_demo_types[0]
+            return 'Other Document'
+        elif obj.document:
+            return obj.document.name.split('.')[-1]
+        return 'UnDefined Link Or Document Type'
 
     def get_artist_name(self, obj):
         if obj.artist:
@@ -108,6 +127,7 @@ class ProjectDemoSerializer(serializers.ModelSerializer):
             "demo_work",
             "project",
             "document",
+            "demo_type",
             "url",
             "comment",
             "status",
