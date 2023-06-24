@@ -91,7 +91,9 @@ class ProjectDemoSerializer(serializers.ModelSerializer):
     artist_name = serializers.SerializerMethodField()
 
     def get_artist_name(self, obj):
-        return obj.artist.name
+        if obj.artist:
+            return obj.artist.name
+        return None
     def get_url(self, obj):
         return obj.document.url
 
