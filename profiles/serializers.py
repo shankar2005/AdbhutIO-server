@@ -145,7 +145,14 @@ class ChatBotSerializer(serializers.ModelSerializer):
     The default ModelSerializer .create() and .update() methods
      do not include support for writable nested representations.
 """
-
+class LinksSerializer(serializers.ModelSerializer):
+    links = serializers.SerializerMethodField()
+    def get_links(self,obj):
+        # print(obj)
+        pass
+    class Meta:
+        model = Project
+        fields = ["links"]
 
 # -------------------- project serializer ---------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
@@ -156,6 +163,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     assigned_artists_details = serializers.SerializerMethodField()
     project_demos = serializers.SerializerMethodField()
     chatbot_status = ChatBotSerializer(required=False)
+    links = serializers.SerializerMethodField()
 
     def to_representation(self, instance):
 
@@ -182,6 +190,28 @@ class ProjectSerializer(serializers.ModelSerializer):
             chat.status = validated_data.pop("chatbot_status").get("status")
             chat.save()
         return super().update(instance, validated_data)
+
+    def link_type(self,link):
+        parsed_url = urllib.parse.urlparse(link)
+        domain_parts = tldextract.extract(parsed_url.netloc.lower())
+        root_domain = domain_parts.domain
+        matching_demo_types = []
+        for choice in DEMO_TYPE:
+            if choice[0].lower().startswith(root_domain):
+                matching_demo_types.append(choice[0])
+        if not matching_demo_types:
+            matching_demo_types = Demo_Type.objects.filter(name__istartswith=root_domain).values_list('name', flat=True)
+        if matching_demo_types:
+            return matching_demo_types[0]
+        return 'Other Document'
+
+    def get_links(self, obj):
+        if obj.reference_links is not None or obj.reference_links != "":
+            links = obj.reference_links.split(",")
+            return [
+                {"link": link, "link_type": self.link_type(link)}
+                for link in links
+            ]
 
     def get_template(self, obj):
         if obj.project_template is not None:
@@ -266,6 +296,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "brief",
             "chatbot_status",
             "reference_links",
+            "links",
             "template",
             "shortlisted_artists_details",
             "shortlisted_artists",

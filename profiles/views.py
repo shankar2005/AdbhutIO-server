@@ -1365,13 +1365,13 @@ class CreateNewProject(APIView):
     def post(self, request):
         try:
             data = request.data
-            print(request.data)
+            # print(request.data)
             client = get_object_or_404(Client, user=request.user)
             data["client"] = client.id
             project_serializer = ProjectSerializer(data=data,context={'request': request})
-            print("PASSED 2")
-            print(f"project serializer {project_serializer}")
-            print("passed 3")
+            # print("PASSED 2")
+            # print(f"project serializer {project_serializer}")
+            # print("passed 3")
             if project_serializer.is_valid():
                 project_serializer.save()
 
