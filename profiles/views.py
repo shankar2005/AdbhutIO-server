@@ -1130,7 +1130,7 @@ class AllProjectViewSet(viewsets.ModelViewSet):
                 .exclude(stage="DreamProject")
                 .order_by("-id")
             )
-        elif role == "PM":
+        elif role == "PM" or role == "AM":
             return Project.objects.exclude(stage="DreamProject").order_by("-id")
         return None
 
