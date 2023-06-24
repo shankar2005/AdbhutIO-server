@@ -349,10 +349,27 @@ class EditProjectViewSet(viewsets.ModelViewSet):
             )
 
     def update(self, request, pk=None):
+        if request.user.is_anonymous:
+            return Response(
+                {"error": "user is not logged in"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        role = Role.objects.get(user=request.user).role
+        if role == "Artist":
+            return Response(
+                    {"error": "you don't have permission to update"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         try:
-            print("called")
             project = get_object_or_404(Project, pk=pk)
-            print(project)
+            if role == "Client":
+                project_client = project.client
+                client = get_object_or_404(Client, user=request.user)
+                if project_client != client:
+                    return Response(
+                    {"error": "you don't have permission to update"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             data = request.data
             if "project_demo" in data:
                 data["project_demo"]["project"] = project.id
@@ -373,44 +390,22 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                         projectDemo_serializer.error_messages,
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-            if "assigned_artist_payouts" in data:
-                calculation = PorjectCalculation(project, data)
-                if calculation:
-                    del data["assigned_artist_payouts"]
-            # if project.stage == "DreamProject":
-            #     project_serializer = ProjectSerializer(instance=project, data=data)
-            #     if project_serializer.is_valid():
-            #         project_serializer.save()
-            #         return Response(project_serializer.data, status=status.HTTP_200_OK)
-            #     return Response(
-            #         project_serializer.error_messages,
-            #         status=status.HTTP_400_BAD_REQUEST,
-            #     )
-            if not request.user.is_anonymous:
-                if Role.objects.get(user=request.user).role in [
-                    "Client",
-                    "PM",
-                ]:
-                    project_serializer = ProjectSerializer(instance=project,context={'request': request}, data=data)
-                    if project_serializer.is_valid():
-                        project_serializer.save()
-                        return Response(
-                            project_serializer.data, status=status.HTTP_200_OK
-                        )
-                    else:
-                        return Response(
-                            project_serializer.error_messages,
-                            status=status.HTTP_400_BAD_REQUEST,
-                        )
 
+            project_serializer = ProjectSerializer(instance=project,context={'request': request}, data=data)
+            if project_serializer.is_valid():
+                project_serializer.save()
+                if "assigned_artist_payouts" in data:
+                    calculation = PorjectCalculation(project, data)
+                    if calculation:
+                        del data["assigned_artist_payouts"]
                 return Response(
-                    {"error": "you don't have permission to update"},
+                    project_serializer.data, status=status.HTTP_200_OK
+                )
+            else:
+                return Response(
+                    project_serializer.error_messages,
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            return Response(
-                {"error": "user is not logged in"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
         except Exception as e:
             print(e)
             return Response(
