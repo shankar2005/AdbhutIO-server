@@ -623,9 +623,15 @@ class UnAssignArtistView(generics.UpdateAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-class AssignProjectView(generics.UpdateAPIView):
+class AssignProjectDemosView(generics.UpdateAPIView):
     queryset = Project.objects.all()
-    serializer_class = AssignProjectSerializer
+    permission_classes = [IsAuthenticated]
+    serializer_class = AssignProjectDemosSerializer
+
+class AssignDemosProjectView(generics.UpdateAPIView):
+    queryset = ProjectDemo.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = AssignDemosProjectSerializer
 # ====================== artist action ===================================
 # Filters for artist list api modify this for adding new filters to search for artist
 import django_filters
