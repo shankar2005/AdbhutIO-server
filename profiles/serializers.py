@@ -145,14 +145,6 @@ class ChatBotSerializer(serializers.ModelSerializer):
     The default ModelSerializer .create() and .update() methods
      do not include support for writable nested representations.
 """
-class LinksSerializer(serializers.ModelSerializer):
-    links = serializers.SerializerMethodField()
-    def get_links(self,obj):
-        # print(obj)
-        pass
-    class Meta:
-        model = Project
-        fields = ["links"]
 
 # -------------------- project serializer ---------------------------------------
 class ProjectSerializer(serializers.ModelSerializer):
@@ -206,6 +198,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         return 'Other Document'
 
     def get_links(self, obj):
+        if obj.reference_links == "":
+            return []
         if obj.reference_links is not None or obj.reference_links != "":
             links = obj.reference_links.split(",")
             return [
