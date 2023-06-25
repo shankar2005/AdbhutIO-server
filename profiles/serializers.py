@@ -417,11 +417,15 @@ class UnAssignArtistSerializer(serializers.ModelSerializer):
         model = ProjectDemo
         fields = ('assigned_artists',)
 
-class AssignProjectSerializer(serializers.ModelSerializer):
+class AssignProjectDemosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('project_demos',)
 
+class AssignDemosProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectDemo
+        fields = ('project',)
 
 def social_link_filter(self, obj):
     q = {}
