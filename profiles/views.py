@@ -628,6 +628,15 @@ class AssignProjectDemosView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AssignProjectDemosSerializer
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        demos = request.data.get('project_demos', [])
+        instance.project_demos.add(demos[0])
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
 class AssignDemosProjectView(generics.UpdateAPIView):
     queryset = ProjectDemo.objects.all()
     permission_classes = [IsAuthenticated]
