@@ -982,11 +982,14 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "Work not found"}, status=404)
 
         current_user = Role.objects.filter(user=request.user).first()
-        user = Artist.objects.get(user=request.user)
-        if current_user.role == 'Artist' and user != work.owner:
-            return Response({"error": "Unauthorized Artist"}, status=403)
-        elif current_user.role == 'Client':
-            return Response({"error": "Unauthorized Client"}, status=403)
+        if current_user.role == "AM":
+            pass
+        else:
+            user = Artist.objects.get(user=request.user)
+            if current_user.role == 'Artist' and user != work.owner:
+                return Response({"error": "Unauthorized Artist"}, status=403)
+            elif current_user.role == 'Client':
+                return Response({"error": "Unauthorized Client"}, status=403)
 
         work.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -999,11 +1002,14 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "Work not found"}, status=404)
 
         current_user = Role.objects.filter(user=request.user).first()
-        user = Artist.objects.get(user=request.user)
-        if current_user.role == 'Artist' and user != work.owner:
-            return Response({"error": "Unauthorized Artist"}, status=403)
-        elif current_user.role == 'Client':
-            return Response({"error": "Unauthorized Client"}, status=403)
+        if current_user.role == "AM":
+            pass
+        else:
+            user = Artist.objects.get(user=request.user)
+            if current_user.role == 'Artist' and user != work.owner:
+                return Response({"error": "Unauthorized Artist"}, status=403)
+            elif current_user.role == 'Client':
+                return Response({"error": "Unauthorized Client"}, status=403)
         tags = request.data.get('tags', [])
         for tag_name in tags:
             tag_name = tag_name.capitalize()
