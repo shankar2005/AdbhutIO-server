@@ -156,6 +156,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     project_demos = serializers.SerializerMethodField()
     chatbot_status = ChatBotSerializer(required=False)
     links = serializers.SerializerMethodField()
+    files = serializers.SerializerMethodField()
 
     def to_representation(self, instance):
 
@@ -254,6 +255,15 @@ class ProjectSerializer(serializers.ModelSerializer):
             ProjectDemoSerializer(demo, many=False).data
             for demo in obj.project_demos.all()
         ]
+
+    def get_files(self, obj):
+        if obj.files == "":
+            return []
+        files = obj.files.split(",")
+        return[
+            {"url": file}
+            for file in files
+        ]
         # project_demos = []
         # print("project demo is -> ")
         # print(obj.projectdemo_Project.all())
@@ -289,6 +299,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "stage",
             "brief",
             "chatbot_status",
+            "files",
             "reference_links",
             "links",
             "template",
@@ -319,6 +330,19 @@ class ProjectSerializer(serializers.ModelSerializer):
             "project_demos": {"write_only": True},
         }
 
+class SaveChatFileSerializer(serializers.ModelSerializer):
+    files = serializers.SerializerMethodField()
+    def get_files(self,obj):
+        if obj.files == "":
+            return []
+        files = obj.files.split(",")
+        return [
+            {"url":file}
+            for file in files[:-1]
+        ]
+    class Meta:
+        model = Project
+        fields = ['chat_file','files']
 
 # ------------------------------------- project serializer end ---------------------------------------
 

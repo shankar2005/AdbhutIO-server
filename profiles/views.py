@@ -487,6 +487,22 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
+class SaveChatFileView(generics.UpdateAPIView):
+    queryset = Project.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = SaveChatFileSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+        instance.chat_file = data["chat_file"]
+        instance.save()
+        file_url = instance.chat_file.url
+        instance.files += file_url +","
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
 
 class ChatOnOff(APIView):
     permission_classes = (permissions.AllowAny,)

@@ -29,7 +29,8 @@ def savenameLocationForAggreement(self, filename):
 def saveNameLocationForProfilePic(self, filename):
     return f"userdata/{self.name}_work_files/{filename}"
 
-
+def savenameLocationForChatFiles(self, filename):
+    return f"chatfiles/{self.client.name}_chat_files/{filename}"
 class TemplateProjects(models.Model):
     name = models.CharField(max_length=100, default="")
     details = models.TextField(default="", blank=True)
@@ -362,6 +363,8 @@ class Project(models.Model):
         related_name="%(class)s_to_TemplateProjects_relation",
     )
 
+    chat_file = models.FileField(upload_to=savenameLocationForChatFiles, null=True, blank=True)  # New field for media files
+    files = models.TextField(default="",null=True,blank=True) # New Field to save all the chat file links
     brief = models.TextField(default="", blank=True)
     production_solution = models.TextField(default="", blank=True)
     comments = models.TextField(default="", blank=True)

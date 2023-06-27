@@ -385,6 +385,8 @@ class ProjectAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     "client",
                     ("stage", "project_template"),
                     "visibility",
+                    "chat_file",
+                    "files"
                 ]
             },
         ),
