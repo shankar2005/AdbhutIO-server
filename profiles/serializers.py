@@ -697,11 +697,6 @@ class WorksLinkSerializer(serializers.ModelSerializer):
         ]
 
 class ArtistActionSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = self.context.get('request')
-        if request and request.method != 'PUT':
-            self.fields.pop('works_links')
     works_links = WorksLinkSerializer(many=True, required=False)
     class Meta:
         model = Artist
