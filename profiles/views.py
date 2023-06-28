@@ -566,8 +566,7 @@ class ProjectDeleteViewSet(APIView):
 class ProjectDemoViewSet(viewsets.ModelViewSet):
     queryset = ProjectDemo.objects.all()
     serializer_class = ProjectDemoSerializer
-    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
-    http_method_names = ["get", "post", "patch", "delete"]
+    http_method_names = ["get", "post", "put", "delete"]
 
 class ArtistViewSet(viewsets.ModelViewSet):
     queryset = Artist.objects.all()
@@ -602,8 +601,12 @@ class ProjectDemoAddLinkOrDoc(generics.ListCreateAPIView):
             return ProjectDemoFileSerializer
         return ProjectDemoLinkSerializer
 
+class AssignArtistView(generics.UpdateAPIView):
+    queryset = ProjectDemo.objects.all()
+    serializer_class = ProjectDemoSerializer
+
 class ProjectDemoListView(generics.ListAPIView):
-    queryset = ProjectDemo.objects.all().order_by('-id')
+    queryset = ProjectDemo.objects.filter(status='Available to sell').order_by('-id')
     serializer_class = ProjectDemoListSerializer
 
 class ProjectDemoDetailView(generics.RetrieveAPIView):
