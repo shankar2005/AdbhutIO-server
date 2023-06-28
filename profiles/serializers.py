@@ -260,9 +260,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         if obj.files == "":
             return []
         files = obj.files.split(",")
-        return[
-            {"url": file}
-            for file in files
+        return [
+            {"name": item.split()[0], "url": item.split()[1]}
+            for item in files[:-1]
         ]
         # project_demos = []
         # print("project demo is -> ")
@@ -337,8 +337,8 @@ class SaveChatFileSerializer(serializers.ModelSerializer):
             return []
         files = obj.files.split(",")
         return [
-            {"url":file}
-            for file in files[:-1]
+            {"name": item.split()[0], "url": item.split()[1]}
+            for item in files[:-1]
         ]
     class Meta:
         model = Project

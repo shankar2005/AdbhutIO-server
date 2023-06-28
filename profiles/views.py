@@ -499,7 +499,8 @@ class SaveChatFileView(generics.UpdateAPIView):
         instance.chat_file = data["chat_file"]
         instance.save()
         file_url = instance.chat_file.url
-        instance.files += file_url +","
+        file_name = instance.chat_file.name.split('/')[-1]
+        instance.files +=f"{file_name} {file_url} ,"
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
