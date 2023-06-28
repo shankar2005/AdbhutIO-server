@@ -30,7 +30,7 @@ def saveNameLocationForProfilePic(self, filename):
     return f"userdata/{self.name}_work_files/{filename}"
 
 def savenameLocationForChatFiles(self, filename):
-    return f"chatfiles/{self.client.name}_chat_files/{filename}"
+    return f"chatfiles/{self.client.name}_{self.id}_chat_files/{filename}"
 class TemplateProjects(models.Model):
     name = models.CharField(max_length=100, default="")
     details = models.TextField(default="", blank=True)
