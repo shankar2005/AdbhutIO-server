@@ -330,6 +330,7 @@ class EditProjectViewSet(viewsets.ModelViewSet):
                     "Client",
                     "PM",
                     "AM",
+                    "Artist"
                 ]:
                     return Response(
                         ProjectSerializer(project, context={"request": request}).data, status=status.HTTP_200_OK
@@ -1124,7 +1125,7 @@ class AllProjectViewSet(viewsets.ModelViewSet):
                 .exclude(stage="DreamProject")
                 .order_by("-id")
             )
-        elif role == "PM" or role == "AM":
+        elif role == "PM" or role == "AM" or role == "Artist":
             return Project.objects.exclude(stage="DreamProject").order_by("-id")
         return None
 

@@ -169,7 +169,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         elif user.is_anonymous and visibility == 'private':
             return {"message":"Please login as the client of this project to view this project details as this project is private"} # If user is anonymous and visibility is private, return empty representation
         role = Role.objects.get(user=user) # Get role of client
-        if (role and (role.role == 'AM' or role.role == 'PM')) or visibility == 'public' or user == client:
+        if (role and (role.role == 'AM' or role.role == 'PM' or role.role == 'Artist')) or visibility == 'public' or user == client:
             # If client is an AM or project is public or user is the owner, return full representation
             return super().to_representation(instance)
         if visibility == 'private' and user != client:
