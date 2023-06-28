@@ -59,7 +59,7 @@ CLIENT_PAYOUT_STATUS = (
 PROJECT_DEMO_STATUS = (
     ("Selected", "Selected"),
     ("Shortlisted", "Shortlisted"),
-    ("Rejected", "Rejected"),
+    ("Available to sell", "Available to sell"),
 )
 
 
