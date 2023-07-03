@@ -267,14 +267,13 @@ class GetDreamProjectViewSet(viewsets.ModelViewSet):
 
 def PorjectCalculation(project, data):
     if data["assigned_artist_payouts"] > 0:
-        if project.solution_fee == 0 and project.production_advance == 0:
-            project.assigned_artist_payouts = data["assigned_artist_payouts"]
-            project.solution_fee = float(data["assigned_artist_payouts"]) * 2.5
-            project.production_advance = (
-                (float(data["assigned_artist_payouts"]) * 2.5) / 100
-            ) * 30
-            project.save()
-            return True
+        project.assigned_artist_payouts = data["assigned_artist_payouts"]
+        project.solution_fee = float(data["assigned_artist_payouts"]) * 2.5
+        project.production_advance = (
+            (float(data["assigned_artist_payouts"]) * 2.5) / 100
+        ) * 30
+        project.save()
+        return True
     elif data["assigned_artist_payouts"] == 0:
         print(data["assigned_artist_payouts"])
         project.assigned_artist_payouts = 0.0
