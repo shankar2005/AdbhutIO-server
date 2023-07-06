@@ -18,7 +18,7 @@ def send_email_token(email, token):
 
             If you have any questions or need assistance, feel free to reach out to our support team at entertain@nsnco.in.
 
-            Welcome to NSNCO!
+            Welcome to Adbhut!
 
             Best regards,
             Team NSNCO
