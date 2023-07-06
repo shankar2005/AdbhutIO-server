@@ -79,6 +79,7 @@ class ClientAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 "fields": [
                     "name",
                     "email",
+                    "email_token",
                     "user",
                     # "bio",
                     "image",
@@ -299,7 +300,7 @@ class ArtistAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 "fields": [
                     ("user","name", "age"),
                     ("artist_intro"),
-                    ("email", "phone"),
+                    ("email", "phone","email_token"),
                     ("skill", "genre"),
                     ("location", "languages"),
                     "profile_pic",
