@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect
 from phonenumber_field.phonenumber import PhoneNumber
 from rest_framework import exceptions, permissions, status
 from rest_framework.authtoken.models import Token
@@ -9,7 +10,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from .utils import send_email_token
+import uuid
 from profiles.models import *
 from profiles.serializers import ClientSerializer
 
@@ -38,7 +40,10 @@ class EmailLogin(ObtainAuthToken):
                 login(
                     request, user, backend="django.contrib.auth.backends.ModelBackend"
                 )
-                token, created = Token.objects.get_or_create(user=user)
+                try:
+                    token = Token.objects.get(user=user)
+                except Exception as e:
+                    return Response({"Please Verify the account with the registered email"})
                 return Response({"token": token.key})
 
         return Response({"error": "Invalid email/password"}, status=400)
@@ -92,13 +97,14 @@ class RegisterUserView(APIView):
                         password=password,
                         email=email,
                     )
+                    token = str(uuid.uuid4())
                     print("passed 2")
                     if data['role'] == 'Artist':
                         phone = '"{}"'.format(phone)
-                        artist = Artist(user=user, email=email, name=name,phone=PhoneNumber.from_string(str(phone)))
+                        artist = Artist(user=user, email=email, name=name,phone=PhoneNumber.from_string(str(phone)),email_token=token)
                         artist.save()
                     else:
-                        client = Client(user=user, email=email, name=name)
+                        client = Client(user=user, email=email, name=name,email_token=token)
                         phone = '"{}"'.format(phone)
                         client.phone = PhoneNumber.from_string(str(phone))
                         print(f"client phone {client.phone}")
@@ -113,23 +119,7 @@ class RegisterUserView(APIView):
                     # handle the case where a user with the same email already exists
                     print("Error creating user: ", e)
 
-                subject = "Account Activation"
-                activate_url = (
-                    "https://api.orangewaves.tech/"
-                    + "activate/"
-                    + str(user.pk)
-                    + "/"
-                    + account_activation_token.make_token(user)
-                    + "/"
-                )
-                message = f"""
-                   Hey there{name},
-                   Thank you for signing up for NSNCO,
-                      Please click on the link below to activate your account
-                        {activate_url}
-                    Regards,
-                    Team NsN
-                    """
+                send_email_token(email,token)
                 return Response(
                     {"message": "User created successfully"},
                     status=status.HTTP_201_CREATED,
@@ -142,6 +132,7 @@ class RegisterUserView(APIView):
         except Exception as e:
             print(e)
             if str(e) == "User has no client.":
+                send_email_token(email,token)
                 return Response(
                     {"success": "User is created successfully"},
                     status=status.HTTP_200_OK,
@@ -150,6 +141,29 @@ class RegisterUserView(APIView):
                 {"error": "Something went wrong", "error_message": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+class VerifyEmail(APIView):
+    def get_user_from_token(self, token):
+        user = None
+
+        try:
+            user = Client.objects.get(email_token=token)
+        except Client.DoesNotExist:
+            try:
+                user = Artist.objects.get(email_token=token)
+            except Artist.DoesNotExist:
+                pass
+        return user
+    def get(self, request, token):
+        user = self.get_user_from_token(token)
+        if user:
+            user.email_token=""
+            email = user.email
+            user.save()
+            token_user = User.objects.get(email=email)
+            t , _= Token.objects.get_or_create(user=token_user)
+            return HttpResponseRedirect('https://adbhut.io/')
+
 
 
 class ValidateToken(APIView):

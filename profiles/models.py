@@ -165,6 +165,7 @@ class Client(models.Model):
 
     # Login details
     email_confirmed = models.BooleanField(default=False)
+    email_token = models.CharField(max_length=1000, null=True, blank=True,default="")
 
     # Eother
     projects = models.ManyToManyField(
@@ -202,6 +203,7 @@ class Artist(models.Model):
         max_length=2000, blank=True, default=""
     )  # id in DataWIP
     name = models.CharField(max_length=100, default="")
+    email_token = models.CharField(max_length=1000,null=True, blank=True,default="")
     skill = models.ManyToManyField(Skill, default="", blank=True)
     artist_intro = models.TextField(default="", blank=True)
     profile_pic = models.ImageField(

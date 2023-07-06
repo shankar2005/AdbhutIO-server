@@ -191,6 +191,17 @@ AUTHENTICATION_BACKENDS = [
     "nsn.backends.EmailBackend",
 ]
 
+#Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'entertain@nsnco.in'
+SERVER_EMAIL = 'entertain@nsnco.in'
+EMAIL_HOST = 'smtppro.zoho.in'
+EMAIL_FROM = 'entertain@nsnco.in'
+EMAIL_HOST_USER = 'entertain@nsnco.in'
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Adbhut backend API",
