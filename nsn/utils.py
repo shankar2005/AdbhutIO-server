@@ -23,7 +23,9 @@ def send_email_token(email, token):
             Best regards,
             Team NSNCO
             """
-
+        # For auth in local server replace the link with
+        # http://127.0.0.1:8000/api/v1/auth/verify_email/{token}/
+        # you can find the token in the local db as email_token field
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email]
         email = EmailMessage(subject=subject,body=message,from_email= email_from,to= recipient_list,reply_to=recipient_list ,headers={'Content-Type': 'text/plain'},)

@@ -162,7 +162,7 @@ class VerifyEmail(APIView):
             user.save()
             token_user = User.objects.get(email=email)
             t , _= Token.objects.get_or_create(user=token_user)
-            return HttpResponseRedirect('https://adbhut.io/')
+        return HttpResponseRedirect('https://adbhut.io/')
 
 
 
