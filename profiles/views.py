@@ -1105,7 +1105,7 @@ class ArtistWorksLinksAPIView(generics.RetrieveUpdateDestroyAPIView):
                 artist=updated_work.owner,
                 demo_work=updated_work,
                 link=updated_work.weblink,
-                comment="Add your comment here"
+                comment=""
             )
             project_demo.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -1159,7 +1159,7 @@ class WorkLinkCreateAPIView(generics.CreateAPIView):
                 artist=artist,
                 demo_work=work,
                 link=weblink,
-                comment="Add your comment here"
+                comment=""
             )
             project_demo.save()
 
