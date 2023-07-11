@@ -203,6 +203,12 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+#clarifai settings
+PAT_KEY = config("PAT_KEY")
+USER_ID = config("USER_ID")
+APP_ID = config("APP_ID")
+WORKFLOW_ID = config("WORKFLOW_ID")
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "Adbhut backend API",
     "DESCRIPTION": "Your project description",

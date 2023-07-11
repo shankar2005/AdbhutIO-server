@@ -38,13 +38,111 @@ from .customPermission import (
 from django.db.models import F
 # models
 from .models import *
-from .models import ChatGPTMessage
 
 # serializers
 from .serializers import *
 
 # import the api key
+from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
+from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
+from clarifai_grpc.grpc.api.status import status_code_pb2
+from nsn import settings
 
+
+# LABLES FOR CONTENT
+
+class GenerateDemoProjectLables(APIView):
+    def get(self, request):
+        data = request.data
+        id = data['id']
+        type = data["type"]
+        demo = ProjectDemo.objects.get(id=id)
+        if demo.comment != "":
+            return Response("Lables assigned already")
+        PAT = settings.PAT_KEY
+        USER_ID = 'clarifai'
+        APP_ID = 'main'
+        WORKFLOW_ID = settings.WORKFLOW_ID
+        # Change these to whatever model and video URL you want to use
+        MODEL_ID = 'general-image-recognition'
+        MODEL_VERSION_ID = 'aa7f35c01e0642fda5cf400f543e7c40'
+        URL =  data["url"]
+        # Change this to configure the FPS rate (If it's not configured, it defaults to 1 FPS)
+        SAMPLE_MS = 500
+        predictions = []
+        channel = ClarifaiChannel.get_grpc_channel()
+        stub = service_pb2_grpc.V2Stub(channel)
+
+        metadata = (('authorization', 'Key ' + PAT),)
+
+        userDataObject = resources_pb2.UserAppIDSet(user_id=USER_ID, app_id=APP_ID)
+        if type == 'Video':
+            post_model_outputs_response = stub.PostModelOutputs(
+                service_pb2.PostModelOutputsRequest(
+                    user_app_id=userDataObject,  # The userDataObject is created in the overview and is required when using a PAT
+                    model_id=MODEL_ID,
+                    version_id=MODEL_VERSION_ID,  # This is optional. Defaults to the latest model version
+                    inputs=[
+                        resources_pb2.Input(
+                            data=resources_pb2.Data(
+                                video=resources_pb2.Video(
+                                    url=URL
+                                )
+                            )
+                        )
+                    ],
+                    model=resources_pb2.Model(
+                        output_info=resources_pb2.OutputInfo(
+                            output_config=resources_pb2.OutputConfig(sample_ms=SAMPLE_MS)
+                        )
+                    ),
+                ),
+                metadata=metadata
+            )
+            if post_model_outputs_response.status.code != status_code_pb2.SUCCESS:
+                print(post_model_outputs_response.status)
+                return Response({"status":"failed"},status=status.HTTP_500_INTERNAL_SERVER_ERROR,)
+
+
+            # Since we have one input, one output will exist here
+            output = post_model_outputs_response.outputs[0]
+
+            # A separate prediction is available for each "frame"
+            for frame in output.data.frames:
+                for concept in frame.data.concepts:
+                    predictions.append(concept.name)
+        else:
+            post_workflow_results_response = stub.PostWorkflowResults(
+                service_pb2.PostWorkflowResultsRequest(
+                    user_app_id=userDataObject,
+                    workflow_id=WORKFLOW_ID,
+                    inputs=[
+                        resources_pb2.Input(
+                            data=resources_pb2.Data(
+                                image=resources_pb2.Image(
+                                    url=URL
+                                )
+                            )
+                        )
+                    ]
+                ),
+                metadata=metadata
+            )
+            if post_workflow_results_response.status.code != status_code_pb2.SUCCESS:
+                print(post_workflow_results_response.status)
+                return Response({"status":"failed"},status=status.HTTP_500_INTERNAL_SERVER_ERROR,)
+
+            # We'll get one WorkflowResult for each input we used above. Because of one input, we have here one WorkflowResult
+            results = post_workflow_results_response.results[0]
+
+            # Each model we have in the workflow will produce one output.
+            for output in results.outputs:
+                for concept in output.data.concepts:
+                    predictions.append(concept.name)
+        result = list(set(predictions))
+        demo.comment = str(result)
+        demo.save()
+        return Response({"status":"success","Lables":result})
 
 
 
