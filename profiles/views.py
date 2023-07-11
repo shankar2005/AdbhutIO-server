@@ -52,7 +52,7 @@ from nsn import settings
 # LABLES FOR CONTENT
 
 class GenerateDemoProjectLables(APIView):
-    def get(self, request):
+    def post(self, request):
         data = request.data
         id = data['id']
         type = data["type"]
