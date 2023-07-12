@@ -190,6 +190,7 @@ class ValidateToken(APIView):
             # print("passed3")
 
             user = User.objects.get(email=token.user.email)
+            print(user.password)
             try:
                 role = Role.objects.get(user=user)  # get_object_or_404(Role, user=user)
             except:
