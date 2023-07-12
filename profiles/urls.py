@@ -7,7 +7,7 @@ app_name = "profiles"
 urlpatterns = [
     # ==================== artist manager urls ===========================
     # re_path(r'api/v1/artist_action/<int:pk>/?$', ArtistActionviewSet.as_view(), name="artist_action_pk")
-    path('api/v1/generate_demo_project_lables/', GenerateDemoProjectLables.as_view(), name='generate-content-lables'),
+    path('api/v1/generate_demo_project_lables/', GenerateDemoProjectLabels.as_view(), name='generate-content-labels'),
     path('api/v1/save_chat_file/<int:pk>/', SaveChatFileView.as_view(), name='save-chat-files'),
     path('api/v1/get_artist_demos/<int:pk>/', ArtistProjectDemos.as_view(), name='get-demos'),
     path('api/v1/get_content_work/<int:pk>/', TemplateProjectsWorksView.as_view(), name='template-projects-works'),
