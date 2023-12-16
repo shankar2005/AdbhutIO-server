@@ -1,5 +1,7 @@
 aiohttp==3.8.4
 aiosignal==1.3.1
+annotated-types==0.6.0
+anyio==4.1.0
 asgiref==3.5.0
 async-timeout==4.0.2
 attrs==22.2.0
@@ -15,6 +17,7 @@ cffi==1.15.1
 cfgv==3.3.1
 channels==3.0.5
 charset-normalizer==3.0.1
+clarifai-grpc==9.11.2
 click==8.1.3
 colorama==0.4.6
 constantly==15.1.0
@@ -24,6 +27,7 @@ defusedxml==0.7.1
 Deprecated==1.2.13
 diff-match-patch==20200713
 distlib==0.3.6
+distro==1.8.0
 Django==3.2.12
 django-allauth==0.49.0
 django-braces==1.15.0
@@ -44,9 +48,15 @@ django-tinymce==3.4.0
 djangorestframework==3.13.1
 drf-spectacular==0.25.1
 et-xmlfile==1.1.0
+exceptiongroup==1.2.0
 filelock==3.9.0
 flake8==6.0.0
 frozenlist==1.3.3
+googleapis-common-protos==1.62.0
+grpcio==1.60.0
+h11==0.14.0
+httpcore==1.0.2
+httpx==0.25.2
 hyperlink==21.0.0
 identify==2.5.18
 idna==3.4
@@ -65,7 +75,7 @@ nodeenv==1.7.0
 numpy==1.24.1
 oauthlib==3.2.2
 odfpy==1.4.1
-openai==0.27.2
+openai==1.4.0
 openpyxl==3.1.1
 packaging==23.0
 pandas==1.5.3
@@ -74,11 +84,14 @@ phonenumbers==8.13.7
 Pillow==9.4.0
 platformdirs==3.0.0
 pre-commit==3.1.1
+protobuf==4.25.1
 psycopg2==2.9.5
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycodestyle==2.10.0
 pycparser==2.21
+pydantic==2.5.2
+pydantic_core==2.14.5
 pyflakes==3.0.1
 PyJWT==2.6.0
 pyOpenSSL==23.1.0
@@ -94,6 +107,7 @@ requests-oauthlib==1.3.1
 s3transfer==0.5.2
 service-identity==21.1.0
 six==1.16.0
+sniffio==1.3.0
 social-auth-app-django==5.0.0
 social-auth-core==4.3.0
 sqlparse==0.4.3
@@ -105,7 +119,7 @@ tqdm==4.64.1
 Twisted==22.10.0
 twisted-iocpsupport==1.0.2
 txaio==23.1.1
-typing_extensions==4.5.0
+typing_extensions==4.9.0
 uritemplate==4.1.1
 urllib3==1.26.14
 virtualenv==20.20.0
