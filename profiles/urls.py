@@ -77,4 +77,7 @@ urlpatterns = [
         name="create_new_project",
     ),
     path("api/v1/demo/", DemoView.as_view(), name="demo"),
+
+    path('api/v1/generate_description/', ProductDescriptionView.as_view()),
+    path('api/v1/extract_text/', ImageTextExtractionView.as_view()),
 ]
