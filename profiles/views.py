@@ -1,11 +1,13 @@
 import json
 import os
+import boto3
 
 # openAI package
-import openai
+from openai import OpenAI 
 from django.db.models import Q
 from decouple import config
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.parsers import MultiPartParser
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404
@@ -1512,3 +1514,67 @@ class DemoView(APIView):
 # ---------------------------- demo project end -----------------------------------------
 
 
+# -------------------Generate Product Description from a title (openai)------------------
+def generate_product_details(product_title):
+    openai_api_key = config('OPENAI_API_KEY')
+    os.environ["OPENAI_API_KEY"] = openai_api_key
+    client = OpenAI()
+    description_completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "user", 
+                "content": f"Create a detailed product description of '{product_title}' in 50 words."
+            }
+        ]
+    )
+    product_description = description_completion.choices[0].message.content.strip()
+    keyword_completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "user", 
+                "content": f"Extract the important keywords from the following description, '{product_description}'."
+            }
+        ]
+    )
+    keywords = keyword_completion.choices[0].message.content.strip()
+    return product_description, [keyword.strip() for keyword in keywords.split(',')]
+class ProductDescriptionView(APIView):
+    def post(self, request, *args, **kwargs):
+        product_title = request.data.get('product_title', '')
+        if not product_title:
+            return Response({'error': 'Product title is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        product_description, keywords = generate_product_details(product_title)
+        response_data = {
+            'product_description': product_description,
+            'product_keywords': keywords,
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+def extract_text(img_path):
+    region_name = 'ap-south-1'
+    rekognition = boto3.client('rekognition', region_name=region_name)
+    with open(img_path, 'rb') as image_file:
+        image_data = image_file.read()
+    response = rekognition.detect_text(Image={'Bytes': image_data})
+    detected_texts = [text['DetectedText'] for text in response.get('TextDetections', [])]
+    return detected_texts    
+
+class ImageTextExtractionView(APIView):
+    parser_classes = [MultiPartParser]
+    def post(self, request, *args, **kwargs):
+        if 'image' not in request.FILES:
+            return Response({'error': 'Image file is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        img = request.FILES['image']
+        img_path = os.path.join('images', img.name)
+        with open(img_path, 'wb') as f:
+            for chunk in img.chunks():
+                f.write(chunk)
+        
+        texts = extract_text(img_path)
+        response_data = {
+            "texts": texts
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
