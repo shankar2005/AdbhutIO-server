@@ -1560,7 +1560,9 @@ def extract_text(img_path):
     os.environ["SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
     os.environ["REGION_NAME"] = AWS_DEFAULT_REGION
     region_name = 'ap-south-1'
-    rekognition = boto3.client('rekognition', region_name=region_name)
+    rekognition = boto3.client('rekognition', aws_access_key_id=AWS_ACCESS_KEY_ID,
+                              aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+                              region_name=AWS_DEFAULT_REGION)    
     with open(img_path, 'rb') as image_file:
         image_data = image_file.read()
     response = rekognition.detect_text(Image={'Bytes': image_data})
