@@ -1553,6 +1553,12 @@ class ProductDescriptionView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
     
 def extract_text(img_path):
+    AWS_ACCESS_KEY_ID = config('ACCESS_KEY')
+    AWS_SECRET_ACCESS_KEY = config('SECRET_ACCESS_KEY')
+    AWS_DEFAULT_REGION = config('REGION_NAME')
+    os.environ["ACCESS_KEY"] = AWS_ACCESS_KEY_ID
+    os.environ["SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
+    os.environ["REGION_NAME"] = AWS_DEFAULT_REGION
     region_name = 'ap-south-1'
     rekognition = boto3.client('rekognition', region_name=region_name)
     with open(img_path, 'rb') as image_file:
